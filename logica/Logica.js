@@ -4,6 +4,9 @@
 //const sqlite3 = require( "sqlite3" )
 const mysql = require( "mysql" );
 const Modelo = require("./Modelo.js");
+const BDConstantes = require("./Constantes/BDConstantes");
+const BDCredenciales = require('./Constantes/BDCredenciales.js');
+const { MedicionCO2 } = require("./Modelo.js");
 // .....................................................................
 // .....................................................................
 
@@ -19,13 +22,10 @@ module.exports = class Logica {
     constructor( nombreBD, cb ) {
 
         this.laConexion = null;
-
-        console.log("...");
         this.laConexion = mysql.createConnection({
-            host     : 'localhost',
-            user     : 'root',
-            port: 3306,
-            password : '',
+            host     : BDCredenciales.MYSQL.BD_HOST,
+            user     : BDCredenciales.MYSQL.BD_USUARIO,
+            password : BDCredenciales.MYSQL.BD_CONTRASENYA,
             database : nombreBD
           });
 
@@ -60,7 +60,7 @@ module.exports = class Logica {
     // .................................................................
     borrarFilasDe( tabla ) {
         return new Promise( (resolver, rechazar) => {
-            this.laConexion.run("delete from " + tabla + ";",(err)=> ( err ? rechazar(err) : resolver()))
+            this.laConexion.query("delete from " + tabla + ";",(err)=> ( err ? rechazar(err) : resolver()))
         })
     } // ()
 
@@ -68,26 +68,36 @@ module.exports = class Logica {
     // borrarFilasDeTodasLasTablas() -->
     // .................................................................
     async borrarFilasDeTodasLasTablas() {
-        await this.borrarFilasDe( "Matricula" )
-        await this.borrarFilasDe( "Asignatura" )
-        await this.borrarFilasDe( "Persona" )
+        await this.borrarFilasDe( BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
+        await this.borrarFilasDe( BDConstantes.TABLA_USUARIOS.NOMBRE_TABLA)
+        await this.borrarFilasDe( BDConstantes.TABLA_SENSORES.NOMBRE_TABLA)
     } // ()
 
-    
-    // .................................................................
-    // -->
-    // obtenerTodasPersonas() --> 
-    // <-- [{dni:Texto, nombre:Texto: apellidos:Texto}]
-    // .................................................................
-    obtenerTodasPersonas() {
-        var textoSQL ='select * from Persona;'
-        return new Promise( (resolver, rechazar) => {
-            this.laConexion.query( textoSQL,( err, res ) => {
-                ( err ? rechazar(err) : resolver(res) )
-            })
-        })//()
 
-    }
+    // .................................................................
+    // 
+    // -->
+    // obtenerTodasMediciones() --> Lista<MedicionCO2>
+    // .................................................................
+    obtenerTodasMediciones(  ) {
+        var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA;
+        return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( textoSQL, function( err,res,fields ) {
+
+                    if(!err){
+                        
+                        // return 
+                       resolver( Modelo.MedicionCO2.jsonAListaMediciones(res))
+
+                    }else{
+                        rechazar(err)
+                    }
+                    
+                })
+            })
+        } // ()
+
+    
 
     // .................................................................
     // datos:{dni:Texto, nombre:Texto: apellidos:Texto}

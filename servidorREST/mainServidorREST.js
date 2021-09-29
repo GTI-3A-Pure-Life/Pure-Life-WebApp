@@ -5,6 +5,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const Logica = require('../logica/Logica.js')
+const BDCredenciales = require('../logica/Constantes/BDCredenciales.js')
 
 //......................................................................
 //......................................................................
@@ -29,7 +30,7 @@ function cargarLogica(fichero){
 async function main() {
     // importamos la logica
     //var laLogica = await cargarLogica( "../bd/datos.bd" ) // base de datos sqlite
-    var laLogica = await cargarLogica( "proyecto_biometria_prueba" ) // base de datos mysql
+    var laLogica = await cargarLogica( BDCredenciales.MYSQL.BD_NOMBRE ) // base de datos mysql
     
     // creo el servidor
     var servidorExpress = express()

@@ -1,7 +1,7 @@
 // .....................................................................
 // MedicionCO2.js y Posicion.js
 // .....................................................................
-//const Posicion = require('./Posicion.js')
+const BDConstantes = require('./Constantes/BDConstantes.js')
 
 
 /**
@@ -32,11 +32,13 @@ class MedicionCO2 {
         if(arguments.length == 1){
             // recibe solo el json
             let jsonObject = JSON.parse(json);
-            this.valor = jsonObject['medicion_valor'];
-            this.fecha = jsonObject['medicion_fecha'];
-            this.posicion = new Posicion(jsonObject['medicion_latitud'],jsonObject['medicion_longitud'])
-            this.idUsuario = jsonObject['usuario_id'];;
-            this.idSensor = jsonObject['sensor_id'];;
+            this.valor = jsonObject[BDConstantes.TABLA_MEDICIONES.VALOR];
+            this.fecha = jsonObject[BDConstantes.TABLA_MEDICIONES.FECHA];
+            this.posicion = new Posicion(
+                jsonObject[BDConstantes.TABLA_MEDICIONES.LATITUD],
+                jsonObject[BDConstantes.TABLA_MEDICIONES.LONGITUD])
+            this.idUsuario = jsonObject[BDConstantes.TABLA_MEDICIONES.USUARIO];;
+            this.idSensor = jsonObject[BDConstantes.TABLA_MEDICIONES.SENSOR];;
         }else{
             // recibe todos los valores
             this.valor = valor;
@@ -67,6 +69,22 @@ class MedicionCO2 {
             sensor_id: this.idSensor
            });
     }
+
+
+    /**
+     * Texto -> jsonAListaMediciones() -> List<MedicionCO2>
+     * @param {Texto} json array de mediciones en forma de json 
+     * @returns lista de medicionesco2
+     */
+    static jsonAListaMediciones(json) {
+        let mediciones = new Array();
+        
+        json.forEach(element => {
+            mediciones.push(new MedicionCO2(JSON.stringify(element)))
+        });
+
+        return mediciones;
+    }
 } // ()
 
 
@@ -96,4 +114,4 @@ class Posicion{
 module.exports = {
     MedicionCO2 : MedicionCO2,
     Posicion : Posicion
-  }
+}
