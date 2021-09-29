@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><button id="btn-menu-personas" onclick="onClickMenuNavegacion(this)">Personas</button></li>
+            <li><button onclick="onClickMenuNavegacion(this)" id="btn-menu-asignaturas">Asiganturas</button></li>
+            <li><button onclick="onClickPruebaPUT(this)" id="btn-menu-asignaturas">PUT</button></li>
+        </ul>
+    </nav>
+
+    
+
+    <div id="carga"></div>
+    <div id="error"></div>
+    <div id="contenedor-contenido-personas" class="contenedor">
+        <form class="formulario-crear" id="forumlarioCrearPersona" onsubmit="ControladorPersonas.iniciarInsertarPersonas(event)">
+            <h3>Dar de alta a una persona</h3>
+            <label for="dni-persona">DNI</label>
+            <input type="text" name="dni" id="dni-persona">
+            <span class="error"><p id="dni_error">Campo obligatorio</p></span>
+    
+            <label for="nombre-persona">Nombre</label>
+            <input type="text" name="nombre" id="nombre-persona">
+            <span class="error"><p id="nombre_error">Campo obligatorio</p></span>
+    
+            <label for="apellido-persona">Apellido</label>
+            <input type="text" name="apellidos" id="apellido-persona">
+            <span class="error"><p id="apellido_error">Campo obligatorio</p></span>
+    
+            <button type="sumbit">Crear</button>
+            <div id="carga-insertar"></div>
+    
+        </form>
+        <h2>Todas las personas</h2>
+        <div class="buscar">
+            <input type="text" placeholder="Buscar por dni.." id="buscador-dni-persona">
+            <button onclick="ControladorPersonas.iniciarBusquedaPersona()">Buscar</button>
+        </div>
+        <p>DNI | Nombre | Apellidos</p>
+        <ul id="lista-personas" class="lista-elementos"></ul>
+    
+        
+        
+    </div>
+    <div id="contenedor-contenido-asignaturas"  class="contenedor">
+        <form class="formulario-crear" id="forumlarioCrearAsignatura" onsubmit="ControladorAsignaturas.iniciarInsertArasignaturas(event)">
+            <h3>Crear asignatura</h3>
+            <label for="codigo-persona">Codigo</label>
+            <input type="text" name="codigo" id="codigo-asingatura">
+            <span class="error"><p id="codigo_error">Campo obligatorio</p></span>
+    
+            <label for="nombre-asingatura">Nombre</label>
+            <input type="text" name="nombre" id="nombre-asingatura">
+            <span class="error"><p id="asingatura_error">Campo obligatorio</p></span>
+    
+            <button type="sumbit">Crear Asignatura</button>
+            <div id="carga-insertar-asi"></div>
+    
+        </form>
+        <h2>Todas las asingaturas</h2>
+        <div class="buscar">
+            <input type="text" placeholder="Buscar por codigo.." id="buscador-codigo-asignatura">
+            <button onclick="ControladorAsignaturas.iniciarBusquedaAsingatura()">Buscar</button>
+        </div>
+        <p>Codigo | Nombre</p>
+        <ul id="lista-asignatura" class="lista-elementos"></ul>
+    
+        
+        
+    </div>
+
+    <div id="snackbar"></div>
+    <div id="snackbarError"></div>
+
+    <script src="logica/LogicaFalsa.js"></script>
+    <script src="logica/mvc-personas.js"></script>
+    <script src="logica/mvc-asignaturas.js"></script>
+
+    <script>
+
+        
+
+        // al cargar la pagina comprobamos en que tab esta anteriormente, por defecto mostramos las personas
+        window.onload = function(){
+            let seDebeMostrarPersonas;
+            let seDebeMostrarAsignaturas;
+            let tab = localStorage.getItem("tab-actual");
+            
+            // tab = 1 == asignaturas, tab = 0 | null == personas
+           if(tab != null && tab == 1){
+               // estaba en asignaturas
+               seDebeMostrarPersonas = false;
+               seDebeMostrarAsignaturas = true;
+               document.getElementById("btn-menu-asignaturas").parentNode.className = "active"
+              
+           }else{
+                seDebeMostrarPersonas = true;
+                seDebeMostrarAsignaturas = false;
+                document.getElementById("btn-menu-personas").parentNode.className = "active"
+           }
+
+           // cargamos los mvc de las personas y los controladores
+            VistaPersonas.preparar("contenedor-contenido-personas","lista-personas","carga","carga-insertar","error","snackbarError","forumlarioCrearPersona",
+                                "dni_error","nombre_error","apellido_error","snackbar","buscador-dni-persona",seDebeMostrarPersonas);
+            VistaAsignaturas.preparar("contenedor-contenido-asignaturas","lista-asignatura","carga","carga-insertar-asi","error","snackbarError","forumlarioCrearAsignatura",
+                                "codigo_error","asingatura_error","snackbar","buscador-codigo-asignatura",seDebeMostrarAsignaturas);
+            ControladorPersonas.iniciarObtenerPersonas();
+            //ControladorAsignaturas.iniciarObtenerAsignaturas();
+
+        }
+
+
+        // callback de los botones del menu de navegacion
+        // el pulsado se le pone la clase activa a su li
+        function onClickMenuNavegacion(buttonPulsado){
+            document.querySelectorAll("nav li").forEach(e=>{
+                e.className="";
+            })
+            buttonPulsado.parentNode.className = "active";
+            
+            if(buttonPulsado.id == "btn-menu-personas"){
+                // se ha pulsado personas
+                VistaPersonas.mostrarContenido(true);
+                VistaAsignaturas.mostrarContenido(false);
+
+                localStorage.setItem("tab-actual",0);
+
+            }else{
+                // se ha pulsado asignaturas
+                VistaPersonas.mostrarContenido(false);
+                VistaAsignaturas.mostrarContenido(true);
+
+                localStorage.setItem("tab-actual",1);
+            }
+            
+        }
+
+
+
+        async function onClickPruebaPUT(boton){
+            let respuesta = await fetch(  IP_PUERTO+"/medicion",{
+            method: 'PUT',
+            headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+            body: JSON.stringify({
+                    medicion_fecha:"2021-27-19",
+                    medicion_valor:32843,
+                    medicion_latitud:31,
+                    medicion_longitud:21,
+                    usuario_id:1,
+                    sensor_id:"GTI-3A-PARDO-RUB"
+                })
+            }).then(response=>{
+                if(response.status == 201){
+                    //ok pero vacío
+                    return "Medicion creada Correctamente";
+                }else if(response.status == 500){
+                    // error
+                    throw Error("Error")
+                }else{
+                    // error
+                    throw Error("Error desconocido")
+                }
+                
+                
+            }).then(json=>{
+                return json;
+            })
+              
+            return respuesta;
+        }
+    </script>
+
+  
+</body>
+</html>
