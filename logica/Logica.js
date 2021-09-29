@@ -85,7 +85,7 @@ module.exports = class Logica {
             this.laConexion.query( textoSQL, function( err,res,fields ) {
 
                     if(!err){
-                        
+
                         // return 
                        resolver( Modelo.MedicionCO2.jsonAListaMediciones(res))
 
@@ -98,6 +98,33 @@ module.exports = class Logica {
         } // ()
 
     
+
+    // .................................................................
+    // MedicionCO2
+    // -->
+    // publicarMedicionCO2() -->
+    // .................................................................
+    publicarMedicionCO2( medicion ) {
+        
+        var textoSQL ='insert into ' +BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA + '('+
+            BDConstantes.TABLA_MEDICIONES.FECHA + ',' + 
+            BDConstantes.TABLA_MEDICIONES.LATITUD  + ',' +
+            BDConstantes.TABLA_MEDICIONES.LONGITUD + ',' + 
+            BDConstantes.TABLA_MEDICIONES.VALOR  + ',' + 
+            BDConstantes.TABLA_MEDICIONES.USUARIO + ',' + 
+            BDConstantes.TABLA_MEDICIONES.SENSOR  + 
+            ')  values ( ?, ?, ?, ?, ?, ? );';
+        
+        
+            return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( 
+                textoSQL, 
+                [medicion.fecha, medicion.posicion.latitud, medicion.posicion.longitud, medicion.valor, medicion.idUsuario, medicion.idSensor], 
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver() )
+                })
+            })
+    } // ()
 
     // .................................................................
     // datos:{dni:Texto, nombre:Texto: apellidos:Texto}

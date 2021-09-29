@@ -4,6 +4,7 @@
 // ........................................................
 const Logica = require( "../Logica.js" )
 const BDCredenciales = require( "../Constantes/BDCredenciales.js" )
+const BDConstantes = require( "../Constantes/BDConstantes.js" )
 const Modelo = require( "../Modelo.js" )
 var assert = require ('assert')
 
@@ -29,27 +30,66 @@ describe( "Test RECURSO MEDICIONCO2", function() {
     }) // it
 
 
-     // ....................................................
     // ....................................................
-    it("Obtener todas las mediciones",async function(){
+    // ....................................................
+    it( "borrar todas las filas de mediciones", async function() {
+        await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
+    }) // it
+
+    // ....................................................
+    // ....................................................
+    it("Obtener todas las mediciones sin ninguna en la bd",async function(){
         
         // Lista<MedicionCO2>
         var res = await laLogica.obtenerTodasMediciones();
-        assert.equal(res.length,2,"¿No hay dos tuplas en la tabla mediciones?")
+        assert.equal(res.length, 0, "¿Hay alguna medicion guardada?")
 
     })// it
 
     // ....................................................
     // ....................................................
-   /* it( "borrar todas las filas", async function() {
-        await laLogica.borrarFilasDeTodasLasTablas()
-    }) // it
+    it("Insertar una medición correcta",async function(){
+        
+        var error = null
+        try {
+            await laLogica.publicarMedicionCO2(new Modelo.MedicionCO2(null, 50, '2021-09-29', new Modelo.Posicion(30,30), 4, 'GTI-3A-1'))
+        } catch( err ) {
+            error = err
+        }
+        assert( !error, "¿Has insertado los parametros correctos?, ¿El usuario y el sensor existen?" )
+
+    })// it
 
     // ....................................................
     // ....................................................
-    it( "borrar todas las filas", async function() {
-        await laLogica.borrarFilasDeTodasLasTablas()
-    }) // it*/
+    it("Insertar una medición incorrecta",async function(){
+        
+        var error = null
+        try {
+            await laLogica.publicarMedicionCO2(new Modelo.MedicionCO2(null, 50, '2021-09-29', new Modelo.Posicion(30,30), -1, 'GTI-3A-1'))
+        } catch( err ) {
+            error = err
+        }
+        assert( error, "¿Has insertado los parametros correctos?, ¿El usuario y el sensor existen?" )
+
+    })// it
+
+    // ....................................................
+    // ....................................................
+    it("Obtener todas las mediciones",async function(){
+        
+        // Lista<MedicionCO2>
+        var res = await laLogica.obtenerTodasMediciones();
+        assert.equal(res.length,1,"¿No hay dos tuplas en la tabla mediciones?")
+
+    })// it
+
+    
+    // ....................................................
+    // ....................................................
+    it( "borrar todas las filas de mediciones", async function() {
+        await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
+    }) // it
 
     
 
