@@ -30,6 +30,23 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
     }) // it
 
 
+     // ....................................................
+    // ....................................................
+    it( "probar vacío GET /mediciones", function( hecho ) {
+        request.get({ url : IP_PUERTO+"/mediciones",
+                      headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+                     },
+        function( err, respuesta, carga ) {
+            assert.equal( err, null, "¿ha habido un error?" )
+            assert.equal( respuesta.statusCode, 204, "¿El código no es 204 (OK NO CONTENT)" )
+
+            hecho() 
+                
+        } // callback
+        ) // .get
+    }) // it
+
+
     // ....................................................
     // ....................................................
     it( "probar PUT medicion nueva /medicion", function( hecho ) {
@@ -98,5 +115,33 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
                     } // callback// callback
         ) // .put
     }) // it
+
+
+    // ....................................................
+    // ....................................................
+    it( "probar GET /mediciones", function( hecho ) {
+        request.get({ url : IP_PUERTO+"/mediciones",
+                      headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+                     },
+                    function( err, respuesta, carga ) {
+                        assert.equal( err, null, "¿ha habido un error?" )
+                        assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (ok)" )
+
+                        var solucion = JSON.parse( carga )
+                        assert.equal( solucion.mensaje, "ok", "¿El mensaje no es 'ok'?" )
+
+                        var listaMediciones = Modelo.MedicionCO2.jsonAListaMediciones(solucion.datos);
+           
+                        
+
+                        // si el objeto esta vacio
+                        assert.equal( listaMediciones.length, 1, "¿No hay datos?" )
+                        assert.equal( listaMediciones[0].valor, 0, "¿No se ha convertido a objeto medicionco2 bien?" )
+                        
+                        hecho()
+                    } // callback// callback
+        ) // .get
+    }) // it
+
 
 }) // describe

@@ -72,17 +72,22 @@ class MedicionCO2 {
 
 
     /**
-     * Texto -> jsonAListaMediciones() -> List<MedicionCO2>
+     * JSONObject || Texto -> jsonAListaMediciones() -> List<MedicionCO2>
      * @param {Texto} json array de mediciones en forma de json 
      * @returns lista de medicionesco2
      */
     static jsonAListaMediciones(json) {
         let mediciones = new Array();
-        
+  
         json.forEach(element => {
-            mediciones.push(new MedicionCO2(JSON.stringify(element)))
+            if((typeof element) === "string"){
+                mediciones.push(new MedicionCO2(element))
+            }else{
+                mediciones.push(new MedicionCO2(JSON.stringify(element)))
+            }
         });
-
+        
+        
         return mediciones;
     }
 } // ()
