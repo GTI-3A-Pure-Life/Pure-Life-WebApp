@@ -13,10 +13,8 @@ function cargarLogica(fichero){
     return new Promise((resolver,rechazar)=>{
         var laLogica =  new Logica(fichero,function(err){
             if(err){
-                console.log("error");
                 rechazar(err)
             }else{
-                console.log("resolver");
                 resolver(laLogica)
             }
         })// new
