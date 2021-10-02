@@ -100,12 +100,13 @@ module.exports = class Logica {
     
 
     // .................................................................
-    // MedicionCO2
+    // Lista<MedicionCO2>
     // -->
     // publicarMedicionCO2() -->
     // .................................................................
-    publicarMedicionCO2( medicion ) {
-        
+    publicarMedicionesCO2( mediciones ) {
+
+        // creo la sentencia
         var textoSQL ='insert into ' +BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA + '('+
             BDConstantes.TABLA_MEDICIONES.FECHA + ',' + 
             BDConstantes.TABLA_MEDICIONES.LATITUD  + ',' +
@@ -113,17 +114,31 @@ module.exports = class Logica {
             BDConstantes.TABLA_MEDICIONES.VALOR  + ',' + 
             BDConstantes.TABLA_MEDICIONES.USUARIO + ',' + 
             BDConstantes.TABLA_MEDICIONES.SENSOR  + 
-            ')  values ( ?, ?, ?, ?, ?, ? );';
+            ')  values ?;';
         
-        
-            return new Promise( (resolver, rechazar) => {
-            this.laConexion.query( 
+
+        // añado a values las diferencias mediciones
+        let values = []
+        for(let i = 0; i<mediciones.length;i++){
+            values[i] = [
+                mediciones[i].fecha, 
+                mediciones[i].posicion.latitud, 
+                mediciones[i].posicion.longitud, 
+                mediciones[i].valor, 
+                mediciones[i].idUsuario, 
+                mediciones[i].idSensor
+            ]
+        }
+
+        return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
                 textoSQL, 
-                [medicion.fecha, medicion.posicion.latitud, medicion.posicion.longitud, medicion.valor, medicion.idUsuario, medicion.idSensor], 
+                [values], 
                 function( err,res,fields ) {
                     ( err ? rechazar(err) : resolver() )
                 })
             })
+           
     } // ()
 
     

@@ -24,16 +24,20 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
 
 
     // .......................................................
-    // PUT /persona
+    // PUT /mediciones
     // .......................................................
-    servidorExpress.put('/medicion', async function( peticion, respuesta ){
-        console.log( " * PUT /medicion " )
-        // averiguo el dni
-        var medicion = new Modelo.MedicionCO2(peticion.body);
-        // llamo a la función adecuada de la lógica
+    servidorExpress.put('/mediciones', async function( peticion, respuesta ){
+        console.log( " * PUT /mediciones " )
+        // construyo el array de mediciones
+        var mediciones = new Array();
+        var listaMedicionesJSON = JSON.parse(peticion.body).res;
+        var mediciones = Modelo.MedicionCO2.jsonAListaMediciones(listaMedicionesJSON);
+       
+       
+       
         
         try{
-            var res = await laLogica.publicarMedicionCO2(medicion)
+            var res = await laLogica.publicarMedicionesCO2(mediciones)
             // todo ok 
             respuesta.status(201).send( JSON.stringify( {mensaje:"Medicion creada correctamente"} ) )
         }catch(error){
@@ -44,7 +48,7 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
                 respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
             }
         }
-    }) // put /persona
+    }) // put /mediciones
 
    
     // .......................................................
