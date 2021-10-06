@@ -70,7 +70,7 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
                         assert.equal( respuesta.statusCode, 201, "¿El código no es 201 (Created ok)" )
 
                         var solucion = JSON.parse( carga )
-                        assert.equal( solucion.mensaje, "Medicion creada correctamente", "¿El mensaje no es 'Medicion creada correctamente'?" )
+                        assert.equal( solucion.mensaje, "Mediciones creadas correctamente", "¿El mensaje no es 'Mediciones creadas correctamente'?" )
                         hecho()
                     } // callback// callback
         ) // .put

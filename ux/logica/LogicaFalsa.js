@@ -20,7 +20,7 @@ LogicaFalsa = {
 
                          if(response.status == 204){
                             //ok pero vacío
-                            return [];
+                            return {datos:[]};
                          }else if(response.status == 200){
                             // ok con contenido 
                             return response.json();

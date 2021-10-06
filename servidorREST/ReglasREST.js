@@ -32,14 +32,11 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
         var mediciones = new Array();
         var listaMedicionesJSON = JSON.parse(peticion.body).res;
         var mediciones = Modelo.MedicionCO2.jsonAListaMediciones(listaMedicionesJSON);
-       
-       
-       
-        
+           
         try{
             var res = await laLogica.publicarMedicionesCO2(mediciones)
             // todo ok 
-            respuesta.status(201).send( JSON.stringify( {mensaje:"Medicion creada correctamente"} ) )
+            respuesta.status(201).send( JSON.stringify( {mensaje:"Mediciones creadas correctamente"} ) )
         }catch(error){
             
             if(error.errno == 1452){ // 1452 es el codigo de error en una clave ajena
