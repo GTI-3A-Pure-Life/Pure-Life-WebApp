@@ -10,8 +10,9 @@ El servidor de web recibe peticiones REST (directorio servidorREST) para gestion
 2. Tener instalado node con una versión superior a 14.17.6
 3. En caso de no tener un servidor remoto, tener xampp instalado con el servicio de apache y mysql activos
 4. Tener una bd creada en mysql tal como el esquema relacional de doc/GTI-3A-EntidadRelacion
-5. Asegurarte que los credenciales del archivo BDCredencials esten bein y apuntan a la BD que deseas
-6. Abrir en la cmd el directorio de servidorREST y ejecutar "npm run servidor"
+5. Ejecutar npm install en los directorios servidorREST y logica
+6. Asegurarte que los credenciales del archivo BDCredencials esten bein y apuntan a la BD que deseas
+7. Abrir en la cmd el directorio de servidorREST y ejecutar "npm run servidor"
 
 ## Tests
 1. Abrir en la cmd el directorio servidorREST/test y ejecturar "npm test" para probar los endpoints REST
