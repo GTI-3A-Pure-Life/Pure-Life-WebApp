@@ -33,7 +33,7 @@ class MedicionCO2 {
             // recibe solo el json
             let jsonObject = JSON.parse(json);
             this.valor = jsonObject[BDConstantes.TABLA_MEDICIONES.VALOR];
-            this.fecha = jsonObject[BDConstantes.TABLA_MEDICIONES.FECHA];
+            this.fecha = this.formatearFecha(jsonObject[BDConstantes.TABLA_MEDICIONES.FECHA]);
             this.posicion = new Posicion(
                 jsonObject[BDConstantes.TABLA_MEDICIONES.LATITUD],
                 jsonObject[BDConstantes.TABLA_MEDICIONES.LONGITUD])
@@ -50,8 +50,23 @@ class MedicionCO2 {
     };
 
     
-    
+    /**
+     * Texto -> formatearFecha() -> Texto
+     * @param {String} fechaAFormatear 
+     * @returns fecha formateada 2021/10/7 10:50:31
+     */
+    formatearFecha(fechaAFormatear){
+        let date = new Date(fechaAFormatear);
+        let strRes = 
+        (date.getFullYear()+
+        "/"+(date.getMonth()+1)+
+        "/"+date.getDate()+
+        " "+date.getHours()+
+        ":"+date.getMinutes()+
+        ":"+date.getSeconds());
 
+        return strRes;
+    }
 
     /**
      * toJSON() -> Texto
