@@ -1,5 +1,7 @@
 // .....................................................................
 // ReglasREST.js
+// Clase donde estan definidos todos los endpoints de REST
+// Rubén Pardo Casanova 29/09/2021
 // .....................................................................
 const { json } = require('express')
 const Modelo = require('../logica/Modelo.js')

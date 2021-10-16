@@ -1,5 +1,7 @@
 // .....................................................................
 // mainServidorREST.js
+// Fichero que inicializa el servidor REST
+// Rubén Pardo Casanova 29/09/2021
 // .....................................................................
 const express = require('express')
 const bodyParser = require('body-parser')

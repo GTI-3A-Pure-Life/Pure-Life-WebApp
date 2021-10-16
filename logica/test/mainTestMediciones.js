@@ -1,5 +1,6 @@
 // ........................................................
 // mainTestMediciones.js 
+// Tests de la logica de negocio
 // 29/09/2021 - Rubén Pardo Casanova
 // ........................................................
 const Logica = require( "../Logica.js" )

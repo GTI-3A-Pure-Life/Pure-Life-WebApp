@@ -1,5 +1,6 @@
 // ........................................................
 // mainTestMedicion.js
+// Clase de tests para probar los endpoints
 // Rubén Pardo Casanova 29/09/2021
 // ........................................................
 var request = require ('request')
