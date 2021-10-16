@@ -13,15 +13,22 @@ var VistaMediciones = {
     bloqueCargaObtenerMediciones:{},
     snackBarError:{},
 
+    formularioUltimasMediciones:{},
+    errorFormCuantas:{},
+
     
 
     // funcion que recibe los id de elementos html para controlarlos
-    preparar: function(idContenedor,idTabla,idCargaObtenerMediciones,idSnackBarError){
+    preparar: function(idContenedor,idTabla,idCargaObtenerMediciones,idSnackBarError, idFormUltimasMediciones, errorFormCuantas){
 
         this.bloqueContenedor = document.getElementById(idContenedor);
         this.bloqueTabla = document.getElementById(idTabla);
         this.bloqueCargaObtenerMediciones = document.getElementById(idCargaObtenerMediciones);
         this.snackBarError = document.getElementById(idSnackBarError);  
+
+        this.formularioUltimasMediciones = document.getElementById(idFormUltimasMediciones);
+        this.errorFormCuantas = document.getElementById(errorFormCuantas);
+
         this.esconderTodosLosElementosObtenerMediciones();
 
     },
@@ -34,6 +41,7 @@ var VistaMediciones = {
     esconderTodosLosElementosObtenerMediciones:function(){
         this.bloqueCargaObtenerMediciones.style.display = "none";
         this.bloqueContenedor.style.display = "none";
+        this.errorFormCuantas.style.display = "none";
     },
 
     // esconder los elementos y mostrar la carga
@@ -72,6 +80,29 @@ var VistaMediciones = {
         
     },
 
+
+    //---------------------------------------------
+    // checkFormularioUltimasMediciones() -> V/F
+    // comrpueba que no haya ningun campo vacio ni incorrecto en el formulario
+    // de ultimas mediciones
+    //--------------------------------------
+    checkFormularioUltimasMediciones:function(){
+        let valid = true;
+
+        let cuantas = this.formularioUltimasMediciones.cuantas.value;
+        
+        // comrpobar dni vacio
+        if(cuantas <= 0){
+            // mostrar error dni
+            valid = false;
+            this.errorFormCuantas.style.display = "block"
+        }
+
+
+        return valid;
+    }, // check form insertar
+    
+
     //-----------------------------------------
     // FIN lista de mediciones
     //----------------------------------------
@@ -99,9 +130,10 @@ var ControladorMediciones = {
 
 
     // inicia la obtencion de todas las mediciones 
-    iniciarObtenerMediciones: async function(){
+    iniciarTodasObtenerMediciones: async function(){
         this.vista.mostrarCargarObtenerMediciones();
         this.vista.controlador = this;
+
         try{
 
             this.mediciones = await LogicaFalsa.obtenerTodasMediciones();
@@ -117,6 +149,30 @@ var ControladorMediciones = {
 
 
     },
+
+     // inicia la obtencion de todas las mediciones 
+     iniciarUltimasObtenerMediciones: async function(event){
+        event.preventDefault();
+        if(this.vista.checkFormularioUltimasMediciones()){
+            this.vista.controlador = this;
+            this.vista.mostrarCargarObtenerMediciones();
+            try{
+
+                this.mediciones = await LogicaFalsa.obtenerUltimasMediciones(this.vista.formularioUltimasMediciones.cuantas.value);
+                
+                this.vista.representarTodasLasMediciones(this.mediciones)
+
+            }catch(e){
+                    console.error(e);
+                    this.vista.representarError(e);
+                
+            }
+        }
+
+
+
+    },
+
 
 
 

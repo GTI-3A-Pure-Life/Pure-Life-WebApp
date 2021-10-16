@@ -52,7 +52,10 @@ describe( "Test RECURSO MEDICIONCO2", function() {
         
         var error = null
         try {
-            await laLogica.publicarMedicionCO2(new Modelo.MedicionCO2(null, 50, '2021-09-29', new Modelo.Posicion(30,30), 4, 'GTI-3A-1'))
+            var mediciones = new Array();
+            mediciones.push(new Modelo.MedicionCO2(null, 50, '2021-09-29 13:13:13', new Modelo.Posicion(30,30), 4, 'GTI-3A-1'));
+            mediciones.push(new Modelo.MedicionCO2(null, 50, '2021-09-29 13:13:13', new Modelo.Posicion(30,30), 4, 'GTI-3A-1'));
+            await laLogica.publicarMedicionesCO2(mediciones)
         } catch( err ) {
             error = err
         }
@@ -80,11 +83,20 @@ describe( "Test RECURSO MEDICIONCO2", function() {
         
         // Lista<MedicionCO2>
         var res = await laLogica.obtenerTodasMediciones();
-        assert.equal(res.length,1,"¿No hay dos tuplas en la tabla mediciones?")
+        assert.equal(res.length,2,"¿No hay dos tuplas en la tabla mediciones?")
 
     })// it
 
-    
+     // ....................................................
+    // ....................................................
+    it("Obtener ultima medicion",async function(){
+        
+        // Lista<MedicionCO2>
+        var res = await laLogica.obtenerUltimasMediciones(1);
+        assert.equal(res.length,1,"¿Devolvió mas de un registro de mediciones?")
+
+    })// it
+
     // ....................................................
     // ....................................................
     it( "borrar todas las filas de mediciones", async function() {

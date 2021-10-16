@@ -1,1 +1,0 @@
-select p.nombre, a.nombre from Persona p inner join Matricula m on p.dni = m.dni inner join Asignatura a on m.codigo = a.codigo;

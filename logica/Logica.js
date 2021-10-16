@@ -1,5 +1,8 @@
 // .....................................................................
 // Logica.js
+// Rubén Pardo Casanova
+// 29/09/2021
+// Clase que controla la logica de negocio
 // .....................................................................
 //const sqlite3 = require( "sqlite3" )
 const mysql = require( "mysql" );
@@ -76,6 +79,34 @@ module.exports = class Logica {
 
     // .................................................................
     // 
+    // N -->
+    // obtenerTodasMediciones() --> Lista<MedicionCO2>
+    // .................................................................
+    obtenerUltimasMediciones( cuantas ) {
+        var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA 
+        + " order by " +BDConstantes.TABLA_MEDICIONES.FECHA+ " DESC LIMIT " + cuantas;
+
+        console.log("obtenerUltimasMediciones: sql",textoSQL);
+        return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( textoSQL, function( err,res,fields ) {
+
+                    if(!err){
+
+                        // return 
+                       resolver( Modelo.MedicionCO2.jsonAListaMediciones(res))
+
+                    }else{
+                        console.log("obtenerUltimasMediciones: err",err);
+                        rechazar(err)
+                    }
+                    
+                })
+            })
+        } // ()
+
+    
+     // .................................................................
+    // 
     // -->
     // obtenerTodasMediciones() --> Lista<MedicionCO2>
     // .................................................................
@@ -97,7 +128,6 @@ module.exports = class Logica {
             })
         } // ()
 
-    
 
     // .................................................................
     // Lista<MedicionCO2>
@@ -141,6 +171,7 @@ module.exports = class Logica {
            
     } // ()
 
+    
     
 
     // .................................................................

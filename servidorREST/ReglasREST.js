@@ -49,6 +49,33 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
 
    
     // .......................................................
+    // get /mediciones/ultimas/<cuantas>
+    // .......................................................
+    servidorExpress.get('/mediciones/ultimas/:cuantas', async function( peticion, respuesta ){
+        console.log( " * GET /mediciones/ultimas/:cuantas " )
+        
+         // averiguo cuantas pidio
+         var cuantas = peticion.params.cuantas
+
+        try{
+            var res = await laLogica.obtenerUltimasMediciones(cuantas)
+            // todo ok 
+            // si el array de resultados no tiene una casilla ...
+            if( res.length == 0 ) {
+                // 204: realizado ok pero sin resultados
+                respuesta.status(204).send();
+                return
+            }
+            // todo ok 
+            respuesta.send( JSON.stringify( {mensaje:"ok",datos:res} ) )
+
+        }catch(error){
+
+            respuesta.status(500).send( JSON.stringify( {mensaje:error} ) )
+        }
+    }) // get /mediciones
+
+    // .......................................................
     // get /mediciones
     // .......................................................
     servidorExpress.get('/mediciones', async function( peticion, respuesta ){
@@ -72,6 +99,7 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
             respuesta.status(500).send( JSON.stringify( {mensaje:error} ) )
         }
     }) // get /mediciones
+
 
     
 } // ()

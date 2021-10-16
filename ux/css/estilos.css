@@ -19,21 +19,13 @@ nav ul li.active button{
     background: black;
 }
 
-form{
-    margin: 0 auto;
-    padding: 2rem;
-    padding-top: 0;
-    border-radius: 5px;
-    border: #333 1px solid;
-}
+
 
 #contenedor-contenido-asignaturas{
     display: none;
 }
 
-form input{
-    margin: 1rem;
-}
+
 form  p{
     display: none;
     background: red;
@@ -43,15 +35,7 @@ form  p{
     padding: 0.2rem;
 }
 
-#error-insertar{
-    height: 30px;
-    background: red;
-    display: none;
-    color: white;
-    border-radius: 15px;
-    margin: 0.4rem;
-    padding: 0.2rem;
-}
+
 
 #error{
     width: 100px;
@@ -63,12 +47,6 @@ form  p{
 #carga{
     width: 100px;
     height: 100px;
-    background: blue;
-    display: none;
-}
-#carga-insertar{
-    width: 30px;
-    height: 30px;
     background: blue;
     display: none;
 }
