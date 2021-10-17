@@ -59,7 +59,7 @@ var VistaMediciones = {
     // esconder los elementos y mostrar la lista de mediciones
     representarTodasLasMediciones: function(mediciones){
 
-
+        console.log("REPRESENTAR",mediciones);
         //pintar los elementos por mediciones
         
         this.bloqueTabla.innerHTML ="";
@@ -67,7 +67,7 @@ var VistaMediciones = {
             for(let i = 0; i<mediciones.length;i++){
                 
                 let li = document.createElement("li")
-                li.innerHTML = `${mediciones[i].sensor_id} | ${mediciones[i].usuario_id} | ${mediciones[i].medicion_valor} | ${mediciones[i].medicion_fecha} `
+                li.innerHTML = `${mediciones[i].sensor_id} | ${mediciones[i].usuario_id} | ${mediciones[i].medicion_valor} | ${this.formatearFecha(mediciones[i].medicion_fecha)} `
     
                 this.bloqueTabla.append(li)
             }
@@ -80,6 +80,23 @@ var VistaMediciones = {
         
     },
 
+      /**
+     * Texto -> formatearFecha() -> Texto
+     * @param {String} fechaAFormatear 
+     * @returns fecha formateada 2021/10/7 10:50:31
+     */
+       formatearFecha(fechaAFormatear){
+        let date = new Date(fechaAFormatear);
+        let strRes = 
+        (date.getFullYear()+
+        "/"+(date.getMonth()+1)+
+        "/"+date.getDate()+
+        " "+date.getHours()+
+        ":"+date.getMinutes()+
+        ":"+date.getSeconds());
+
+        return strRes;
+    },
 
     //---------------------------------------------
     // checkFormularioUltimasMediciones() -> V/F

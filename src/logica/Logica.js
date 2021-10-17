@@ -96,14 +96,13 @@ module.exports = class Logica {
         var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA 
         + " order by " +BDConstantes.TABLA_MEDICIONES.FECHA+ " DESC LIMIT " + cuantas;
 
-        console.log("obtenerUltimasMediciones: sql",textoSQL);
         return new Promise( (resolver, rechazar) => {
             this.laConexion.query( textoSQL, function( err,res,fields ) {
 
                     if(!err){
 
                         // return 
-                       resolver( Modelo.MedicionCO2.jsonAListaMediciones(res))
+                       resolver(res)
 
                     }else{
                         console.log("obtenerUltimasMediciones: err",err);
@@ -132,7 +131,7 @@ module.exports = class Logica {
                     if(!err){
 
                         // return 
-                       resolver( Modelo.MedicionCO2.jsonAListaMediciones(res))
+                       resolver(res)
 
                     }else{
                         rechazar(err)

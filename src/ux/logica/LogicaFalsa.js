@@ -31,21 +31,14 @@ LogicaFalsa = {
                             // ok con contenido 
                             return response.json();
                          }else{
-                             console.log(response);
+                         
                             // error
                             throw Error("Error en get mediciones")
                          }
                          
                         
-                     }).then(medicionesSTR_JSON=>{
-                        
-                        let medicionesJSON = [];
-                        // convertir el texto recibido por rest a JSON
-                        for(let i = 0; i<medicionesSTR_JSON.datos.length; i++){
-                            medicionesJSON[i] = JSON.parse(medicionesSTR_JSON.datos[i])
-                        }
-
-                         return medicionesJSON;
+                     }).then(medicionesJSON=>{
+                        return medicionesJSON.datos;
                      })
                     
         return respuesta;
@@ -80,15 +73,15 @@ LogicaFalsa = {
                          }
                          
                         
-                     }).then(medicionesSTR_JSON=>{
+                     }).then(medicionesJSON=>{
                         
-                        let medicionesJSON = [];
+                      
                         // convertir el texto recibido por rest a JSON
-                        for(let i = 0; i<medicionesSTR_JSON.datos.length; i++){
+                        /*for(let i = 0; i<medicionesSTR_JSON.datos.length; i++){
                             medicionesJSON[i] = JSON.parse(medicionesSTR_JSON.datos[i])
-                        }
+                        }*/
 
-                         return medicionesJSON;
+                         return medicionesJSON.datos;
                      })
                     
         return respuesta;

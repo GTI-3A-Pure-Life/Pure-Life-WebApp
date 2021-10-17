@@ -50,23 +50,7 @@ class MedicionCO2 {
     };
 
     
-    /**
-     * Texto -> formatearFecha() -> Texto
-     * @param {String} fechaAFormatear 
-     * @returns fecha formateada 2021/10/7 10:50:31
-     */
-    formatearFecha(fechaAFormatear){
-        let date = new Date(fechaAFormatear);
-        let strRes = 
-        (date.getFullYear()+
-        "/"+(date.getMonth()+1)+
-        "/"+date.getDate()+
-        " "+date.getHours()+
-        ":"+date.getMinutes()+
-        ":"+date.getSeconds());
-
-        return strRes;
-    }
+  
 
     /**
      * toJSON() -> Texto
@@ -85,6 +69,23 @@ class MedicionCO2 {
            });
     }
 
+     /**
+     * Texto -> formatearFecha() -> Texto
+     * @param {String} fechaAFormatear 
+     * @returns fecha formateada 2021/10/7 10:50:31
+     */
+      formatearFecha(fechaAFormatear){
+        let date = new Date(fechaAFormatear);
+        let strRes = 
+        (date.getFullYear()+
+        "/"+(date.getMonth()+1)+
+        "/"+date.getDate()+
+        " "+date.getHours()+
+        ":"+date.getMinutes()+
+        ":"+date.getSeconds());
+
+        return strRes;
+    }
 
     /**
      * JSONObject || Texto -> jsonAListaMediciones() -> List<MedicionCO2>
@@ -113,22 +114,7 @@ class MedicionCO2 {
         return mediciones;
     }
 
-    /**
-     * List<MedicionCO2> -> jsonAListaMediciones() -> JSONObject || Texto
-     * @param {Lista<MedicionCO2>} mediciones array de mediciones 
-     * @returns lista de medicionesco2 en json
-     */
-     static listaMedicionesAJSON(mediciones) {
-        
-  
-        var a = Array();
-
-        for(let i = 0; i<mediciones.length;i++){
-            a.push(mediciones[i].toJSON())
-        }
     
-        return a;
-    }
 
 } // ()
 
