@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  
+    
+    <div id="contenedor-botones-mediciones" class="contenedor">
+      
+        <button onclick="ControladorMediciones.iniciarTodasObtenerMediciones()">Obtener Todas</button> 
+        <form id="form-ultimas-mediciones" onsubmit="ControladorMediciones.iniciarUltimasObtenerMediciones(event)">
+            <label for="cuantas">Cuantas</label>
+            <input type="number" name="cuantas-mediciones" id="cuantas">
+            <span class="error"><p id="cuantas_error">Pon un numero mayor que 0</p></span>
+            <button type="submit">Obtener Ultimas</button> 
+        </form>
+        
+    </div>
+    <div id="carga"></div>
+    <div id="error"></div>
+    <div id="contenedor-mediciones" class="contenedor">
+      
+        <h2>Mediciones</h2>
+       
+        <p>SENSOR | USUARIO | VALOR | FECHA</p>
+        <ul id="lista-mediciones" class="lista-elementos"></ul>
+    
+        
+        
+    </div>
+    
+    <div id="snackbarError"></div>
+
+    <script src="logica/LogicaFalsa.js"></script>
+    <script src="logica/mvc-mediciones.js"></script>
+
+    <script>
+
+        
+
+        // al cargar la pagina comprobamos en que tab esta anteriormente, por defecto mostramos las personas
+        window.onload = function(){
+           
+            // cargamos los mvc de las personas y los controladores
+            VistaMediciones.preparar("contenedor-mediciones","lista-mediciones","carga","snackbarError", 
+            "form-ultimas-mediciones", "cuantas_error");
+
+        }
+    </script>
+
+  
+</body>
+</html>
