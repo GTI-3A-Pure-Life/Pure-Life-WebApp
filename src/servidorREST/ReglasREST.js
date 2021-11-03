@@ -87,9 +87,33 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
         console.log("POST */registro/bateria");
         let json = JSON.parse(peticion.body)["res"];
         let registro = new Modelo.RegistroEstadoSensor(null, 0, json.tieneBateriaBaja, 0, 0, json.uuidSensor, json.fechaHora);
-// Luego tendré que parsear el resultado
+
         try {
             await laLogica.guardarRegistroBateriaSensor(registro);
+
+            respuesta.status(201).send( JSON.stringify( {mensaje:"Registro creado correctamente"} ) )
+        } catch (error) {
+            if(error.sqlState == 45000) { // El trigger paró el insert porque el anterior es igual
+                respuesta.status(200).send();
+            } 
+
+            else if(error.errno == 1452){ // 1452 es el codigo de error en una clave ajena
+                respuesta.status(500).send( JSON.stringify( {mensaje:"No existe este sensor"} ) )
+            }
+            else{
+                respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
+            }
+        }
+    })
+
+    servidorExpress.post('/registro_estado_sensor/averiado', async function(peticion, respuesta) {
+
+        console.log("POST */registro/averiado");
+        let json = JSON.parse(peticion.body)["res"];
+        let registro = new Modelo.RegistroEstadoSensor(null, 0, 0, json.estaAveriado, 0, json.uuidSensor, json.fechaHora);
+
+        try {
+            await laLogica.guardarRegistroAveriaSensor(registro);
 
             respuesta.status(201).send( JSON.stringify( {mensaje:"Registro creado correctamente"} ) )
         } catch (error) {

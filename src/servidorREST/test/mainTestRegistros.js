@@ -65,4 +65,83 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
       })
     })
 
+    // registro/averiado
+
+    it("Probar que post registro averiado funciona correctamente", function(hecho) {
+        request.post({ url : IP_PUERTO+"/registro_estado_sensor/averiado",
+        headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+        body : JSON.stringify({res: {
+            "uuidSensor": "GTI-3A-1",
+            "estaAveriado": 1,
+            "fechaHora": "2021-10-29 15:39:00"
+        } })
+       },
+      function( err, respuesta, carga ) {
+          assert.equal( err, null, "¿ha habido un error?" )
+          assert.equal( respuesta.statusCode, 201, "¿El código no es 201 (Created ok)" )
+
+          var solucion = JSON.parse( carga )
+          assert.equal( solucion.mensaje, "Registro creado correctamente", "¿El mensaje no es 'Registro creado correctamente'?" )
+          hecho()
+      })
+    })
+
+    it("Probar que post registro averiado no duplica registros", function(hecho) {
+        request.post({ url : IP_PUERTO+"/registro_estado_sensor/averiado",
+        headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+        body : JSON.stringify({res: {
+            "uuidSensor": "GTI-3A-1",
+            "estaAveriado": 1,
+            "fechaHora": "2021-10-29 15:40:00"
+        } })
+       },
+      function( err, respuesta, carga ) {
+          assert.equal( err, null, "¿ha habido un error?" )
+          assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (ok)" )
+
+          hecho()
+      })
+    })
+
+    it("Probar que post registro averiado no hace registros en sensores inexistentes", function (hecho) {
+        request.post({ url : IP_PUERTO+"/registro_estado_sensor/averiado",
+        headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+        body : JSON.stringify({res: {
+            "uuidSensor": "GTI-3A-2",
+            "estaAveriado": 1,
+            "fechaHora": "2021-10-29 15:41:00"
+        } })
+       },
+      function( err, respuesta, carga ) {
+          assert.equal( err, null, "¿ha habido un error?" )
+          assert.equal( respuesta.statusCode, 500, "¿El código no es 500 (Error)" )
+
+          var solucion = JSON.parse( carga )
+          assert.equal( solucion.mensaje, "No existe este sensor", "¿El mensaje no es 'No existe este sensor'?" )
+          hecho()
+      })
+    })
+
+
+
+
+    it("Probar que post registro bateria actualiza correctamente", function(hecho) {
+        request.post({ url : IP_PUERTO+"/registro_estado_sensor/bateria",
+        headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+        body : JSON.stringify({res: {
+            "uuidSensor": "GTI-3A-1",
+            "tieneBateriaBaja": 0,
+            "fechaHora": "2021-10-29 12:39:00"
+        } })
+       },
+      function( err, respuesta, carga ) {
+          assert.equal( err, null, "¿ha habido un error?" )
+          assert.equal( respuesta.statusCode, 201, "¿El código no es 201 (Created ok)" )
+
+          var solucion = JSON.parse( carga )
+          assert.equal( solucion.mensaje, "Registro creado correctamente", "¿El mensaje no es 'Registro creado correctamente'?" )
+          hecho()
+      })
+    })
+
 }) // describe
