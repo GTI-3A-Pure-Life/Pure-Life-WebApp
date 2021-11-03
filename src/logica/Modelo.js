@@ -212,7 +212,7 @@ class Posicion{
             this.averiado = averiado;
             this.leido = leido;
             this.uuidSensor = uuidSensor;
-            this.fechaHora = fechaHora;
+            this.fechaHora = formatearFecha(fechaHora);
         }
          
     }
