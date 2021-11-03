@@ -12,9 +12,9 @@ var assert = require ('assert')
 // ........................................................
 // main ()
 // ........................................................
-describe( "Test RECURSO MEDICIONCO2", function() {
+describe( "Test RECURSO MEDICION", function() {
 
-    // ....................................................
+   /* // ....................................................
     // ....................................................
     var laLogica = null
 
@@ -104,7 +104,7 @@ describe( "Test RECURSO MEDICIONCO2", function() {
         await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
     }) // it
 
-    
+    */
 
     
 }) // describe

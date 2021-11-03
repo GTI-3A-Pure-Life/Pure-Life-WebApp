@@ -79,6 +79,7 @@ module.exports = class Logica {
         await this.borrarFilasDe( BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
         await this.borrarFilasDe( BDConstantes.TABLA_USUARIOS.NOMBRE_TABLA)
         await this.borrarFilasDe( BDConstantes.TABLA_SENSORES.NOMBRE_TABLA)
+        await this.borrarFilasDe( BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA)
     } // ()
 
 
@@ -129,7 +130,7 @@ module.exports = class Logica {
             this.laConexion.query( textoSQL, function( err,res,fields ) {
 
                     if(!err){
-
+                        console.log("sql",res);
                         // return 
                        resolver(res)
 
@@ -190,6 +191,77 @@ module.exports = class Logica {
     } // ()
 
     
+    // .................................................................
+    // RegistroEstadoSensor
+    // -->
+    // guardarRegistroBateriaSensor() -->
+    // .................................................................
+    /**
+     * 
+     * @param {RegistroEstadoSensor} registroEstadoSensor Lista de registros a guardar en la BD
+     * 
+     */
+     guardarRegistroBateriaSensor( registroEstadoSensor ) {
+        
+        // creo la sentencia
+        var textoSQL ='insert into ' +BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA + '('+
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.ID_SENSOR + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.POCA_BATERIA  + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.AVERIADO + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.DESCALIBRADO + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.LEIDO  + 
+            ')  values ( ? , ?, ?, ' 
+            +' IFNULL((SELECT r1.averiado FROM ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA  + ' as r1 ORDER BY ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' DESC LIMIT 1),0),'
+            +' IFNULL((SELECT r2.descalibrado FROM ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA  + ' as r2 ORDER BY ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' DESC LIMIT 1),0), '
+            + ' ? );';
+
+        return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
+                textoSQL, 
+                [registroEstadoSensor.uuidSensor,registroEstadoSensor.fechaHora,registroEstadoSensor.bateriaBaja,0],
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver() )
+                })
+            })
+           
+    } // ()
+
+    // .................................................................
+    // RegistroEstadoSensor
+    // -->
+    // guardarRegistroBateriaSensor() -->
+    // .................................................................
+    /**
+     * 
+     * @param {RegistroEstadoSensor} registroEstadoSensor Lista de registros a guardar en la BD
+     * 
+     */
+     guardarRegistroAveriaSensor( registroEstadoSensor ) {
+        
+        // creo la sentencia
+        var textoSQL ='insert into ' +BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA + '('+
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.ID_SENSOR + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.AVERIADO  + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.POCA_BATERIA + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.DESCALIBRADO + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.LEIDO  + 
+            ')  values ( ? , ?, ?, ' 
+            +' IFNULL((SELECT r1.pocaBateria FROM ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA  + ' as r1 ORDER BY ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' DESC LIMIT 1),0),'
+            +' IFNULL((SELECT r2.descalibrado FROM ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA  + ' as r2 ORDER BY ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' DESC LIMIT 1),0), '
+            + ' ? );';
+
+        return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
+                textoSQL, 
+                [registroEstadoSensor.uuidSensor,registroEstadoSensor.fechaHora,registroEstadoSensor.averiado,0],
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver() )
+                })
+            })
+           
+    } // ()
     
 
     // .................................................................

@@ -37,6 +37,7 @@ async function main() {
     
     // para poder acceder a la carga de la petición http, asumiendo que es JSON
     servidorExpress.use(bodyParser.text({type :'application/json'}) )
+    servidorExpress.use(express.json());
     
     // permitir petciones externas (cors)
     servidorExpress.use(cors())
