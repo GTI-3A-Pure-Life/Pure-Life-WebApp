@@ -153,37 +153,42 @@ module.exports = class Logica {
      * @param {Lista<MedicionCO2>} mediciones Lista de mediciones a publicar en la BD
      * 
      */
-    publicarMedicionesCO2( mediciones ) {
+    publicarMediciones( mediciones ) {
+
 
         // creo la sentencia
         var textoSQL ='insert into ' +BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA + '('+
             BDConstantes.TABLA_MEDICIONES.FECHA + ',' + 
-            BDConstantes.TABLA_MEDICIONES.LATITUD  + ',' +
-            BDConstantes.TABLA_MEDICIONES.LONGITUD + ',' + 
+            BDConstantes.TABLA_MEDICIONES.POSICION  + ',' +
             BDConstantes.TABLA_MEDICIONES.VALOR  + ',' + 
             BDConstantes.TABLA_MEDICIONES.USUARIO + ',' + 
-            BDConstantes.TABLA_MEDICIONES.SENSOR  + 
-            ')  values ?;';
+            BDConstantes.TABLA_MEDICIONES.SENSOR  + ','+ 
+            BDConstantes.TABLA_MEDICIONES.TIPO_GAS  + 
+            ')  values ';
         
-
+        let values = ""
         // añado a values las diferencias mediciones
-        let values = []
         for(let i = 0; i<mediciones.length;i++){
-            values[i] = [
-                mediciones[i].fecha, 
-                mediciones[i].posicion.latitud, 
-                mediciones[i].posicion.longitud, 
-                mediciones[i].valor, 
-                mediciones[i].idUsuario, 
-                mediciones[i].idSensor
-            ]
+            values +=  "("+
+                "'"+mediciones[i].fecha+ "'," +  
+                "POINT("+mediciones[i].posicion.latitud+","+ mediciones[i].posicion.longitud+")," + 
+                mediciones[i].valor+ "," + 
+                mediciones[i].idUsuario+ "," + 
+                "'"+mediciones[i].idSensor+ "'," + 
+                mediciones[i].tipoGas+ ')' 
+            
+            if(i!=mediciones.length-1){
+                values+=","
+            }
+            
         }
 
+        textoSQL += values;
         return new Promise( (resolver, rechazar) => {
             var query = this.laConexion.query( 
-                textoSQL, 
-                [values], 
+                textoSQL,  
                 function( err,res,fields ) {
+                    console.log(err);
                     ( err ? rechazar(err) : resolver() )
                 })
             })

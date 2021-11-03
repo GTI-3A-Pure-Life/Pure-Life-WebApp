@@ -33,11 +33,19 @@ class Medicion {
         if(arguments.length == 1){
             // recibe solo el json
             let jsonObject = (json);
+
+            if([BDConstantes.TABLA_MEDICIONES.POSICION]['x'] == undefined){
+                this.posicion = new Posicion(
+                    jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['latitud'],
+                    jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['longitud'])
+            }else{
+                this.posicion = new Posicion(
+                    jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['x'],
+                    jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['y'])
+            }
+
             this.valor = jsonObject[BDConstantes.TABLA_MEDICIONES.VALOR];
-            this.fecha = this.formatearFecha(jsonObject[BDConstantes.TABLA_MEDICIONES.FECHA]);
-            this.posicion = new Posicion(
-                jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['x'],
-                jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['y'])
+            this.fecha = formatearFecha(jsonObject[BDConstantes.TABLA_MEDICIONES.FECHA]);
             this.idUsuario = jsonObject[BDConstantes.TABLA_MEDICIONES.USUARIO];
             this.idSensor = jsonObject[BDConstantes.TABLA_MEDICIONES.SENSOR];
             this.tipoGas = jsonObject[BDConstantes.TABLA_MEDICIONES.TIPO_GAS];
@@ -74,39 +82,66 @@ class Medicion {
     }
 
      
-
     /**
-     * JSONObject || Texto -> jsonAListaMediciones() -> List<MedicionCO2>
-     * @param {Texto} json array de mediciones en forma de json 
-     * @returns lista de medicionesco2
+     * RawQueryData-> formatearRAWBDData() -> List<Medicion>
+     * @param {RawQueryData} query 
+     * @returns lista de mediciones formateadas
      */
-    static jsonAListaMediciones(json) {
-        const mediciones = json.map(function(element){
-            
+    static formatearRAWBDData(query) {
+            const mediciones = query.map(function(element){
+        
             let fechaHoraV = formatearFecha(element.fechaHora);
             return {
 
                 valor: element.valor,
                 fechaHora:fechaHoraV,
-                posicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
+                posMedicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
                 idUsuario: element.idUsuario,
                 idSensor: element.uuidSensor,
                 tipoGas: element.tipoGas
             }
         })
-        /*let mediciones = new Array();
+
+        return mediciones;
+    }
+
+    /**
+     * JSONObject || Texto -> jsonAListaMediciones() -> List<Medicion>
+     * @param {Texto} json array de mediciones en forma de json 
+     * @returns lista de medicionesco2
+     */
+    static jsonAListaMediciones(json) {
+        let mediciones = new Array();
 
         if((typeof json) === "string"){
+            console.log("es string");
             // si viene en forma de texto
             json = JSON.parse(json);// lo transformamos a JSON object
         }
 
         json.forEach(element => {    
-            mediciones.push(new Medicion((element)))
-            
-        });*/
+            if(typeof element == "string"){
+                mediciones.push(new Medicion(JSON.parse(element)))
+            }else{
 
+                mediciones.push(new Medicion((element)))
+            }
+            
+        });
         return mediciones;
+    }
+
+     /**
+     * Lista<Medicion> -> jsonAListaMediciones() -> JSON
+     * @param {Texto} json array de mediciones 
+     * @returns lista de mediciones en formato json
+     */
+      static listaMedicionesAJSON(mediciones) {
+        const res = mediciones.map(function(element){
+            
+            return  element.toJSON();
+        })
+        return res;
     }
 
     
