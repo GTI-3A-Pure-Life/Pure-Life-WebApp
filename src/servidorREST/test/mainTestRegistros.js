@@ -1,3 +1,9 @@
+// ........................................................
+// mainTestRegistros.js
+// Clase de tests para probar los endpoints
+// Pablo Enguix Llopis 03/11/2021
+// ........................................................
+
 var request = require ('request')
 var assert = require ('assert')
 const Modelo = require( "../../Logica/Modelo.js" )
@@ -10,6 +16,8 @@ const IP_PUERTO="http://localhost:8080"
 // ........................................................
 describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servidor y que la bd esté vacía\n(primero arrancar el test de logica y luego este para que la bd esté limpia)", function() {
 
+    // ....................................................
+    // ....................................................
     it("Probar que post registro bateria funciona correctamente", function(hecho) {
         request.post({ url : IP_PUERTO+"/registro_estado_sensor/bateria",
         headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
@@ -26,9 +34,12 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
           var solucion = JSON.parse( carga )
           assert.equal( solucion.mensaje, "Registro creado correctamente", "¿El mensaje no es 'Registro creado correctamente'?" )
           hecho()
-      })
-    })
+          // callback
+      }) // post
+    }) // it
 
+    // ....................................................
+    // ....................................................
     it("Probar que post registro bateria no duplica registros", function(hecho) {
         request.post({ url : IP_PUERTO+"/registro_estado_sensor/bateria",
         headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
@@ -43,9 +54,12 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
           assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (ok)" )
 
           hecho()
-      })
-    })
+          // callback
+      }) // post
+    }) // it
 
+    // ....................................................
+    // ....................................................
     it("Probar que post registro bateria no hace registros en sensores inexistentes", function (hecho) {
         request.post({ url : IP_PUERTO+"/registro_estado_sensor/bateria",
         headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
@@ -62,11 +76,14 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
           var solucion = JSON.parse( carga )
           assert.equal( solucion.mensaje, "No existe este sensor", "¿El mensaje no es 'No existe este sensor'?" )
           hecho()
-      })
-    })
+          // callback
+      }) // post
+    }) // it
 
     // registro/averiado
 
+    // ....................................................
+    // ....................................................
     it("Probar que post registro averiado funciona correctamente", function(hecho) {
         request.post({ url : IP_PUERTO+"/registro_estado_sensor/averiado",
         headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
@@ -83,9 +100,12 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
           var solucion = JSON.parse( carga )
           assert.equal( solucion.mensaje, "Registro creado correctamente", "¿El mensaje no es 'Registro creado correctamente'?" )
           hecho()
-      })
-    })
+          // callback
+      }) // post
+    }) // it
 
+    // ....................................................
+    // ....................................................
     it("Probar que post registro averiado no duplica registros", function(hecho) {
         request.post({ url : IP_PUERTO+"/registro_estado_sensor/averiado",
         headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
@@ -100,9 +120,12 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
           assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (ok)" )
 
           hecho()
-      })
-    })
+          // callback
+      }) // post
+    }) // it
 
+    // ....................................................
+    // ....................................................
     it("Probar que post registro averiado no hace registros en sensores inexistentes", function (hecho) {
         request.post({ url : IP_PUERTO+"/registro_estado_sensor/averiado",
         headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
@@ -119,12 +142,14 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
           var solucion = JSON.parse( carga )
           assert.equal( solucion.mensaje, "No existe este sensor", "¿El mensaje no es 'No existe este sensor'?" )
           hecho()
-      })
-    })
+          // callback
+      }) // post
+    }) // it
 
 
 
-
+    // ....................................................
+    // ....................................................
     it("Probar que post registro bateria actualiza correctamente", function(hecho) {
         request.post({ url : IP_PUERTO+"/registro_estado_sensor/bateria",
         headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
@@ -141,7 +166,8 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
           var solucion = JSON.parse( carga )
           assert.equal( solucion.mensaje, "Registro creado correctamente", "¿El mensaje no es 'Registro creado correctamente'?" )
           hecho()
-      })
-    })
+          // callback
+      }) // post
+    }) // it
 
 }) // describe
