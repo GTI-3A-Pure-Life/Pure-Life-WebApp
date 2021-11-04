@@ -2,6 +2,9 @@
 // ReglasREST.js
 // Clase donde estan definidos todos los endpoints de REST
 // Rubén Pardo Casanova 29/09/2021
+//
+// Modificado por Pablo Enguix Llopis 04/11/2021
+// Añadidos métodos POST /registro/bateria y POST /registro/averia
 // .....................................................................
 const { json } = require('express')
 const Modelo = require('../logica/Modelo.js')
@@ -85,18 +88,18 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
     servidorExpress.post('/registro_estado_sensor/bateria', async function(peticion, respuesta) {
 
         console.log("POST */registro/bateria");
+        // creo el registro
         let json = JSON.parse(peticion.body)["res"];
         let registro = new Modelo.RegistroEstadoSensor(null, 0, json.tieneBateriaBaja, 0, 0, json.uuidSensor, json.fechaHora);
 
         try {
             await laLogica.guardarRegistroBateriaSensor(registro);
-
+            // todo ok
             respuesta.status(201).send( JSON.stringify( {mensaje:"Registro creado correctamente"} ) )
         } catch (error) {
             if(error.sqlState == 45000) { // El trigger paró el insert porque el anterior es igual
                 respuesta.status(200).send();
             } 
-
             else if(error.errno == 1452){ // 1452 es el codigo de error en una clave ajena
                 respuesta.status(500).send( JSON.stringify( {mensaje:"No existe este sensor"} ) )
             }
@@ -109,12 +112,13 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
     servidorExpress.post('/registro_estado_sensor/averiado', async function(peticion, respuesta) {
 
         console.log("POST */registro/averiado");
+        // creo el registro
         let json = JSON.parse(peticion.body)["res"];
         let registro = new Modelo.RegistroEstadoSensor(null, 0, 0, json.estaAveriado, 0, json.uuidSensor, json.fechaHora);
 
         try {
             await laLogica.guardarRegistroAveriaSensor(registro);
-
+            // todo ok
             respuesta.status(201).send( JSON.stringify( {mensaje:"Registro creado correctamente"} ) )
         } catch (error) {
             if(error.sqlState == 45000) { // El trigger paró el insert porque el anterior es igual
