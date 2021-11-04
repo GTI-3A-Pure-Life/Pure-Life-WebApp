@@ -188,7 +188,6 @@ module.exports = class Logica {
             var query = this.laConexion.query( 
                 textoSQL,  
                 function( err,res,fields ) {
-                    console.log(err);
                     ( err ? rechazar(err) : resolver() )
                 })
             })
@@ -226,7 +225,6 @@ module.exports = class Logica {
                 textoSQL, 
                 [registroEstadoSensor.uuidSensor,registroEstadoSensor.fechaHora,registroEstadoSensor.bateriaBaja,0],
                 function( err,res,fields ) {
-                    console.log(err);
                     ( err ? rechazar(err) : resolver() )
                 })
             })
