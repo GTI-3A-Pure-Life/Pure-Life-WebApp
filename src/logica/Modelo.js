@@ -260,8 +260,9 @@ class Posicion{
      * @param {String} contrasenya 
      * @param {String} nombre 
      * @param {int} id 
+     * @param {int} rol
      */
-    constructor(posCasa, posTrabajo, correo, contrasenya, nombre, id,telefono){
+    constructor(posCasa, posTrabajo, correo, contrasenya, nombre, id,telefono,rol){
         
         this.posCasa = posCasa;
         this.posTrabajo = posTrabajo;
@@ -270,6 +271,7 @@ class Posicion{
         this.nombre = nombre;
         this.id = id;
         this.telefono = telefono;
+        this.rol = rol;
          
     }
 
@@ -279,14 +281,16 @@ class Posicion{
      * @returns Usuario
      */
      static UsuarioFromQueryData(query) {
+       
         const usuario = new Usuario(
-            new Posicion ( query.posCasa.x, query.posCasa.y ),
-            new Posicion (query.posTrabajo.x, query.posTrabajo.y ),
+            query.posCasa == null ? null : new Posicion ( query.posCasa.x, query.posCasa.y ), // comprobar si tiene asignada la posiciones
+            query.posTrabajo == null ? null :new Posicion (query.posTrabajo.x, query.posTrabajo.y ),
             query.correo,
             query.contrasenya,
             query.nombre,
             query.id,
-            query.telefono      
+            query.telefono,
+            query.rol 
         );
         return usuario;
     }
