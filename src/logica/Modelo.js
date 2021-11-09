@@ -1,5 +1,5 @@
 // .....................................................................
-// MedicionCO2.js y Posicion.js
+// Medicion.js Posicion.js RegistroEstadoSensor
 // .....................................................................
 const BDConstantes = require('./Constantes/BDConstantes.js')
 
@@ -9,11 +9,11 @@ const BDConstantes = require('./Constantes/BDConstantes.js')
  * @author Rubén Pardo Casanova 
  * 
  */
-class MedicionCO2 {
+class Medicion {
     
     /**
      * Constructor de la clase medicion parametrizado
-     * R, Texto, Posicion, N, Texto -> constructor()
+     * R, Texto, Posicion, N, Texto, N -> constructor()
      * --------------------------------
      * Constructor con solo el json
      * Texto -> constructor() 
@@ -24,21 +24,32 @@ class MedicionCO2 {
      * @param {Posicion} posicion 
      * @param {int} idUsuario 
      * @param {string} idSensor 
+     * @param {int} tipoGas 
      * 
      */
-    constructor(json,valor,fecha,posicion,idUsuario,idSensor){
+    constructor(json,valor,fecha,posicion,idUsuario,idSensor,tipoGas){
 
         
         if(arguments.length == 1){
             // recibe solo el json
-            let jsonObject = JSON.parse(json);
+            let jsonObject = (json);
+
+            if([BDConstantes.TABLA_MEDICIONES.POSICION]['x'] == undefined){
+                this.posicion = new Posicion(
+                    jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['latitud'],
+                    jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['longitud'])
+            }else{
+                this.posicion = new Posicion(
+                    jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['x'],
+                    jsonObject[BDConstantes.TABLA_MEDICIONES.POSICION]['y'])
+            }
+
             this.valor = jsonObject[BDConstantes.TABLA_MEDICIONES.VALOR];
-            this.fecha = this.formatearFecha(jsonObject[BDConstantes.TABLA_MEDICIONES.FECHA]);
-            this.posicion = new Posicion(
-                jsonObject[BDConstantes.TABLA_MEDICIONES.LATITUD],
-                jsonObject[BDConstantes.TABLA_MEDICIONES.LONGITUD])
-            this.idUsuario = jsonObject[BDConstantes.TABLA_MEDICIONES.USUARIO];;
-            this.idSensor = jsonObject[BDConstantes.TABLA_MEDICIONES.SENSOR];;
+            this.fecha = formatearFecha(jsonObject[BDConstantes.TABLA_MEDICIONES.FECHA]);
+            this.idUsuario = jsonObject[BDConstantes.TABLA_MEDICIONES.USUARIO];
+            this.idSensor = jsonObject[BDConstantes.TABLA_MEDICIONES.SENSOR];
+            this.tipoGas = jsonObject[BDConstantes.TABLA_MEDICIONES.TIPO_GAS];
+
         }else{
             // recibe todos los valores
             this.valor = valor;
@@ -46,6 +57,7 @@ class MedicionCO2 {
             this.posicion = posicion;
             this.idUsuario = idUsuario;
             this.idSensor = idSensor;
+            this.tipoGas = tipoGas
         }
     };
 
@@ -59,36 +71,42 @@ class MedicionCO2 {
     toJSON() {
         
          return JSON.stringify({ 
-            medicion_id: this.medicion_id,
-            medicion_fecha: this.fecha,
-            medicion_latitud: this.posicion.latitud,
-            medicion_longitud: this.posicion.longitud,
-            medicion_valor: this.valor,
-            usuario_id: this.idUsuario,
-            sensor_id: this.idSensor
+            id: this.medicion_id,
+            fechaHora: this.fecha,
+            posMedicion: this.posicion,
+            valor: this.valor,
+            idUsuario: this.idUsuario,
+            uuidSensor: this.idSensor,
+            tipoGas:this.tipoGas
            });
     }
 
-     /**
-     * Texto -> formatearFecha() -> Texto
-     * @param {String} fechaAFormatear 
-     * @returns fecha formateada 2021/10/7 10:50:31
+     
+    /**
+     * RawQueryData-> formatearRAWBDData() -> List<Medicion>
+     * @param {RawQueryData} query 
+     * @returns lista de mediciones formateadas
      */
-      formatearFecha(fechaAFormatear){
-        let date = new Date(fechaAFormatear);
-        let strRes = 
-        (date.getFullYear()+
-        "/"+(date.getMonth()+1)+
-        "/"+date.getDate()+
-        " "+date.getHours()+
-        ":"+date.getMinutes()+
-        ":"+date.getSeconds());
+    static formatearRAWBDData(query) {
+            const mediciones = query.map(function(element){
+        
+            let fechaHoraV = formatearFecha(element.fechaHora);
+            return {
 
-        return strRes;
+                valor: element.valor,
+                fechaHora:fechaHoraV,
+                posMedicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
+                idUsuario: element.idUsuario,
+                idSensor: element.uuidSensor,
+                tipoGas: element.tipoGas
+            }
+        })
+
+        return mediciones;
     }
 
     /**
-     * JSONObject || Texto -> jsonAListaMediciones() -> List<MedicionCO2>
+     * JSONObject || Texto -> jsonAListaMediciones() -> List<Medicion>
      * @param {Texto} json array de mediciones en forma de json 
      * @returns lista de medicionesco2
      */
@@ -96,22 +114,34 @@ class MedicionCO2 {
         let mediciones = new Array();
 
         if((typeof json) === "string"){
+            console.log("es string");
             // si viene en forma de texto
             json = JSON.parse(json);// lo transformamos a JSON object
         }
 
-        json.forEach(element => {
-            if((typeof element) === "string"){
-                mediciones.push(new MedicionCO2(element))
+        json.forEach(element => {    
+            if(typeof element == "string"){
+                mediciones.push(new Medicion(JSON.parse(element)))
             }else{
-                mediciones.push(new MedicionCO2(JSON.stringify(element)))
-            }
-        });
 
-        
-        
-        
+                mediciones.push(new Medicion((element)))
+            }
+            
+        });
         return mediciones;
+    }
+
+     /**
+     * Lista<Medicion> -> jsonAListaMediciones() -> JSON
+     * @param {Texto} json array de mediciones 
+     * @returns lista de mediciones en formato json
+     */
+      static listaMedicionesAJSON(mediciones) {
+        const res = mediciones.map(function(element){
+            
+            return  element.toJSON();
+        })
+        return res;
     }
 
     
@@ -141,8 +171,96 @@ class Posicion{
     }
 }// ()
 
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+
+/**
+ * Clase que representa un registro de estado del sensor
+ * 26/09/21
+ * @author Rubén Pardo Casanova
+ */
+ class RegistroEstadoSensor{
+
+    /**
+     * idSensor:Texto, tieneBateriaBaja:T/F, estaCalibrado:T/F, estaAveriado:T/F fechaHora:Texto -> 
+     * constructor() ->
+     * 
+     * 
+     * @param {boolean} descalibrado 
+     * @param {boolean} bateriaBaja 
+     * @param {boolean} averiado 
+     * @param {boolean} leido 
+     * @param {Texto} uuidSensor 
+     * @param {Texto} fechaHora 
+     */
+    constructor(json,descalibrado, bateriaBaja,averiado,leido,uuidSensor,fechaHora){
+        
+        if(arguments.length == 1){
+            // recibe solo el json
+            let jsonObject = JSON.parse(json);
+            this.descalibrado = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.DESCALIBRADO];;
+            this.bateriaBaja = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.POCA_BATERIA];;
+            this.averiado = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.AVERIADO];;
+            this.leido = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.LEIDO];;
+            this.uuidSensor = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.ID_SENSOR];;
+            this.fechaHora = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA];;
+
+
+        }else{
+            this.descalibrado = descalibrado;
+            this.bateriaBaja = bateriaBaja;
+            this.averiado = averiado;
+            this.leido = leido;
+            this.uuidSensor = uuidSensor;
+            this.fechaHora = formatearFecha(fechaHora);
+        }
+         
+    }
+
+
+     /**
+     * toJSON() -> Texto
+     * @returns String en formato json del objeto
+     */
+      toJSON() {
+        
+        return JSON.stringify({ 
+           uuidSensor: this.uuidSensor,
+           fechaHora: this.fechaHora,
+           pocaBateria: this.bateriaBaja,
+           averiado: this.averiado,
+           descalibrado: this.descalibrado,
+           leido: this.leido
+          });
+   }
+
+
+
+}// ()
+
+
+
+    /**
+     * Texto -> formatearFecha() -> Texto
+     * @param {String} fechaAFormatear 
+     * @returns fecha formateada 2021/10/7 10:50:31
+     */
+  function formatearFecha(fechaAFormatear){
+    let date = new Date(fechaAFormatear);
+    let strRes = 
+    (date.getFullYear()+
+    "/"+(date.getMonth()+1)+
+    "/"+date.getDate()+
+    " "+date.getHours()+
+    ":"+date.getMinutes()+
+    ":"+date.getSeconds());
+
+    return strRes;
+}
+
 
 module.exports = {
-    MedicionCO2 : MedicionCO2,
-    Posicion : Posicion
+    Medicion : Medicion,
+    Posicion : Posicion,
+    RegistroEstadoSensor: RegistroEstadoSensor
 }

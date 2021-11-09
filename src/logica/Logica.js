@@ -79,6 +79,7 @@ module.exports = class Logica {
         await this.borrarFilasDe( BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
         await this.borrarFilasDe( BDConstantes.TABLA_USUARIOS.NOMBRE_TABLA)
         await this.borrarFilasDe( BDConstantes.TABLA_SENSORES.NOMBRE_TABLA)
+        await this.borrarFilasDe( BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA)
     } // ()
 
 
@@ -129,7 +130,7 @@ module.exports = class Logica {
             this.laConexion.query( textoSQL, function( err,res,fields ) {
 
                     if(!err){
-
+                        console.log("sql",res);
                         // return 
                        resolver(res)
 
@@ -152,36 +153,40 @@ module.exports = class Logica {
      * @param {Lista<MedicionCO2>} mediciones Lista de mediciones a publicar en la BD
      * 
      */
-    publicarMedicionesCO2( mediciones ) {
+    publicarMediciones( mediciones ) {
+
 
         // creo la sentencia
         var textoSQL ='insert into ' +BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA + '('+
             BDConstantes.TABLA_MEDICIONES.FECHA + ',' + 
-            BDConstantes.TABLA_MEDICIONES.LATITUD  + ',' +
-            BDConstantes.TABLA_MEDICIONES.LONGITUD + ',' + 
+            BDConstantes.TABLA_MEDICIONES.POSICION  + ',' +
             BDConstantes.TABLA_MEDICIONES.VALOR  + ',' + 
             BDConstantes.TABLA_MEDICIONES.USUARIO + ',' + 
-            BDConstantes.TABLA_MEDICIONES.SENSOR  + 
-            ')  values ?;';
+            BDConstantes.TABLA_MEDICIONES.SENSOR  + ','+ 
+            BDConstantes.TABLA_MEDICIONES.TIPO_GAS  + 
+            ')  values ';
         
-
+        let values = ""
         // añado a values las diferencias mediciones
-        let values = []
         for(let i = 0; i<mediciones.length;i++){
-            values[i] = [
-                mediciones[i].fecha, 
-                mediciones[i].posicion.latitud, 
-                mediciones[i].posicion.longitud, 
-                mediciones[i].valor, 
-                mediciones[i].idUsuario, 
-                mediciones[i].idSensor
-            ]
+            values +=  "("+
+                "'"+mediciones[i].fecha+ "'," +  
+                "POINT("+mediciones[i].posicion.latitud+","+ mediciones[i].posicion.longitud+")," + 
+                mediciones[i].valor+ "," + 
+                mediciones[i].idUsuario+ "," + 
+                "'"+mediciones[i].idSensor+ "'," + 
+                mediciones[i].tipoGas+ ')' 
+            
+            if(i!=mediciones.length-1){
+                values+=","
+            }
+            
         }
 
+        textoSQL += values;
         return new Promise( (resolver, rechazar) => {
             var query = this.laConexion.query( 
-                textoSQL, 
-                [values], 
+                textoSQL,  
                 function( err,res,fields ) {
                     ( err ? rechazar(err) : resolver() )
                 })
@@ -190,6 +195,77 @@ module.exports = class Logica {
     } // ()
 
     
+    // .................................................................
+    // RegistroEstadoSensor
+    // -->
+    // guardarRegistroBateriaSensor() -->
+    // .................................................................
+    /**
+     * 
+     * @param {RegistroEstadoSensor} registroEstadoSensor Lista de registros a guardar en la BD
+     * 
+     */
+     guardarRegistroBateriaSensor( registroEstadoSensor ) {
+        
+        // creo la sentencia
+        var textoSQL ='insert into ' +BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA + '('+
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.ID_SENSOR + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.POCA_BATERIA  + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.AVERIADO + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.DESCALIBRADO + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.LEIDO  + 
+            ')  values ( ? , ?, ?, ' 
+            +' IFNULL((SELECT r1.averiado FROM ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA  + ' as r1 ORDER BY ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' DESC LIMIT 1),0),'
+            +' IFNULL((SELECT r2.descalibrado FROM ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA  + ' as r2 ORDER BY ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' DESC LIMIT 1),0), '
+            + ' ? );';
+
+        return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
+                textoSQL, 
+                [registroEstadoSensor.uuidSensor,registroEstadoSensor.fechaHora,registroEstadoSensor.bateriaBaja,0],
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver() )
+                })
+            })
+           
+    } // ()
+
+    // .................................................................
+    // RegistroEstadoSensor
+    // -->
+    // guardarRegistroBateriaSensor() -->
+    // .................................................................
+    /**
+     * 
+     * @param {RegistroEstadoSensor} registroEstadoSensor Lista de registros a guardar en la BD
+     * 
+     */
+     guardarRegistroAveriaSensor( registroEstadoSensor ) {
+        
+        // creo la sentencia
+        var textoSQL ='insert into ' +BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA + '('+
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.ID_SENSOR + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.AVERIADO  + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.POCA_BATERIA + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.DESCALIBRADO + ',' + 
+            BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.LEIDO  + 
+            ')  values ( ? , ?, ?, ' 
+            +' IFNULL((SELECT r1.pocaBateria FROM ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA  + ' as r1 ORDER BY ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' DESC LIMIT 1),0),'
+            +' IFNULL((SELECT r2.descalibrado FROM ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA  + ' as r2 ORDER BY ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' DESC LIMIT 1),0), '
+            + ' ? );';
+
+        return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
+                textoSQL, 
+                [registroEstadoSensor.uuidSensor,registroEstadoSensor.fechaHora,registroEstadoSensor.averiado,0],
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver() )
+                })
+            })
+           
+    } // ()
     
 
     // .................................................................

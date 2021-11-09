@@ -9,27 +9,30 @@
 class TABLA_MEDICIONES{
 
    
-    static NOMBRE_TABLA = "mediciones";
-    static ID = "medicion_id";
-    static FECHA = "medicion_fecha";
-    static VALOR = "medicion_valor";
-    static LATITUD = "medicion_latitud";
-    static LONGITUD = "medicion_longitud";
-    static USUARIO = "usuario_id";
-    static SENSOR = "sensor_id";
+    static NOMBRE_TABLA = "medicion";
+    static ID = "id";
+    static FECHA = "fechaHora";
+    static VALOR = "valor";
+    static POSICION = "posMedicion";
+    static TIPO_GAS = "tipoGas";
+    static USUARIO = "idUsuario";
+    static SENSOR = "uuidSensor";
 
 }
+
 
 
 // Tabla Usuarios
 class TABLA_USUARIOS{
 
    
-    static NOMBRE_TABLA = "usuarios";
-    static ID = "usuario_id";
-    static NOMBRE = "usuario_nombre";
-    static  CORREO = "usuario_correo";
-    static CONTRASENYA = "usuario_contrasenya";
+    static NOMBRE_TABLA = "usuario";
+    static ID = "id";
+    static NOMBRE = "nombre";
+    static  CORREO = "correo";
+    static CONTRASENYA = "contrasenya";
+    static TELEFONO = "telefono";
+    static ROL = "rol";
 
 }
 
@@ -37,8 +40,23 @@ class TABLA_USUARIOS{
 class TABLA_SENSORES{
 
    
-    static NOMBRE_TABLA = "sensores";
-    static ID = "sensor_id";
+    static NOMBRE_TABLA = "sensor";
+    static ID = "uuid";
+
+}
+
+// Tabla registro estado sensor
+class TABLA_REGISTRO_ESTADO_SENSOR{
+
+   
+    static NOMBRE_TABLA = "registro_estado_sensor";
+    static ID = "id";
+    static ID_SENSOR = "uuidSensor";
+    static POCA_BATERIA = "pocaBateria";
+    static AVERIADO = "averiado";
+    static LEIDO = "leido";
+    static DESCALIBRADO = "descalibrado";
+    static FECHA_HORA = "fechaHora";
 
 }
 
@@ -46,5 +64,6 @@ class TABLA_SENSORES{
 module.exports = {
     TABLA_MEDICIONES : TABLA_MEDICIONES,
     TABLA_USUARIOS : TABLA_USUARIOS,
-    TABLA_SENSORES : TABLA_SENSORES
+    TABLA_SENSORES : TABLA_SENSORES,
+    TABLA_REGISTRO_ESTADO_SENSOR : TABLA_REGISTRO_ESTADO_SENSOR
 }

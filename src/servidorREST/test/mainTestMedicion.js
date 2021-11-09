@@ -6,7 +6,6 @@
 var request = require ('request')
 var assert = require ('assert')
 const Modelo = require( "../../Logica/Modelo.js" )
-const { MedicionCO2 } = require('../../Logica/Modelo.js')
 // ........................................................
 // ........................................................
 const IP_PUERTO="http://localhost:8080"
@@ -51,18 +50,18 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
 
     // ....................................................
     // ....................................................
-    it( "probar PUT mediciones nueva /mediciones", function( hecho ) {
+    it( "probar POST mediciones nueva /mediciones", function( hecho ) {
         
-        var a = new Modelo.MedicionCO2(null, 1, '2021-09-29 2:00:00', new Modelo.Posicion(30,30), 4, 'GTI-3A-1')
-        var b = new Modelo.MedicionCO2(null, 2, '2021-09-29 2:10:00', new Modelo.Posicion(30,30), 4, 'GTI-3A-1')
+        var a = new Modelo.Medicion(null, 1, '2021-09-29 2:00:00', new Modelo.Posicion(30,30), 1, 'GTI-3A-1',1)
+        var b = new Modelo.Medicion(null, 2, '2021-09-29 2:10:00', new Modelo.Posicion(30,30), 1, 'GTI-3A-1',1)
         
         var mediciones = Array();
         mediciones.push(a);
         mediciones.push(b);
    
-        var listaJSONmediciones = MedicionCO2.listaMedicionesAJSON(mediciones)
+        var listaJSONmediciones = Modelo.Medicion.listaMedicionesAJSON(mediciones)
    
-       request.put({ url : IP_PUERTO+"/mediciones",
+       request.post({ url : IP_PUERTO+"/mediciones",
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                       body : JSON.stringify({res: listaJSONmediciones })
                      },
@@ -77,17 +76,17 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
         ) // .put
     }) // it
 
-     // ....................................................
     // ....................................................
-    it( "probar PUT medicion usuario no existente /medicion", function( hecho ) {
+    // ....................................................
+    it( "probar POST medicion usuario no existente /medicion", function( hecho ) {
         
-        var a = new Modelo.MedicionCO2(null, 0, '2021-09-29', new Modelo.Posicion(30,30), -1, 'GTI-3A-1')
+        var a = new Modelo.Medicion(null, 0, '2021-09-29', new Modelo.Posicion(30,30), -1, 'GTI-3A-1',1)
         
         var mediciones = Array();
         mediciones.push(a);
-        var listaJSONmediciones = MedicionCO2.listaMedicionesAJSON(mediciones)
+        var listaJSONmediciones = Modelo.Medicion.listaMedicionesAJSON(mediciones)
 
-        request.put({ url : IP_PUERTO+"/mediciones",
+        request.post({ url : IP_PUERTO+"/mediciones",
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                       body : JSON.stringify({res: listaJSONmediciones })
                      },
@@ -107,15 +106,15 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
 
     // ....................................................
     // ....................................................
-    it( "probar PUT mediciones sensor no existente /mediciones", function( hecho ) {
+    it( "probar POST mediciones sensor no existente /mediciones", function( hecho ) {
         
-        var a = new Modelo.MedicionCO2(null, 0, '2021-09-29', new Modelo.Posicion(30,30), 4, 'GTI-3A-')
+        var a = new Modelo.Medicion(null, 0, '2021-09-29', new Modelo.Posicion(30,30), 4, 'GTI-3A-',1)
         
         var mediciones = Array();
         mediciones.push(a);
-        var listaJSONmediciones = MedicionCO2.listaMedicionesAJSON(mediciones)
+        var listaJSONmediciones = Modelo.Medicion.listaMedicionesAJSON(mediciones)
 
-        request.put({ url : IP_PUERTO+"/mediciones",
+        request.post({ url : IP_PUERTO+"/mediciones",
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                       body : JSON.stringify({res: listaJSONmediciones })
                      },
@@ -142,46 +141,21 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
                         assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (ok)" )
 
                         var solucion = JSON.parse( carga )
-                        assert.equal( solucion.mensaje, "ok", "¿El mensaje no es 'ok'?" )
 
-                        var listaMediciones = Modelo.MedicionCO2.jsonAListaMediciones(solucion.datos);
+                        var listaMediciones = Modelo.Medicion.jsonAListaMediciones(solucion);
            
                         
 
                         // si el objeto esta vacio
                         assert.equal( listaMediciones.length, 2, "¿No hay datos?" )
-                        assert.equal( listaMediciones[1].valor, 2, "¿No se ha convertido a objeto medicionco2 bien?" )
+                        assert.equal( listaMediciones[1].valor, 2, "¿No se ha convertido a objeto medicion bien?" )
                         
                         hecho()
                     } // callback// callback
         ) // .get
     }) // it
 
-    // ....................................................
-    // ....................................................
-    it( "probar GET /mediciones/ultimas/:cuantas", function( hecho ) {
-        request.get({ url : IP_PUERTO+"/mediciones/ultimas/1",
-                      headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
-                     },
-                    function( err, respuesta, carga ) {
-                        assert.equal( err, null, "¿ha habido un error?" )
-                        assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (ok)" )
 
-                        var solucion = JSON.parse( carga )
-                        assert.equal( solucion.mensaje, "ok", "¿El mensaje no es 'ok'?" )
-
-                        var listaMediciones = Modelo.MedicionCO2.jsonAListaMediciones(solucion.datos);
-           
-                        
-
-                        // si el objeto esta vacio
-                        assert.equal( listaMediciones.length, 1, "¿No hay datos?" )
-                        assert.equal( listaMediciones[0].valor, 2, "¿No se ha convertido a objeto medicionco2 bien?" )
-                        
-                        hecho()
-                    } // callback// callback
-        ) // .get
-    }) // it
 
 
 }) // describe
