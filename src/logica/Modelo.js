@@ -301,11 +301,16 @@ class Posicion{
      */
     toJSON() {
         
+        // pueden ser nulls, inicializarlos antes con un if
+        let posCasaV = this.posCasa==null ? null :  { latitud: this.posCasa.latitud, longitud: this.posCasa.longitud };
+        let posTrabajoV = this.posTrabajo==null ? null :  { latitud: this.posTrabajo.latitud, longitud: this.posTrabajo.longitud };
+
         return JSON.stringify({ 
             id: this.id,
+            rol: this.rol,
             correo:this.correo,
-            posCasa: { latitud: this.posCasa.x, longitud: this.posCasa.y },
-            posTrabajo: { latitud: this.posTrabajo.x, longitud: this.posTrabajo.y },
+            posCasa: posCasaV,
+            posTrabajo: posTrabajoV,
             contrasenya: this.contrasenya,
             telefono: this.telefono
           });

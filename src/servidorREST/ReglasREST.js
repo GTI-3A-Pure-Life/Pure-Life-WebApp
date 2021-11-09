@@ -1,31 +1,25 @@
-// .....................................................................
+// .......................................................
 // ReglasREST.js
 // Clase donde estan definidos todos los endpoints de REST
 // Rubén Pardo Casanova 29/09/2021
-//
+// 
 // Modificado por Pablo Enguix Llopis 04/11/2021
-// Añadidos métodos POST /registro/bateria y POST /registro/averia
-// .....................................................................
-const { json } = require('express')
+// Añadimos metodos POST/registro/bateria y POST /registro/averia
+//.........................................................
+
+const {json} = require('express')
 const Modelo = require('../logica/Modelo.js')
 
-module.exports.cargar = function( servidorExpress, laLogica ) {
-
-
+module.exports.cargar = function(servidorExpress, laLogica){
     
-
     // .......................................................
     // GET /prueba
     // .......................................................
-    servidorExpress.get('/prueba/', function( peticion, respuesta ){
+    servidorExpress.get('/prueba', async function( peticion, respuesta ){
         console.log( " * GET /prueba " )
-        respuesta.send( "¡Funciona!" )
-    }) // get /prueba
-    
-    
-    // =====================================================================================================
-    // MEDICION CO2
-    // =====================================================================================================
+        respuesta.send("¡Funciona!")
+        
+    }) // put /mediciones
 
 
     // .......................................................
@@ -52,9 +46,6 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
             }
         }
     }) // put /mediciones
-
-   
-
 
     // .......................................................
     // get /mediciones
@@ -85,6 +76,9 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
         }
     }) // get /mediciones
 
+    // .......................................................
+    // post /registro_estado_sensor/bateria
+    // .......................................................
     servidorExpress.post('/registro_estado_sensor/bateria', async function(peticion, respuesta) {
 
         console.log("POST */registro/bateria");
@@ -107,8 +101,11 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
                 respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
             }
         }
-    })
+    })// post /registro_estado_sensor/bateria
 
+    // .......................................................
+    // post /registro_estado_sensor/averiado
+    // .......................................................
     servidorExpress.post('/registro_estado_sensor/averiado', async function(peticion, respuesta) {
 
         console.log("POST */registro/averiado");
@@ -132,6 +129,31 @@ module.exports.cargar = function( servidorExpress, laLogica ) {
                 respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
             }
         }
-    })
-    
-} // ()
+    })// post /registro_estado_sensor/averiado
+
+
+    // .......................................................
+    // POST /usuario/iniciar_sesion
+    // .......................................................
+    servidorExpress.post('/usuario/iniciar_sesion', async function(peticion, respuesta) {
+
+        console.log("POST */usuario/iniciar_sesion");
+        // creo el registro
+        let correo = JSON.parse(peticion.body)["res"]["correo"];
+        let contrasenya = JSON.parse(peticion.body)["res"]["contrasenya"];
+
+        try {
+            let usuario = await laLogica.iniciar_sesion(correo,contrasenya);
+            // todo ok
+            respuesta.status(200).send( usuario.toJSON() )
+        } catch (error) {
+            if(error == "No existe el usuario") { // El trigger paró el insert porque el anterior es igual
+                respuesta.status(401).send({mensaje:error});
+            }else{
+                respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
+            }
+            
+        }
+    })// post /registro_estado_sensor/averiado
+
+}

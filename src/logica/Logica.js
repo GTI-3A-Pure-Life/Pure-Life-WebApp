@@ -106,7 +106,6 @@ module.exports = class Logica {
                        resolver(res)
 
                     }else{
-                        console.log("obtenerUltimasMediciones: err",err);
                         rechazar(err)
                     }
                     
@@ -182,7 +181,6 @@ module.exports = class Logica {
         }
 
         textoSQL += values;
-        console.log("mediciones",textoSQL);
         return new Promise( (resolver, rechazar) => {
             var query = this.laConexion.query( 
                 textoSQL,  
@@ -299,14 +297,13 @@ module.exports = class Logica {
                     if(!err){ // si no hay datos los credenciales no son correctos
                         if(res.length != 0){
                             // return usuario
-                            resolver(res[0])
+                            resolver(Modelo.Usuario.UsuarioFromQueryData(res[0]))
                         }else{
                             rechazar("No existe el usuario")
                         }
                         
 
                     }else{
-                        console.log(err);
                         rechazar(err)
                     }
                     

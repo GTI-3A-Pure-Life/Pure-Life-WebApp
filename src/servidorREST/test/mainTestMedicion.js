@@ -52,15 +52,15 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
     // ....................................................
     it( "probar POST mediciones nueva /mediciones", function( hecho ) {
         
-        var a = new Modelo.Medicion(null, 1, '2021-09-29 2:00:00', new Modelo.Posicion(30,30), 1, 'GTI-3A-1',1)
-        var b = new Modelo.Medicion(null, 2, '2021-09-29 2:10:00', new Modelo.Posicion(30,30), 1, 'GTI-3A-1',1)
+        var a = new Modelo.Medicion(null, 1, '2021-09-29 2:00:00', new Modelo.Posicion(30,30), 13, 'GTI-3A-1',1)
+        var b = new Modelo.Medicion(null, 2, '2021-09-29 2:10:00', new Modelo.Posicion(30,30), 13, 'GTI-3A-1',1)
         
         var mediciones = Array();
         mediciones.push(a);
         mediciones.push(b);
    
         var listaJSONmediciones = Modelo.Medicion.listaMedicionesAJSON(mediciones)
-   
+        
        request.post({ url : IP_PUERTO+"/mediciones",
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                       body : JSON.stringify({res: listaJSONmediciones })
@@ -68,7 +68,7 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
                     function( err, respuesta, carga ) {
                         assert.equal( err, null, "¿ha habido un error?" )
                         assert.equal( respuesta.statusCode, 201, "¿El código no es 201 (Created ok)" )
-
+                        
                         var solucion = JSON.parse( carga )
                         assert.equal( solucion.mensaje, "Mediciones creadas correctamente", "¿El mensaje no es 'Mediciones creadas correctamente'?" )
                         hecho()
