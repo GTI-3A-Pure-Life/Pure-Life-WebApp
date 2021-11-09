@@ -239,6 +239,80 @@ class Posicion{
 }// ()
 
 
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+
+/**
+ * Clase que representa un usuario
+ * 09/11/21
+ * @author Rubén Pardo Casanova
+ */
+ class Usuario{
+
+    /**
+     * posCasa:Posicion,posTrabajo:Posicion, correo:Texto, nombre:Texto contrasenya:Texto, id:N -> 
+     * constructor()->
+     * 
+     * 
+     * @param {Posicion} posCasa 
+     * @param {Posicion} posTrabajo 
+     * @param {String} correo 
+     * @param {String} contrasenya 
+     * @param {String} nombre 
+     * @param {int} id 
+     */
+    constructor(posCasa, posTrabajo, correo, contrasenya, nombre, id,telefono){
+        
+        this.posCasa = posCasa;
+        this.posTrabajo = posTrabajo;
+        this.correo = correo;
+        this.contrasenya = contrasenya;
+        this.nombre = nombre;
+        this.id = id;
+        this.telefono = telefono;
+         
+    }
+
+    /**
+     * Texto-> constructor()
+     * @param {QueryRawData} query 
+     * @returns Usuario
+     */
+     static UsuarioFromQueryData(query) {
+        const usuario = new Usuario(
+            new Posicion ( query.posCasa.x, query.posCasa.y ),
+            new Posicion (query.posTrabajo.x, query.posTrabajo.y ),
+            query.correo,
+            query.contrasenya,
+            query.nombre,
+            query.id,
+            query.telefono      
+        );
+        return usuario;
+    }
+
+     /**
+     * toJSON() -> Texto
+     * @returns String en formato json del objeto
+     */
+    toJSON() {
+        
+        return JSON.stringify({ 
+            id: this.id,
+            correo:this.correo,
+            posCasa: { latitud: this.posCasa.x, longitud: this.posCasa.y },
+            posTrabajo: { latitud: this.posTrabajo.x, longitud: this.posTrabajo.y },
+            contrasenya: this.contrasenya,
+            telefono: this.telefono
+          });
+    }
+
+    
+
+
+
+}// ()
+
 
     /**
      * Texto -> formatearFecha() -> Texto
@@ -262,5 +336,6 @@ class Posicion{
 module.exports = {
     Medicion : Medicion,
     Posicion : Posicion,
-    RegistroEstadoSensor: RegistroEstadoSensor
+    RegistroEstadoSensor: RegistroEstadoSensor,
+    Usuario:Usuario
 }

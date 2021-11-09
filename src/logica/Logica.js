@@ -130,7 +130,6 @@ module.exports = class Logica {
             this.laConexion.query( textoSQL, function( err,res,fields ) {
 
                     if(!err){
-                        console.log("sql",res);
                         // return 
                        resolver(res)
 
@@ -154,7 +153,6 @@ module.exports = class Logica {
      * 
      */
     publicarMediciones( mediciones ) {
-
 
         // creo la sentencia
         var textoSQL ='insert into ' +BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA + '('+
@@ -184,6 +182,7 @@ module.exports = class Logica {
         }
 
         textoSQL += values;
+        console.log("mediciones",textoSQL);
         return new Promise( (resolver, rechazar) => {
             var query = this.laConexion.query( 
                 textoSQL,  
@@ -267,6 +266,54 @@ module.exports = class Logica {
            
     } // ()
     
+    // .................................................................    
+    // Texto, Texto
+    // -->
+    // iniciar_sesion() --> Usuario
+    // .................................................................
+    /**
+     * 
+     * @param {String} correo el correo del usuario
+     * @param {String} contrasenya la contrasenya encriptada sha1
+     * 
+     * @returns promesa, si hay usuario lo devuelve, si no existe lanza error
+     */
+    iniciar_sesion(correo,contrasenya){
+       var textoSQL = 'SELECT *, (SELECT '+ BDConstantes.TABLA_DATOS_USUARIO.POSICION_CASA 
+        +' FROM '+ BDConstantes.TABLA_DATOS_USUARIO.NOMBRE_TABLA +' as du WHERE du.'+ BDConstantes.TABLA_DATOS_USUARIO.ID_USUARIO +' = u.id) as posCasa, (SELECT '+ BDConstantes.TABLA_DATOS_USUARIO.POSICION_TRABAJO +' FROM '
+        + BDConstantes.TABLA_DATOS_USUARIO.NOMBRE_TABLA +' as du WHERE du.'+ BDConstantes.TABLA_DATOS_USUARIO.ID_USUARIO +' = u.id) as posTrabajo from ' + BDConstantes.TABLA_USUARIOS.NOMBRE_TABLA 
+        + ' as u where ' + BDConstantes.TABLA_USUARIOS.CORREO + '= ? AND ' 
+        + BDConstantes.TABLA_USUARIOS.CONTRASENYA + '= ?'
+
+        /**
+         * SELECT *, (SELECT posCasa FROM datos_usuario as du WHERE du.idUsuario = u.id) as posCasa, 
+         * (SELECT posTrabajo FROM datos_usuario as du WHERE du.idUsuario = u.id) as posTrabajo FROM `usuario` 
+         * as u WHERE correo = '' AND contrasenya = '';
+         */
+        return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( 
+                textoSQL, 
+                [correo,contrasenya],
+                function( err,res,fields ) {
+
+                    if(!err){ // si no hay datos los credenciales no son correctos
+                        if(res.length != 0){
+                            // return usuario
+                            resolver(res[0])
+                        }else{
+                            rechazar("No existe el usuario")
+                        }
+                        
+
+                    }else{
+                        console.log(err);
+                        rechazar(err)
+                    }
+                    
+                })
+            })
+
+    }// ()
 
     // .................................................................
     // cerrar() -->

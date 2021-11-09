@@ -14,9 +14,9 @@ var assert = require ('assert')
 // ........................................................
 describe( "Test RECURSO MEDICION", function() {
 
-   /* // ....................................................
     // ....................................................
-    var laLogica = null
+    // ....................................................
+   /* var laLogica = null
 
     // ....................................................
     // ....................................................
@@ -49,17 +49,18 @@ describe( "Test RECURSO MEDICION", function() {
 
     // ....................................................
     // ....................................................
-    it("Insertar una medición correcta",async function(){
+    it("Insertar una mediciones correcta",async function(){
         
         var error = null
         try {
             var mediciones = new Array();
-            mediciones.push(new Modelo.MedicionCO2(null, 50, '2021-09-29 13:13:13', new Modelo.Posicion(30,30), 4, 'GTI-3A-1'));
-            mediciones.push(new Modelo.MedicionCO2(null, 50, '2021-09-29 13:13:13', new Modelo.Posicion(30,30), 4, 'GTI-3A-1'));
-            await laLogica.publicarMedicionesCO2(mediciones)
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 13:13:13', new Modelo.Posicion(30,30), 1, 'GTI-3A-1',1));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 13:13:13', new Modelo.Posicion(30,30), 1, 'GTI-3A-1',1));
+            await laLogica.publicarMediciones(mediciones)
         } catch( err ) {
             error = err
         }
+        console.log(error);
         assert( !error, "¿Has insertado los parametros correctos?, ¿El usuario y el sensor existen?" )
 
     })// it
@@ -102,9 +103,9 @@ describe( "Test RECURSO MEDICION", function() {
     // ....................................................
     it( "borrar todas las filas de mediciones", async function() {
         await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
-    }) // it
+    }) // it*/
 
-    */
+    
 
     
 }) // describe

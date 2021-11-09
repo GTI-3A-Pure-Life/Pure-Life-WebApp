@@ -16,7 +16,7 @@ describe( "Test RECURSO REGISTROS ESTADO SENSOR", function() {
 
     // ....................................................
     // ....................................................
-    var laLogica = null
+   /* var laLogica = null
 
     // ....................................................
     // ....................................................
@@ -157,7 +157,7 @@ describe( "Test RECURSO REGISTROS ESTADO SENSOR", function() {
         }
         assert( !error, "¿Has insertado los parametros correctos?, ¿el sensor existe?" )
 
-    })// it
+    })// it*/
     
 
     
