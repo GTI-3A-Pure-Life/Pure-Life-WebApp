@@ -154,6 +154,35 @@ module.exports.cargar = function(servidorExpress, laLogica){
             }
             
         }
-    })// post /registro_estado_sensor/averiado
+    })// post /usuario/iniciar_sesion
+
+    // .......................................................
+    // POST /usuario/iniciar_sesion
+    // .......................................................
+    servidorExpress.post('/usuario/registrarse', async function(peticion, respuesta) {
+
+        console.log("POST */usuario/registrarse");
+        // obtenemos los datos de la peticion
+        let body = JSON.parse(peticion.body);
+        let correo = body["res"]["correo"];
+        let contrasenya = body["res"]["contrasenya"];
+        let nombre = body["res"]["nombre"];
+        let telefono = body["res"]["telefono"];
+        let rol = body["res"]["rol"];
+        // creamos el usuarios
+        let usuario = new Modelo.Usuario(null,null,correo,contrasenya,nombre,null,telefono,rol)
+        try {
+            let idUsuario = await laLogica.registrar_usuario(usuario);
+            // todo ok
+            respuesta.status(200).send({id:idUsuario} )
+        } catch (error) {
+            if(error == "Este correo ya esta en uso") { // El trigger paró el insert porque el anterior es igual
+                respuesta.status(400).send({mensaje:error});
+            }else{
+                respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
+            }
+            
+        }
+    })// post /usuario/iniciar_sesion
 
 }
