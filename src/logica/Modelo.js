@@ -309,6 +309,7 @@ class Posicion{
             id: this.id,
             rol: this.rol,
             correo:this.correo,
+            nombre:this.nombre,
             posCasa: posCasaV,
             posTrabajo: posTrabajoV,
             contrasenya: this.contrasenya,
