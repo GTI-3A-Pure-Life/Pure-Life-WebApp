@@ -77,6 +77,37 @@ module.exports.cargar = function(servidorExpress, laLogica){
     }) // get /mediciones
 
     // .......................................................
+    // get /mediciones
+    // .......................................................
+    servidorExpress.get('/mediciones/:fecha_inicio/:fecha_fin', async function( peticion, respuesta ){
+        console.log( " * GET /mediciones/:fecha_inicio/:fecha_fin" )
+        
+        let fechaInicio = peticion.params.fecha_inicio;
+        let fechaFin = peticion.params.fecha_fin;
+        
+        try{
+            var res = await laLogica.obtenerMedicionesDeHasta(fechaInicio,fechaFin)
+            
+            
+            // todo ok 
+            // si el array de resultados no tiene una casilla ...
+            if( res.length == 0 ) {
+                // 204: realizado ok pero sin resultados
+                respuesta.status(204).send();
+                return
+            }
+            // todo ok 
+            
+            let a = Modelo.Medicion.formatearRAWBDData(res);
+            respuesta.send(a)
+
+        }catch(error){
+
+            respuesta.status(500).send(  {mensaje:error}  )
+        }
+    }) // get /mediciones
+
+    // .......................................................
     // post /registro_estado_sensor/bateria
     // .......................................................
     servidorExpress.post('/registro_estado_sensor/bateria', async function(peticion, respuesta) {

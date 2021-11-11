@@ -54,10 +54,10 @@ describe( "Test RECURSO MEDICION", function() {
         var error = null
         try {
             var mediciones = new Array();
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 01:00:00', new Modelo.Posicion(30,30), 27, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 02:00:00', new Modelo.Posicion(30,30), 27, 'GTI-3A-1',2));
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 03:00:00', new Modelo.Posicion(30,30), 27, 'GTI-3A-1',3));
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 04:00:00', new Modelo.Posicion(30,30), 27, 'GTI-3A-1',4));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 01:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',1));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 02:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',2));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 03:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',3));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 04:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',4));
 
             await laLogica.publicarMediciones(mediciones)
         } catch( err ) {

@@ -52,12 +52,12 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
     // ....................................................
     it( "probar POST mediciones nueva /mediciones", function( hecho ) {
         
-        var a = new Modelo.Medicion(null, 1, '2021-09-29 2:00:00', new Modelo.Posicion(30,30), 13, 'GTI-3A-1',1)
-        var b = new Modelo.Medicion(null, 2, '2021-09-29 2:10:00', new Modelo.Posicion(30,30), 13, 'GTI-3A-1',1)
-        
+       
         var mediciones = Array();
-        mediciones.push(a);
-        mediciones.push(b);
+        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 01:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 02:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',2));
+        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 03:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',3));
+        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 04:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',4));
    
         var listaJSONmediciones = Modelo.Medicion.listaMedicionesAJSON(mediciones)
         
@@ -147,8 +147,33 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
                         
 
                         // si el objeto esta vacio
-                        assert.equal( listaMediciones.length, 2, "¿No hay datos?" )
-                        assert.equal( listaMediciones[1].valor, 2, "¿No se ha convertido a objeto medicion bien?" )
+                        assert.equal( listaMediciones.length, 4, "¿No hay 4 registros?" )
+                        assert.equal( listaMediciones[3].valor, 50, "¿No se ha convertido a objeto medicion bien?" )
+                        
+                        hecho()
+                    } // callback// callback
+        ) // .get
+    }) // it
+
+    // ....................................................
+    // ....................................................
+    it( "probar GET /mediciones/:fecha_inicio/:fecha_fin", function( hecho ) {
+        request.get({ url : IP_PUERTO+"/mediciones/2021-09-29 02:00:00/2021-09-29 03:00:00",
+                      headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+                     },
+                    function( err, respuesta, carga ) {
+                        assert.equal( err, null, "¿ha habido un error?" )
+                        assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (ok)" )
+
+                        var solucion = JSON.parse( carga )
+
+                        var listaMediciones = Modelo.Medicion.jsonAListaMediciones(solucion);
+           
+                        
+
+                        // si el objeto esta vacio
+                        assert.equal( listaMediciones.length, 2, "¿No hay 2 registros ?" )
+                        assert.equal( listaMediciones[1].valor, 50, "¿No se ha convertido a objeto medicion bien?" )
                         
                         hecho()
                     } // callback// callback
