@@ -19,7 +19,7 @@ describe( "Test 3 USUARIO (login y registro) : Recuerda arrancar el servidor y q
 
     // ....................................................
     // ....................................................
-    it( "probar que GET /prueba responde ¡Funciona!", function( hecho ) {
+   /* it( "probar que GET /prueba responde ¡Funciona!", function( hecho ) {
         request.get(
             { url : IP_PUERTO+"/prueba", headers : { 'User-Agent' : 'Ruben' }},          
             function( err, respuesta, carga ) {
@@ -104,7 +104,7 @@ describe( "Test 3 USUARIO (login y registro) : Recuerda arrancar el servidor y q
           hecho()
           // callback
       }) // post
-    }) // it
+    }) // it*/
 
     
 

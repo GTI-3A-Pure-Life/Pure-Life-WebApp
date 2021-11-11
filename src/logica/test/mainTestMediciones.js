@@ -16,7 +16,7 @@ describe( "Test RECURSO MEDICION", function() {
 
     // ....................................................
     // ....................................................
-   /* var laLogica = null
+    var laLogica = null
 
     // ....................................................
     // ....................................................
@@ -49,18 +49,20 @@ describe( "Test RECURSO MEDICION", function() {
 
     // ....................................................
     // ....................................................
-    it("Insertar una mediciones correcta",async function(){
+    it("Insertar mediciones correctas",async function(){
         
         var error = null
         try {
             var mediciones = new Array();
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 13:13:13', new Modelo.Posicion(30,30), 1, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 13:13:13', new Modelo.Posicion(30,30), 1, 'GTI-3A-1',1));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 01:00:00', new Modelo.Posicion(30,30), 27, 'GTI-3A-1',1));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 02:00:00', new Modelo.Posicion(30,30), 27, 'GTI-3A-1',2));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 03:00:00', new Modelo.Posicion(30,30), 27, 'GTI-3A-1',3));
+            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 04:00:00', new Modelo.Posicion(30,30), 27, 'GTI-3A-1',4));
+
             await laLogica.publicarMediciones(mediciones)
         } catch( err ) {
             error = err
         }
-        console.log(error);
         assert( !error, "¿Has insertado los parametros correctos?, ¿El usuario y el sensor existen?" )
 
     })// it
@@ -85,7 +87,7 @@ describe( "Test RECURSO MEDICION", function() {
         
         // Lista<MedicionCO2>
         var res = await laLogica.obtenerTodasMediciones();
-        assert.equal(res.length,2,"¿No hay dos tuplas en la tabla mediciones?")
+        assert.equal(res.length,4,"¿No hay 4 tuplas en la tabla mediciones?")
 
     })// it
 
@@ -99,11 +101,23 @@ describe( "Test RECURSO MEDICION", function() {
 
     })// it
 
+
+      // ....................................................
+    // ....................................................
+    it("Obtener mediciones entre un rango de tiempo",async function(){
+        
+        // Lista<MedicionCO2>
+        var res = await laLogica.obtenerMedicionesDeHasta('2021-09-29 02:00:00','2021-09-29 03:00:00');
+        assert.equal(res.length,2,"¿No devolvio dos registros?")
+
+    })// it
+
+
     // ....................................................
     // ....................................................
     it( "borrar todas las filas de mediciones", async function() {
         await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
-    }) // it*/
+    }) // it
 
     
 

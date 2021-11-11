@@ -140,6 +140,38 @@ module.exports = class Logica {
             })
         } // ()
 
+    
+    // .................................................................
+    // .................................................................
+    /**
+     * Texto, Texto -> obtenerTodasMediciones -> Lista<Medicion>
+     * 
+     * @author Ruben Pardo Casanova
+     * 11/11/2021
+     * 
+     * @returns devuelve una promesa con las mediciones o lanza un error
+     */
+     obtenerMedicionesDeHasta(fechaInicio,fechaFin ) {
+        var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
+        ' where '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ?';
+        return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( 
+                textoSQL, 
+                [fechaInicio,fechaFin],
+                function( err,res,fields ) {
+
+                    if(!err){
+                        // return 
+                       resolver(res)
+
+                    }else{
+                        rechazar(err)
+                    }
+                    
+                })
+            })
+        } // ()
+
 
     // .................................................................
     // Lista<MedicionCO2>
