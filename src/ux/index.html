@@ -1,58 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PureLife</title>
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
 
-  
-    
-    <div id="contenedor-botones-mediciones" class="contenedor">
-      
-        <button onclick="ControladorMediciones.iniciarTodasObtenerMediciones()">Obtener Todas</button> 
-        <form id="form-ultimas-mediciones" onsubmit="ControladorMediciones.iniciarUltimasObtenerMediciones(event)">
-            <label for="cuantas">Cuantas</label>
-            <input type="number" name="cuantas-mediciones" id="cuantas">
-            <span class="error"><p id="cuantas_error">Pon un numero mayor que 0</p></span>
-            <button type="submit">Obtener Ultimas</button> 
-        </form>
-        
-    </div>
-    <div id="carga"></div>
-    <div id="error"></div>
-    <div id="contenedor-mediciones" class="contenedor">
-      
-        <h2>Mediciones</h2>
-       
-        <p>SENSOR | USUARIO | VALOR | FECHA</p>
-        <ul id="lista-mediciones" class="lista-elementos"></ul>
-    
-        
-        
-    </div>
-    
-    <div id="snackbarError"></div>
+    <header>
+        <a href="index.html"><img src="" alt="Logo PureLife"></a>
+        <hr>
 
-    <script src="logica/LogicaFalsa.js"></script>
-    <script src="logica/mvc-mediciones.js"></script>
+        <nav>
+            <ul>
+                <li><a href="mapa.html">Mapa</a></li>
+                <li><a href="contacto.html">Contacta con nosotros</a></li>
+            </ul>
+            <button onclick="location.href = 'login.html'">Iniciar sesión</button>
+        </nav>
+    </header>
 
-    <script>
+    <main>
+        <img src="" alt="Logo con texto PureLife">
+        <h1>Juntos por un aire más puro</h1>
+        <button onclick="location.href = 'mapa.html'">Ver mapa</button>
 
-        
+        <img src="" alt="Flecha hacia abajo">
+    </main>
 
-        // al cargar la pagina comprobamos en que tab esta anteriormente, por defecto mostramos las personas
-        window.onload = function(){
-           
-            // cargamos los mvc de las personas y los controladores
-            VistaMediciones.preparar("contenedor-mediciones","lista-mediciones","carga","snackbarError", 
-            "form-ultimas-mediciones", "cuantas_error");
+    <section>
+        <p>Lorem 1</p>
+        <p>Lorem 2</p>
+        <p>Lorem 3</p>
 
-        }
-    </script>
+        <div>
+            <div>Paso 1</div>
+            <div>Paso 2</div>
+            <div>Paso 3</div>
+        </div>
+    </section>
 
-  
+    <section>
+        <h1>Una cuenta libre de emisiones</h1>
+        <p>Con tu cuenta PureLife puedes consultar la calidad del aire que respiras, así como usar un transporte ecológico</p>
+
+        <div>
+            <button onclick="location.href = 'login.html'">Iniciar sesión</button>
+            <a href="registrar.html">Crear una cuenta PureLife</a>
+        </div>
+    </section>
+
+    <section>
+        <div>
+            <img src="" alt="Foto bici">
+            <img src="" alt="Foto patinete">
+        </div>
+        <div>
+            <img src="" alt="Foto caja sensor">
+            <p>Lorem</p>
+        </div>
+        <div>
+            <img src="" alt="Foto app móvil">
+            <div>
+                <img src="" alt="Foto que no sabemos aún">
+                <p>Lorem</p>
+                <button onclick="location.href = 'contacto.html'">Contacta con nosotros</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <a href="#"><img src="" alt="Logo PureLife"></a>
+        <hr>
+        <p>PureLife &copy; 2021. Todos los derechos reservados</p>
+    </footer>
 </body>
 </html>

@@ -1,5 +1,21 @@
+/* 
+    *******************************************
+    *******************************************
+    *******************************************
+    *******************************************
+    IMPORTANTE LEER
+    *******************************************
+    *******************************************
+    *******************************************
+    *******************************************
 
+    Este archivo estaba ya con cosas, te las comento para que no te molesten, pero si necesitas algo lo puedas pillar. 
+    Lo que no necesites lo borras, incluido este comentario
 
+    Abajo del todo, en un comentario separado hay unas animaciones que pueden sernos útiles
+*/
+
+/*
 nav{
     border-bottom: 1px solid black;
     margin-bottom: 1rem;
@@ -102,6 +118,9 @@ ul.lista-elementos li{
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
     animation: fadein 0.5s, fadeout 0.5s 2.5s;
 }
+*/
+
+/*
 
 @-webkit-keyframes fadein {
 from {bottom: 0; opacity: 0;} 
@@ -122,6 +141,7 @@ to {bottom: 0; opacity: 0;}
 from {bottom: 30px; opacity: 1;}
 to {bottom: 0; opacity: 0;}
 }
+*/
 
 
 
