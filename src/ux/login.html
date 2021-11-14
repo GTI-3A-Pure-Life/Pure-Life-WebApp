@@ -4,33 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión en PureLife</title>
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilosLogin.css">
 </head>
 <body>
     
-    <header>
-        <a href="index.html"><img src="" alt="Logo PureLife"></a>
-        <hr>
-
-        <nav>
-            <ul>
-                <li><a href="mapa.html">Mapa</a></li>
-                <li><a href="contacto.html">Contacta con nosotros</a></li>
-            </ul>
-            <button onclick="location.href = 'login.html'">Iniciar sesión</button>
-        </nav>
+    <header class="header">
+        <a class="linkLogo" href="index.html"><img class="logo-header" src="recursos/LogoPureLife.svg" alt="Logo PureLife"/></a>
+        <div class="contenedorEnlaces">
+            <div class="contenedorDiv">
+                <nav class="nav">
+                    <ul>
+                        <li><a href="mapa.html">Mapa</a></li>
+                        <li><a href="contacto.html">Contacta con nosotros</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="contenedorBoton">
+                <button class="botonIniciarSecion" onclick="location.href = 'login.html'">Iniciar sesión</button>
+            </div>
+        </div>
     </header>
 
-    <h1>Iniciar sesión</h1>
-    <input type="text" placeholder="Correo">
-    <input type="password" placeholder="Contraseña">
-    <button onclick="">Iniciar sesión</button>
-    <a href="registrar.html">¿No tienes una cuenta? Regístrate aquí</a>
+    <section class="seccionInicarSesion">
+
+        <h1>Iniciar sesión</h1>
+
+        <input class="campoParaIntroducirTexto" type="text" placeholder="Correo">
+    
+        <input class="campoParaIntroducirTexto" type="password" placeholder="Contraseña">
+    
+        <button class="botonIniciarSecionGrande" onclick="">Iniciar sesión</button>
+    
+        <a class="botonParaRegistrarseGrande" href="registrar.html">¿No tienes una cuenta? Regístrate aquí</a>
+
+    </section>
+
+    
 
     <footer>
-        <a href="#"><img src="" alt="Logo PureLife"></a>
-        <hr>
-        <p>PureLife &copy; 2021. Todos los derechos reservados</p>
+        <a class="linkLogo" href="index.html"><img class="logo-header" src="recursos/LogoPureLife.svg" alt="Logo PureLife"/></a>
+        <div class="contenedorFooter">
+            <p class="nombreEmpresa">PureLife &copy; 2021. Todos los derechos reservados</p>
+        </div>
     </footer>
 </body>
 </html>
