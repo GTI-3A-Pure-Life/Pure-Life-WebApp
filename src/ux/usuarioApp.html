@@ -4,45 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi perfil</title>
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="css/estilosUsuarios.css">
 </head>
 <body>
     
-    <header>
-        <a href="index.html"><img src="" alt="Logo PureLife"></a>
-        <hr>
-
-        <nav>
-            <ul>
-                <li><a href="mapa.html">Mapa</a></li>
-                <li><a href="contacto.html">Contacta con nosotros</a></li>
-            </ul>
-            <button onclick="location.href = 'login.html'">Iniciar sesión</button>
-        </nav>
+    <header class="header">
+        <a class="linkLogo" href="index.html"><img class="logo-header" src="recursos/LogoPureLife.svg" alt="Logo PureLife"/></a>
+        <div class="contenedorEnlaces">
+            <div class="contenedorDiv">
+                <nav class="nav">
+                    <ul>
+                        <li><a href="mapa.html">Mapa</a></li>
+                        <li><a href="contacto.html">Contacta con nosotros</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </header>
 
-    <section>
-        <div>
+    <section class="contenedorMain">
+
+        <div class="contenedorTituloYBoton">
             <h1>Bienvenido ...insertar nombre...</h1>
-            <button onclick="">Cerrar sesión</button>
+            <button class="botonCerrarSesion" onclick="">Cerrar sesión</button>
         </div>
-        <div>
-            <h3>Cuenta</h3>
+
+        <div class="contenedorDatosCuenta">
+
             <div>
-                <h5>Correo</h5>
-                <p id="correoApp">correo@dominio.com</p>
-                <h5>Teléfono</h5>
-                <p id="telefonoApp">+34 888 88 88 88</p>
+                <h3>Cuenta</h3>
             </div>
+
+            <div class="contenedorDatos">
+
+                <div>
+                    <h3>Correo</h3>
+                    <p id="correoApp">correo@dominio.com</p>
+                    <h3>Teléfono</h3>
+                    <p id="telefonoApp">+34 888 88 88 88</p>
+                </div>
+        
+                <div class="contenedorDirecciones">
+                    <h3>Ubicación casa</h3>
+                    <p id="direccionCasaApp">Dirección casa</p>
+                    <h3>Ubicación trabajo</h3>
+                    <p id="direccionTrabajoApp">Dirección trabajo</p>
+                </div>
+
+            </div>
+    
             <div>
-                <h5>Ubicación casa</h5>
-                <p id="direccionCasaApp">Dirección casa</p>
-                <h5>Ubicación trabajo</h5>
-                <p id="direccionTrabajoApp">Dirección trabajo</p>
+                <img class="icono" src="recursos/editIcon.png" alt="Icono editar">
             </div>
-            <img src="" alt="Icono editar">
+
         </div>
-        <hr>
 
         <h1>Estadísticas</h1>
         <h3>La calidad del aire respirada hoy es: <span id="calidadMediaHoyApp">Buena</span></h3>
@@ -50,26 +65,40 @@
         <!-- Aquí irán las gráficas, pero de momento ponemos la foto -->
         <img src="" alt="Gráficas aire">
 
-        <div>
-            <div id="calidadAireCasa">
-                <img src="" alt="Icono casa">
-                <p id="textoCalidadAireCasa">La calidad del aire es buena</p>
+        <div class="contenedorTarjetasCalidadAire">
+
+            <div class="contenedorTarjetas">
+                <img class="fondoDeTarjetaVerde" src="recursos/392500_estate_home_house_real_icon.png" alt="Avatar" style="width:100%">
+                <div class="containerTarjeta">
+                    <h4><b>Casa</b></h4> 
+                    <p>Calidad del aire: Buena</p> 
+                  </div>
             </div>
-            <div id="calidadAireTrabajo">
-                <img src="" alt="Icono trabajo">
-                <p id="textoCalidadAireTrabajo">La calidad del aire es buena</p>
+
+            <div class="contenedorTarjetas">
+                <img class="fondoDeTarjetaAmarillo" src="recursos/commerical.png" alt="Avatar" style="width:100%">
+                <div class="containerTarjeta">
+                    <h4><b>Trabajo</b></h4> 
+                    <p>Calidad del aire: Mala</p> 
+                  </div>
             </div>
-            <div id="calidadAireExterior">
-                <img src="" alt="Icono exterior">
-                <p id="textoCalidadAireExterior">La calidad del aire es buena</p>
+
+            <div class="contenedorTarjetas">
+                <img class="fondoDeTarjetaRojo" src="recursos/cityIcon.png" alt="Avatar" style="width:100%">
+                <div class="containerTarjeta">
+                    <h4><b>Ciudad</b></h4> 
+                    <p>Calidad del aire: Muy mala</p> 
+                  </div>
             </div>
+
         </div>
     </section>
 
     <footer>
-        <a href="#"><img src="" alt="Logo PureLife"></a>
-        <hr>
-        <p>PureLife &copy; 2021. Todos los derechos reservados</p>
+        <a class="linkLogo" href="index.html"><img class="logo-header" src="recursos/LogoPureLife.svg" alt="Logo PureLife"/></a>
+        <div class="contenedorFooter">
+            <p class="nombreEmpresa">PureLife &copy; 2021. Todos los derechos reservados</p>
+        </div>
     </footer>
 </body>
 </html>
