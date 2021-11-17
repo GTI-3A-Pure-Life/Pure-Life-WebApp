@@ -29,11 +29,11 @@
 
         <h1>Iniciar sesión</h1>
 
-        <input class="campoParaIntroducirTexto" type="text" placeholder="Correo">
+        <input id="correoInicioSesion" class="campoParaIntroducirTexto" type="text" placeholder="Correo">
     
-        <input class="campoParaIntroducirTexto" type="password" placeholder="Contraseña">
+        <input id="contrasenyaInicioSesion" class="campoParaIntroducirTexto" type="password" placeholder="Contraseña">
     
-        <button class="botonIniciarSecionGrande" onclick="">Iniciar sesión</button>
+        <button id= "botonLogin" class="botonIniciarSecionGrande">Iniciar sesión</button>
     
         <a class="botonParaRegistrarseGrande" href="registrar.html">¿No tienes una cuenta? Regístrate aquí</a>
 
@@ -47,5 +47,15 @@
             <p class="nombreEmpresa">PureLife &copy; 2021. Todos los derechos reservados</p>
         </div>
     </footer>
+    <script src="logica/LogicaFalsa.js"></script>
+    <script src="logica/mvc-login.js"></script>
+    <script src="logica/sha1.js"></script>
+    <script>
+        window.onload = function() {
+            document.getElementById("botonLogin").addEventListener("click", function() {
+    ControladorLogin.manejador.call(ControladorLogin);
+});
+        }
+    </script>
 </body>
 </html>

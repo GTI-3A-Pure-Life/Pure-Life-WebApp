@@ -188,7 +188,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
     })// post /usuario/iniciar_sesion
 
     // .......................................................
-    // POST /usuario/iniciar_sesion
+    // POST /usuario/registrarse
     // .......................................................
     servidorExpress.post('/usuario/registrarse', async function(peticion, respuesta) {
 
@@ -214,6 +214,6 @@ module.exports.cargar = function(servidorExpress, laLogica){
             }
             
         }
-    })// post /usuario/iniciar_sesion
+    })// post /usuario/registrarse
 
 }

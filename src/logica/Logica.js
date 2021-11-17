@@ -333,8 +333,6 @@ module.exports = class Logica {
                         }else{
                             rechazar("No existe el usuario")
                         }
-                        
-
                     }else{
                         rechazar(err)
                     }
