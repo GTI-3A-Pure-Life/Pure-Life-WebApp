@@ -66,8 +66,10 @@ var VistaLogin = {
     redirigirUsuario : function(usuario) {
         if(usuario.rol == 1) {
             location.href = "usuarioApp.html";
+            window.localStorage.setItem("sesion", JSON.stringify(usuario))
         } else if (usuario.rol == 2) {
             location.href = "adminApp.html";
+            window.localStorage.setItem("sesion", JSON.stringify(usuario))
         }
     }
 }
@@ -81,9 +83,9 @@ var ControladorLogin = {
             this.modelo.usuario = await LogicaFalsa.iniciar_sesion(this.vista.correo.value, pass);
             this.vista.redirigirUsuario(this.modelo.usuario);
         } catch(err) {
-            if(err == "Error en datos") {
+            if(err.message == "Error en datos") {
                 alert("El usuario o la contraseña son incorrectos")
-            } else if(err == "Error en servidor") {
+            } else if(err.message == "Error en servidor") {
                 alert("Ha habido un error en el servidor, por favor, inténtelo más tarde");
             }
         }
