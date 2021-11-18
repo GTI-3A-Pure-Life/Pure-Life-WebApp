@@ -105,6 +105,24 @@ LogicaFalsa = {
         
     },
 
+    registrar_usuario : async function (nombre, correo, contrasenya, telefono) {
+        let respuesta = await fetch(IP_PUERTO+"/usuario/registrarse",  {
+            method: "POST",
+            headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+            body : JSON.stringify({res:{nombre:nombre, correo: correo, contrasenya: contrasenya, telefono:telefono}})
+        }).then(response => {
+            if(response.status == 200) {
+                return response.json();
+            } else if (response.status == 400) {
+                throw Error("Error en datos");
+            } else if (response.status == 500) {
+                throw Error("Error en servidor");
+            }
+        });
+        return respuesta;
+        
+    },
+
 
     // .................................................................
     // cerrar() -->

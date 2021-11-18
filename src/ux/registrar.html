@@ -38,7 +38,7 @@
             <input class="campoParaIntroducirTexto" type="password" placeholder="Contraseña*">
             <input class="campoParaIntroducirTexto" type="password" placeholder="Confirmar contraseña*">
             <input class="campoParaIntroducirTexto" type="number" placeholder="Teléfono">
-            <button class="botonIniciarSecionGrande" onclick="">Crear cuenta PureLife</button>
+            <button class="botonIniciarSecionGrande">Crear cuenta PureLife</button>
 
     </section>
 
@@ -48,5 +48,18 @@
             <p class="nombreEmpresa">PureLife &copy; 2021. Todos los derechos reservados</p>
         </div>
     </footer>
+
+    <script src="logica/LogicaFalsa.js"></script>
+    <script src="logica/mvc-registrar.js"></script>
+    <script src="logica/sha1.js"></script>
+    <script>
+        window.onload = function() {
+            document.getElementsByClassName("botonIniciarSecionGrande")[0].addEventListener("click", function() {
+                ControladorRegistrar.manejador.call(ControladorRegistrar);
+            });
+        }
+    </script>
+
+    <script src="logica/cookies.js"></script>
 </body>
 </html>
