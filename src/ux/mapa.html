@@ -39,20 +39,17 @@
     <section class="contenedorMapa">
         
         <div class="mapa" id="mapa">
+            
+        </div>
+        <div class="contenedorUtilidadesMapa">
+            <img class="iconoCentrar" src="recursos/mapsCenter.png" alt="Centrar posicion">
 
-            <div class="contenedorUtilidadesMapa">
-                <input type="text" placeholder="Buscar">
-                <img src="" alt="icono lupa">
-                <img src="" alt="Centrar posicion">
-    
-                <div>
-                    <h4>Tipo de gas</h4>
-                    <button onclick="">CO</button>
-                    <button onclick="">O <sup>3</sup></button>
-                    <button onclick="">NO <sup>2</sup></button>
-                    <button onclick="">SO <sup>2</sup></button>
-                </div>
-
+            <div class="contenedorDeGases">
+                <h4 class="tituloDeContenedorDeGases">Tipo de gas</h4>
+                <button class = "botonDeGases" onclick="">CO</button>
+                <button class = "botonDeGases" onclick="">O3 </button>
+                <button class = "botonDeGases" onclick="">NO2 </button>
+                <button class = "botonDeGases" onclick="">SO2 </button>
             </div>
 
         </div>
@@ -66,7 +63,7 @@
         </div>
     </footer>
 
-    <script src="logica/mcv-mapa.js"></script>
+    <script src="logica/mvc-mapa.js"></script>
     <script>
         window.onload = function(){
 
