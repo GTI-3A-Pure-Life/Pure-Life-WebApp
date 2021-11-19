@@ -333,8 +333,6 @@ module.exports = class Logica {
                         }else{
                             rechazar("No existe el usuario")
                         }
-                        
-
                     }else{
                         rechazar(err)
                     }
@@ -353,14 +351,13 @@ module.exports = class Logica {
      * 
      * @param {Usuario} usuario el usuario a registrar
      * 
-     * @returns promesa, si no ha habido problemas devuelve el id del nuevo usuario, por otra parte error
+     * @returns promesa, si no ha habido problemas devuelve el nuevo usuario, por otra parte error
      */
      registrar_usuario(usuario){
         var textoSQL = 'INSERT INTO '+ BDConstantes.TABLA_USUARIOS.NOMBRE_TABLA 
          +' ('+ BDConstantes.TABLA_USUARIOS.NOMBRE +','+ BDConstantes.TABLA_USUARIOS.CORREO +','+ BDConstantes.TABLA_USUARIOS.CONTRASENYA +','
          + BDConstantes.TABLA_USUARIOS.TELEFONO +', '+ BDConstantes.TABLA_USUARIOS.ROL
          +') VALUES (?, ?, ?, ?, ?)'
-         
  
          /**
           * INSERT INTO `usuario` ( `nombre`, `correo`, `contrasenya`, `telefono`, `rol`) 
@@ -371,10 +368,9 @@ module.exports = class Logica {
                  textoSQL, 
                  [usuario.nombre,usuario.correo,usuario.contrasenya,usuario.telefono,usuario.rol],
                  function( err,res,fields ) {
- 
                      if(!err){ 
-                        // return id usuario
-                        resolver(res.insertId)
+                        // return usuario
+                        resolver(res)
                      }else{
                          if(err.errno == 1062){// clave unica duplicada, en este caso seria el correo
                             rechazar("Este correo ya esta en uso")

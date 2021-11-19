@@ -1,8 +1,8 @@
 /*=========================================================================================*/
 /*
-Nombre archivo: estilos.css
+Nombre archivo: estilosMapa.css
 Autor: Juan Ferrera Sala
-Fecha: 14/11/2021
+Fecha: 15/11/2021
 */
 @import url('https://fonts.googleapis.com/css2?family=Overpass&display=swap');
 *{
@@ -94,126 +94,69 @@ nav ul li a:hover {
     border: none;
 }
 /*=========================================================================================*/
-/*Main*/
+/*Mapa*/
 /*=========================================================================================*/
-.contenedorImagen{
-    background-image: url("../recursos/fondoLandingDesenfoque.png");
-    background-size: cover;
-    height: 80.5vh;
+.contenedorMapa{
+width: 100%;
+height: 87vh;
+}
+
+.mapa{
+    width: 100%;
+    height: 100%;
+}
+
+.contenedorUtilidadesMapa{
+    position: absolute;
+    top: 12.5vh;
+    padding-left: 5rem;
+    padding-right: 2rem;
+    padding-top: 2.5rem;
+    z-index: 999;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    align-items:flex-start;
+    justify-content: space-between;
+    width: 100%;
 }
-.contenidoMain{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+
+.campoParaIntroducirTexto{
+    height: 2rem;
+    border-radius: 5px;
+    font-size: 15px;
+    border: 1px solid rgb(0, 0, 0);
 }
-.logo-grande{
-    width: 40rem;
-    height: 20rem;
+
+.contenedorDeGases{
+    background-color: white;
+    border-radius: 8px;
+    padding: 0.5rem;
 }
-.textoDeReclamo{
-    color: white;
-}
-.botonVerMapas{
+.botonDeGases{
     height: 2.5rem;
-    width: 8rem;
+    width: 2.5rem;
     font-weight: bold;
     background-color: #3ABB90;
     color: white;
     border-radius: 8px;
     border: none;
 }
-/*=========================================================================================*/
-/*Flecha Hacia Abajo */
-/*=========================================================================================*/
-.flechaHaciaAbajo{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 3rem;
-    height: 7vh;
-}
-/*=========================================================================================*/
-/*Texto de explicacion*/
-/*=========================================================================================*/
-.contenedorDeExplicacion{
-    margin-left: 2rem;
-    margin-right: 2rem;
-    padding: 2px 16px;
-    font-size: 22px;
-}
-.textoPrincipal{
-    text-align: justify;
-}
-.contenedorTarjetasExplicacion{
-    margin-top: 5rem;
+.tituloDeContenedorDeGases{
     display: flex;
-    justify-content:center;
+    align-items: center;
+    justify-content: center;
 }
-.contenedorTarjetas{
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    width: 20%;
-    border-radius: 5px;
-}
-.contenedorTarjetas:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
-.contenedorTarjetas2{
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    width: 20%;
-    border-radius: 5px;
-    margin-left: 5rem;
-    margin-right: 2.5rem;
-}
-.contenedorTarjetas3{
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    width: 20%;
-    border-radius: 5px;
-    margin-left: 2.5rem;
-    margin-right: 5rem;
-}
-.containerTarjeta{
-    padding: 2px 16px;
-}
-/*=========================================================================================*/
-/*contenedorInicioDeSesion*/
-/*=========================================================================================*/
-.contenedorInicioDeSesion{
-    margin-top: 5rem;
-    background-image: url("../recursos/inicioSesionFondo.jpg");
-    background-size: cover;
-    display: flex;
-    height: 30rem;
-}
-.contenidoDeInicioDeSesion{
-    display: flex;
-    flex-direction: column;
-    margin-top: 5rem;
-    margin-left: 2rem;
-}
-.tituloInicioSesion{
-    font-size: 50px;
-    color: white;
-}
-.subTituloInicioSesion{
-    font-size: 22px;
-    color: white;
-}
-.botonCrearCuenta{
-	text-decoration: none;
-    color: white;
+.iconoCentrar{
+    padding: 0.5rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    background-color: white;
+    border-radius: 8px;
 }
 /*=========================================================================================*/
 /*footer*/
 /*=========================================================================================*/
 footer{
+    height: 12.5vh;
     background:rgb(242, 242, 242);
     display: flex;
     justify-content: space-between;

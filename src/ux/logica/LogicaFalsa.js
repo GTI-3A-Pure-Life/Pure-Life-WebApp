@@ -4,7 +4,6 @@
 // Rubén Pardo Casanova 29/09/2021
 // .....................................................................
 
-
 const IP_PUERTO="http://localhost:8080"
 
 LogicaFalsa = {
@@ -86,6 +85,42 @@ LogicaFalsa = {
                     
         return respuesta;
 
+    },
+
+    iniciar_sesion : async function (correo, contrasenya) {
+        let respuesta = await fetch(IP_PUERTO+"/usuario/iniciar_sesion",  {
+            method: "POST",
+            headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+            body : JSON.stringify({res:{correo:correo, contrasenya: contrasenya}})
+        }).then(response => {
+            if(response.status == 200) {
+                return response.json();
+            } else if (response.status == 401) {
+                throw Error("Error en datos");
+            } else if (response.status == 500) {
+                throw Error("Error en servidor");
+            }
+        });
+        return respuesta;
+        
+    },
+
+    registrar_usuario : async function (nombre, correo, contrasenya, telefono) {
+        let respuesta = await fetch(IP_PUERTO+"/usuario/registrarse",  {
+            method: "POST",
+            headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
+            body : JSON.stringify({res:{nombre:nombre, correo: correo, contrasenya: contrasenya, telefono:telefono}})
+        }).then(response => {
+            if(response.status == 200) {
+                return response.json();
+            } else if (response.status == 400) {
+                throw Error("Error en datos");
+            } else if (response.status == 500) {
+                throw Error("Error en servidor");
+            }
+        });
+        return respuesta;
+        
     },
 
 

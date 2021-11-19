@@ -188,7 +188,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
     })// post /usuario/iniciar_sesion
 
     // .......................................................
-    // POST /usuario/iniciar_sesion
+    // POST /usuario/registrarse
     // .......................................................
     servidorExpress.post('/usuario/registrarse', async function(peticion, respuesta) {
 
@@ -199,13 +199,12 @@ module.exports.cargar = function(servidorExpress, laLogica){
         let contrasenya = body["res"]["contrasenya"];
         let nombre = body["res"]["nombre"];
         let telefono = body["res"]["telefono"];
-        let rol = body["res"]["rol"];
         // creamos el usuarios
-        let usuario = new Modelo.Usuario(null,null,correo,contrasenya,nombre,null,telefono,rol)
+        let usuario = new Modelo.Usuario(null,null,correo,contrasenya,nombre,null,telefono,1)
         try {
-            let idUsuario = await laLogica.registrar_usuario(usuario);
+            let usuarioRes = await laLogica.registrar_usuario(usuario);
             // todo ok
-            respuesta.status(200).send({id:idUsuario} )
+            respuesta.status(200).send({usuario: usuarioRes} )
         } catch (error) {
             if(error == "Este correo ya esta en uso") { // El trigger paró el insert porque el anterior es igual
                 respuesta.status(400).send({mensaje:error});
@@ -214,6 +213,6 @@ module.exports.cargar = function(servidorExpress, laLogica){
             }
             
         }
-    })// post /usuario/iniciar_sesion
+    })// post /usuario/registrarse
 
 }
