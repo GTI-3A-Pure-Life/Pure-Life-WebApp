@@ -64,6 +64,26 @@ class Medicion {
     
   
 
+     /**
+     * RawDataSQL-> contructor() -> 
+     * 
+     */
+    static MedicionFromRawData(rawData){
+        let fechaHoraV = formatearFecha(rawData.fechaHora);
+        return new Medicion(
+            null,
+            rawData.valor,
+            fechaHoraV,
+            new Posicion(rawData.posMedicion.x, rawData.posMedicion.y),
+            rawData.idUsuario,
+            rawData.uuidSensor,
+            rawData.tipoGas
+
+        );
+
+    }
+
+
     /**
      * toJSON() -> Texto
      * @returns String en formato json del objeto
@@ -105,6 +125,9 @@ class Medicion {
         return mediciones;
     }
 
+
+   
+
     /**
      * JSONObject || Texto -> jsonAListaMediciones() -> List<Medicion>
      * @param {Texto} json array de mediciones en forma de json 
@@ -144,6 +167,19 @@ class Medicion {
         return res;
     }
 
+
+    /**
+     * Metodo que se usa para ordenar por fecha ascendente(arrayMediciones.sort(Medicion.compararPorFechaASC))
+     * @param {Medicion} medicion1 
+     * @param {Medicion} medicion2 
+     * @returns 
+     */
+    static compararPorFechaASC( medicion1, medicion2 ) {
+        let fecha1 = new Date(medicion1.fecha);
+        let fecha2 = new Date(medicion2.fecha);
+
+        return fecha1 - fecha2
+      }
     
 
 } // ()
@@ -324,6 +360,30 @@ class Posicion{
 }// ()
 
 
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+
+/**
+ * Clase que representa un InformeCalidadAire
+ * 19/11/21
+ * @author Rubén Pardo Casanova
+ */
+ class InformeCalidadAire{
+
+   
+    /**
+     * 
+     * @param {double} valor el valor AQI del gas
+     * @param {int} tipoGas 1 co, 2 no2, 3 so2, 4 o3
+     */
+    constructor(valor,tipoGas){
+        this.valor= valor;
+        this.tipoGas = tipoGas;
+    }
+
+}// ()
+
+
     /**
      * Texto -> formatearFecha() -> Texto
      * @param {String} fechaAFormatear 
@@ -347,5 +407,6 @@ module.exports = {
     Medicion : Medicion,
     Posicion : Posicion,
     RegistroEstadoSensor: RegistroEstadoSensor,
-    Usuario:Usuario
+    Usuario:Usuario,
+    InformeCalidadAire,InformeCalidadAire
 }

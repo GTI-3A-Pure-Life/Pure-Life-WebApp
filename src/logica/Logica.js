@@ -7,6 +7,7 @@
 //const sqlite3 = require( "sqlite3" )
 const mysql = require( "mysql" );
 const Modelo = require("./Modelo.js");
+const {Utilidades} = require("./Utilidades.js");
 const BDConstantes = require("./Constantes/BDConstantes");
 const BDCredenciales = require('./Constantes/BDCredenciales.js');
 
@@ -176,7 +177,7 @@ module.exports = class Logica {
     // .................................................................
     // .................................................................
     /**
-     * Texto, Texto, R, R, R -> obtenerTodasMediciones -> Lista<Medicion>
+     * Texto, Texto, R, R, R -> obtenerTodasMediciones -> Lista<informeCalidadAire>
      * 
      * @author Ruben Pardo Casanova
      * 11/11/2021
@@ -187,9 +188,9 @@ module.exports = class Logica {
      * @param longitud
      * @param radio
      * 
-     * @returns devuelve una promesa con las mediciones o lanza un error
+     * @returns devuelve una promesa con el informe de la calidad de aire de esa zona
      */
-     obtenerMedicionesPorTiempoYZona(fechaInicio,fechaFin, latitud,longitud, radio) {
+     obtenerCalidadAirePorTiempoYZona(fechaInicio,fechaFin, latitud,longitud, radio) {
 
         var textoSQL ='select *, ( 6371392.896 * acos ( cos ( radians(?) ) * cos( radians( ST_X(posMedicion) ) ) * cos( radians( ST_Y(posMedicion) ) - radians(?) ) + sin ( radians(?) ) * sin( radians( ST_X(posMedicion) ) ) )) as distancia from ' 
         + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
@@ -205,8 +206,17 @@ module.exports = class Logica {
                 [latitud, longitud, latitud, fechaInicio,fechaFin , radio],
                 function( err,res,fields ) {
                     if(!err){
-                        // return 
-                       resolver(res)
+                        
+                        let mediciones = Array();
+                        for(let i =0;i<res.length;i++){
+                            mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
+                        }
+                        
+                       let informeCalidadAire = Utilidades.calcularCalidadAire(mediciones);
+                        
+
+
+                       resolver(informeCalidadAire)
 
                     }else{
                         rechazar(err)
