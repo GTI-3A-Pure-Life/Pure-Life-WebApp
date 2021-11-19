@@ -26,20 +26,12 @@
     </header>
 
     <section class="seccionInicarSesion">
-
         <h1>Iniciar sesión</h1>
-
         <input id="correoInicioSesion" class="campoParaIntroducirTexto" type="text" placeholder="Correo">
-    
         <input id="contrasenyaInicioSesion" class="campoParaIntroducirTexto" type="password" placeholder="Contraseña">
-    
         <button id= "botonLogin" class="botonIniciarSecionGrande">Iniciar sesión</button>
-    
         <a class="botonParaRegistrarseGrande" href="registrar.html">¿No tienes una cuenta? Regístrate aquí</a>
-
     </section>
-
-    
 
     <footer>
         <a class="linkLogo" href="index.html"><img class="logo-header" src="recursos/LogoPureLife.svg" alt="Logo PureLife"/></a>
@@ -47,9 +39,13 @@
             <p class="nombreEmpresa">PureLife &copy; 2021. Todos los derechos reservados</p>
         </div>
     </footer>
+
     <script src="logica/LogicaFalsa.js"></script>
+
     <script src="logica/mvc-login.js"></script>
+
     <script src="logica/sha1.js"></script>
+
     <script>
         window.onload = function() {
             document.getElementById("botonLogin").addEventListener("click", function() {
@@ -59,5 +55,6 @@
     </script>
 
     <script src="logica/cookies.js"></script>
+    
 </body>
 </html>
