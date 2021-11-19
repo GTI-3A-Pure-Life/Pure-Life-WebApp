@@ -1,8 +1,8 @@
 /*=========================================================================================*/
 /*
-Nombre archivo: estilosLogin.css
+Nombre archivo: estilosAppAdmin.css
 Autor: Juan Ferrera Sala
-Fecha: 14/11/2021
+Fecha: 18/11/2021
 */
 /*=========================================================================================*/
 /*Login*/
@@ -97,81 +97,50 @@ nav ul li a:hover {
     border-radius: 8px;
     border: none;
 }
-
 /*=========================================================================================*/
-/*seccionInicarSesion*/
+/*contenedorMain*/
 /*=========================================================================================*/
-.seccionInicarSesion{
-    display: flex;
-    width: 30rem;
-    flex-direction: column;
-    margin-top: 4rem;
-    margin-left: 2rem;
-    height: 55vh;
+.contenedorMain{
+    width: 100%;
+    min-height: 75vh;
+    padding-top: 2.5rem;
+    padding-right: 2rem;
+    padding-left: 2rem;
 }
-h1{
-    font-size: 50px;
-    color: black;
-}
-.campoParaIntroducirTexto,.campoParaIntroducirTexto1,.campoParaIntroducirTexto2{
-    margin-top: 1.5rem;
-    height: 3rem;
-    border-radius: 8px;
-    font-size: 18px;
-    border: 1px solid rgb(0, 0, 0);
-}
-.campoParaIntroducirTexto1,.campoParaIntroducirTexto2{
-    flex:1;
-}
-.campoParaIntroducirTexto2{
-    margin-left: 1.5rem;
-}
-input::placeholder{
-    padding-left: 0.5rem;
-}
-.botonIniciarSecionGrande{
-    margin-top: 2rem;
-    height: 3rem;
+.botonPaginaAdmin{
+    height: 2.5rem;
+    width: 9rem;
     font-weight: bold;
     background-color: #3ABB90;
     color: white;
     border-radius: 8px;
     border: none;
-    font-size: 20px;
 }
-
-.botonParaRegistrarseGrande{
-    margin-top: 2rem;
-    text-decoration: none;
-    color: #3ABB90;
-    font-weight: bold;
-    font-size: 16px;
-
+h2{
+    font-size: 30px;
+    color: black;
 }
-/*=========================================================================================*/
-/*REGISTRAR*/
-/*=========================================================================================*/
-/*=========================================================================================*/
-/*contenedorCrearCuenta*/
-/*=========================================================================================*/
-.contenedorCrearCuenta{
+.container{
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    width: 33rem;
-    margin: 0 auto;
-    margin-top: 4rem;
 }
-.contenedorNombreYApellidos{
+
+#tblDatos, .containerTabla {
+    width: 100%;
+}
+.pagination-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: right;
+}
+th {
+    text-align: left;
 }
 /*=========================================================================================*/
 /*footer*/
 /*=========================================================================================*/
 footer{
+    margin-top: 2rem;
     height: 12.5vh;
-    margin-top: 5rem;
     background:rgb(242, 242, 242);
     display: flex;
     justify-content: space-between;
