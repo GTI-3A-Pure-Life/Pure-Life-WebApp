@@ -153,6 +153,7 @@ class Utilidades {
             this.obtenerIndiceAQI(
                 this.calcularMediaPPMHoraMediciones(medicionesCO),1)
             ,1))
+            
         listaInformeCalidadAire.push(new InformeCalidadAire(
             this.obtenerIndiceAQI(
                 this.calcularMediaPPMHoraMediciones(medicionesNO2),2)
@@ -186,6 +187,8 @@ class Utilidades {
         ? this.calculcarTiempoMsEntreFechas(mediciones[0].fecha, mediciones[mediciones.length-1].fecha  )/1000/60/60
         : 1;
         
+
+
         let ppmSuma = 0;
         let mediaPPMUnaHora = 0;
 
@@ -200,6 +203,7 @@ class Utilidades {
             // Calcular media de los valores por el total del tiempo
             mediaPPMUnaHora = ppmSuma/tiempoHoras;
         }
+
         
         return mediaPPMUnaHora;
 

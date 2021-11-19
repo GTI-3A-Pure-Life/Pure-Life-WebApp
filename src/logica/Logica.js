@@ -206,7 +206,55 @@ module.exports = class Logica {
                 [latitud, longitud, latitud, fechaInicio,fechaFin , radio],
                 function( err,res,fields ) {
                     if(!err){
+                        let mediciones = Array();
+                        for(let i =0;i<res.length;i++){
+                            mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
+                        }
                         
+                       let informeCalidadAire = Utilidades.calcularCalidadAire(mediciones);
+                        
+
+
+                       resolver(informeCalidadAire)
+
+                    }else{
+                        rechazar(err)
+                    }
+                    
+                })
+            })
+        } // ()
+
+    /**
+     * Texto, Texto, R, R, R -> obtenerTodasMediciones -> Lista<informeCalidadAire>
+     * 
+     * @author Ruben Pardo Casanova
+     * 11/11/2021
+     * 
+     * @param fechaInicio 'yyyy-MM-dd hh:mm:ss'
+     * @param fechaFin 'yyyy-MM-dd hh:mm:ss'
+     * @param latitud
+     * @param longitud
+     * @param radio
+     * 
+     * @returns devuelve una promesa con el informe de la calidad de aire de esa zona
+     */
+     obtenerCalidadAirePorTiempoYUsuario(fechaInicio,fechaFin, idUsuario) {
+
+        var textoSQL ='select * from ' 
+        + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
+        ' where '+ BDConstantes.TABLA_MEDICIONES.USUARIO +' = ? and ' +BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ? ';
+
+        // primer ? = latitud del punto, segundo ? longitud del punto, tercer ? latitud del punto
+        // cuarto ? = radio del circulo
+        // los dos ultimos ? fecha inicio, fecha fin, ultimo ? radio
+
+        return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( 
+                textoSQL, 
+                [ idUsuario, fechaInicio,fechaFin ],
+                function( err,res,fields ) {
+                    if(!err){
                         let mediciones = Array();
                         for(let i =0;i<res.length;i++){
                             mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
