@@ -174,6 +174,49 @@ module.exports = class Logica {
 
 
     // .................................................................
+    // .................................................................
+    /**
+     * Texto, Texto, R, R, R -> obtenerTodasMediciones -> Lista<Medicion>
+     * 
+     * @author Ruben Pardo Casanova
+     * 11/11/2021
+     * 
+     * @param fechaInicio 'yyyy-MM-dd hh:mm:ss'
+     * @param fechaFin 'yyyy-MM-dd hh:mm:ss'
+     * @param latitud
+     * @param longitud
+     * @param radio
+     * 
+     * @returns devuelve una promesa con las mediciones o lanza un error
+     */
+     obtenerMedicionesPorTiempoYZona(fechaInicio,fechaFin, latitud,longitud, radio) {
+
+        var textoSQL ='select *, ( 6371392.896 * acos ( cos ( radians(?) ) * cos( radians( ST_X(posMedicion) ) ) * cos( radians( ST_Y(posMedicion) ) - radians(?) ) + sin ( radians(?) ) * sin( radians( ST_X(posMedicion) ) ) )) as distancia from ' 
+        + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
+        ' where '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ? having distancia <= ?';
+
+        // primer ? = latitud del punto, segundo ? longitud del punto, tercer ? latitud del punto
+        // cuarto ? = radio del circulo
+        // los dos ultimos ? fecha inicio, fecha fin, ultimo ? radio
+
+        return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( 
+                textoSQL, 
+                [latitud, longitud, latitud, fechaInicio,fechaFin , radio],
+                function( err,res,fields ) {
+                    if(!err){
+                        // return 
+                       resolver(res)
+
+                    }else{
+                        rechazar(err)
+                    }
+                    
+                })
+            })
+        } // ()
+
+    // .................................................................
     // Lista<MedicionCO2>
     // -->
     // publicarMedicionCO2() -->

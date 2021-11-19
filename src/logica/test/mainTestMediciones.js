@@ -113,6 +113,28 @@ describe( "Test RECURSO MEDICION", function() {
     })// it
 
 
+    it("Obtener mediciones rango de tiempo y zona",async function(){
+        
+        var error = null
+        try {
+            var mediciones = new Array();
+            mediciones.push(new Modelo.Medicion(null, 1, '2021-09-29 01:00:00', new Modelo.Posicion(38.995692,-0.16709), 29, 'GTI-3A-1',1));
+            mediciones.push(new Modelo.Medicion(null, 0, '2021-09-29 02:00:00', new Modelo.Posicion(38.995366,-0.167041), 29, 'GTI-3A-1',2));
+            mediciones.push(new Modelo.Medicion(null, 1, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',3));
+            mediciones.push(new Modelo.Medicion(null, 0, '2021-09-29 04:00:00', new Modelo.Posicion(38.99558,-0.166896), 29, 'GTI-3A-1',4));
+
+            await laLogica.publicarMediciones(mediciones)
+
+            var res = await laLogica.obtenerMedicionesPorTiempoYZona('2021-09-29 00:00:00','2021-09-29 04:00:00',38.995591,-0.167129,18);
+            assert.equal(res.length,2,"¿No devolvio dos registros?")
+
+        } catch( err ) {
+            error = err
+        }
+        assert( !error, "¿Has insertado los parametros correctos?, ¿El usuario y el sensor existen?" )
+
+    })// it
+
     // ....................................................
     // ....................................................
     it( "borrar todas las filas de mediciones", async function() {
