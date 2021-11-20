@@ -126,15 +126,12 @@ describe( "Test RECURSO MEDICION", function() {
             mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 05:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
             mediciones.push(new Modelo.Medicion(null, 4, '2021-09-29 06:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
             mediciones.push(new Modelo.Medicion(null, 1, '2021-09-29 07:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            // esta medicion no sale por fuera de rango
-            mediciones.push(new Modelo.Medicion(null, 120, '2021-09-29 16:00:00', new Modelo.Posicion(50.995591,-0.16732), 29, 'GTI-3A-1',1));
-
+            mediciones.push(new Modelo.Medicion(null, 28, '2021-09-29 16:00:00', new Modelo.Posicion(50.995591,-0.16732), 29, 'GTI-3A-1',1));
             mediciones.push(new Modelo.Medicion(null, 0, '2021-09-29 02:00:00', new Modelo.Posicion(38.995366,-0.167041), 29, 'GTI-3A-1',2));
-            // fuera de rango
             mediciones.push(new Modelo.Medicion(null, 200, '2021-09-29 02:00:00', new Modelo.Posicion(80.995366,-0.167041), 29, 'GTI-3A-1',2));
             mediciones.push(new Modelo.Medicion(null, 190, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',3));
             mediciones.push(new Modelo.Medicion(null, 0.032, '2021-09-29 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',4));
-            mediciones.push(new Modelo.Medicion(null, 0.1, '2021-09-29 04:01:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',4));
+            mediciones.push(new Modelo.Medicion(null, 0.1, '2021-09-29 04:01:00', new Modelo.Posicion(80.995591,-0.16732), 29, 'GTI-3A-1',4));
 
             await laLogica.publicarMediciones(mediciones)
 
@@ -147,10 +144,10 @@ describe( "Test RECURSO MEDICION", function() {
             console.log(error);
         }
 
-        assert.equal(res[0].valor,103.69,"¿El AQI del co no es 103.69?")
+        assert.equal(res[0].valor,90.73,"¿El AQI del co no es 103.69?")
         assert.equal(res[1].valor,0,"¿El AQI del no2 es 0?")
         assert.equal(res[2].valor,125,"¿El AQI del so2 no es 125?")
-        assert.equal(res[3].valor,60.37,"¿El AQI del o3 no es 60.37?")
+        assert.equal(res[3].valor,29.63,"¿El AQI del o3 no es 60.37?")
 
     })// it
 
@@ -167,12 +164,15 @@ describe( "Test RECURSO MEDICION", function() {
             mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 05:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
             mediciones.push(new Modelo.Medicion(null, 4, '2021-09-29 06:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
             mediciones.push(new Modelo.Medicion(null, 1, '2021-09-29 07:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 9, '2021-09-29 16:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
+            // esta medicion no sale por fuera de rango
+            mediciones.push(new Modelo.Medicion(null, 28, '2021-09-29 16:00:00', new Modelo.Posicion(50.995591,-0.16732), 29, 'GTI-3A-1',1));
 
             mediciones.push(new Modelo.Medicion(null, 0, '2021-09-29 02:00:00', new Modelo.Posicion(38.995366,-0.167041), 29, 'GTI-3A-1',2));
+            // fuera de rango
+            mediciones.push(new Modelo.Medicion(null, 200, '2021-09-29 02:00:00', new Modelo.Posicion(80.995366,-0.167041), 29, 'GTI-3A-1',2));
             mediciones.push(new Modelo.Medicion(null, 190, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',3));
             mediciones.push(new Modelo.Medicion(null, 0.032, '2021-09-29 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',4));
-            mediciones.push(new Modelo.Medicion(null, 0.1, '2021-09-29 04:01:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',4));
+            mediciones.push(new Modelo.Medicion(null, 0.1, '2021-09-29 04:01:00', new Modelo.Posicion(80.995591,-0.16732), 29, 'GTI-3A-1',4));
 
             await laLogica.publicarMediciones(mediciones)
 
@@ -185,8 +185,8 @@ describe( "Test RECURSO MEDICION", function() {
             console.log(error);
         }
 
-        assert.equal(res[0].valor,49.01,"¿El AQI del co no es 49.01?")
-        assert.equal(res[1].valor,0,"¿El AQI del no2 es 0?")
+        assert.equal(res[0].valor,118.28,"¿El AQI del co no es 92.74?")
+        assert.equal(res[1].valor,41.67,"¿El AQI del no2 es 0?")
         assert.equal(res[2].valor,125,"¿El AQI del so2 no es 125?")
         assert.equal(res[3].valor,60.37,"¿El AQI del o3 no es 60.37?")
 

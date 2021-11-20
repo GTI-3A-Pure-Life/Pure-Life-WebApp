@@ -93,8 +93,8 @@ class Utilidades {
                 break;    
 
         }
-
-        return Math.round(valorAQI*100)/100;;
+        valorAQI = Math.round(valorAQI*100)/100;
+        return valorAQI;
 
     }
 
@@ -182,28 +182,33 @@ class Utilidades {
      * 
      */
     static calcularMediaPPMHoraMediciones(mediciones){
-        //  Calcular tiempo desde la primera fecha y la ultima
-        let tiempoHoras = mediciones.length>1
-        ? this.calculcarTiempoMsEntreFechas(mediciones[0].fecha, mediciones[mediciones.length-1].fecha  )/1000/60/60
-        : 1;
-        
-
-
         let ppmSuma = 0;
         let mediaPPMUnaHora = 0;
+        if(mediciones.length>0){
+            //  Calcular tiempo desde la primera fecha y la ultima
+            let tiempoHoras = mediciones.length>1
+            ? this.calculcarTiempoMsEntreFechas(mediciones[0].fecha, mediciones[mediciones.length-1].fecha  )/1000/60/60
+            : 1;
 
-        for(let i=0;i<mediciones.length;i++){
-            ppmSuma += mediciones[i].valor;     
+
+            // SABER COMO HACER LA MEDIA PONDERADA POR EL TIEMPO
+            // AHORA MISMO ES SOLO MEDIA ARITMETICA
+
+
+
+            for(let i=0;i<mediciones.length;i++){
+                ppmSuma += mediciones[i].valor;     
+            }
+
+            //if(tiempoHoras<1){
+                // si es menor que uno hacer media aritmetica no del tiempo
+                mediaPPMUnaHora = ppmSuma/mediciones.length;
+            //}else{
+                // Calcular media de los valores por el total del tiempo
+                ///mediaPPMUnaHora = ppmSuma/tiempoHoras;
+            //}
+
         }
-
-        if(tiempoHoras<1){
-            // si es menor que uno hacer media aritmetica no del tiempo
-            mediaPPMUnaHora = ppmSuma/mediciones.length;
-        }else{
-            // Calcular media de los valores por el total del tiempo
-            mediaPPMUnaHora = ppmSuma/tiempoHoras;
-        }
-
         
         return mediaPPMUnaHora;
 
