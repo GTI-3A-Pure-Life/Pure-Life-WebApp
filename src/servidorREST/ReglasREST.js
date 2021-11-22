@@ -77,10 +77,42 @@ module.exports.cargar = function(servidorExpress, laLogica){
     }) // get /mediciones
 
     // .......................................................
-    // get /mediciones/:fecha_inicio/:fecha_fin
+    // get /mediciones?idUsuario="+idUsuario+"&fecha_inicio="+fechaInicio+"&fecha_fin="+fechaFin,
+    // .......................................................
+    servidorExpress.get('/mediciones/usuario', async function( peticion, respuesta ){
+        console.log( " * GET /mediciones/usuario?idUsuario=idUsuario&fecha_inicio=fechaInicio&fecha_fin=fechaFin" )
+        
+        let fechaInicio = peticion.query.fecha_inicio;
+        let fechaFin = peticion.query.fecha_fin;
+        let idUsuario = peticion.query.idUsuario;
+        
+        try{
+            var res = await laLogica.obtenerMedicionesDeHastaPorUsuario(fechaInicio,fechaFin,idUsuario)
+            
+            
+            // todo ok 
+            // si el array de resultados no tiene una casilla ...
+            if( res.length == 0 ) {
+                // 204: realizado ok pero sin resultados
+                respuesta.status(204).send();
+                return
+            }
+            // todo ok 
+            
+            let a = Modelo.Medicion.formatearRAWBDData(res);
+            respuesta.send(a)
+
+        }catch(error){
+
+            respuesta.status(500).send(  {mensaje:error}  )
+        }
+    }) // get /mediciones/usuario
+
+     // .......................................................
+    // get /mediciones?idUsuario="+idUsuario+"&fecha_inicio="+fechaInicio+"&fecha_fin="+fechaFin,
     // .......................................................
     servidorExpress.get('/mediciones/:fecha_inicio/:fecha_fin', async function( peticion, respuesta ){
-        console.log( " * GET /mediciones/:fecha_inicio/:fecha_fin" )
+        console.log( " * GET mediciones/:fecha_inicio/:fecha_fin" )
         
         let fechaInicio = peticion.params.fecha_inicio;
         let fechaFin = peticion.params.fecha_fin;
@@ -105,7 +137,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
 
             respuesta.status(500).send(  {mensaje:error}  )
         }
-    }) // get /mediciones
+    }) // get /mediciones/usuario
 
 
     // .......................................................

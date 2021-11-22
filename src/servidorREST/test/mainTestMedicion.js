@@ -54,20 +54,20 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
         
        
         var mediciones = Array();
-        mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 00:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 4, '2021-09-29 01:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 02:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 20, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 22, '2021-09-29 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 05:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 4, '2021-09-29 06:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 1, '2021-09-29 07:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 28, '2021-09-29 16:00:00', new Modelo.Posicion(50.995591,-0.16732), 29, 'GTI-3A-1',1));
-        mediciones.push(new Modelo.Medicion(null, 0, '2021-09-29 02:00:00', new Modelo.Posicion(38.995366,-0.167041), 29, 'GTI-3A-1',2));
-        mediciones.push(new Modelo.Medicion(null, 200, '2021-09-29 02:00:00', new Modelo.Posicion(80.995366,-0.167041), 29, 'GTI-3A-1',2));
-        mediciones.push(new Modelo.Medicion(null, 190, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',3));
-        mediciones.push(new Modelo.Medicion(null, 0.032, '2021-09-29 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',4));
-        mediciones.push(new Modelo.Medicion(null, 0.1, '2021-09-29 04:01:00', new Modelo.Posicion(80.995591,-0.16732), 29, 'GTI-3A-1',4));
+        mediciones.push(new Modelo.Medicion(null, 3, '2021-11-22 00:00:00', new Modelo.Posicion(38.995591,-0.16732),38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 4, '2021-11-22 01:00:00', new Modelo.Posicion(38.995591,-0.16732), 38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 3, '2021-11-22 02:00:00', new Modelo.Posicion(38.995591,-0.16732), 38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 20, '2021-11-22 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 22, '2021-11-22 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 3, '2021-11-22 05:00:00', new Modelo.Posicion(38.995591,-0.16732), 38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 4, '2021-11-22 06:00:00', new Modelo.Posicion(38.995591,-0.16732), 38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 1, '2021-11-22 07:00:00', new Modelo.Posicion(38.995591,-0.16732), 38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 28, '2021-11-22 16:00:00', new Modelo.Posicion(50.995591,-0.16732), 38, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 0, '2021-11-22 02:00:00', new Modelo.Posicion(38.995366,-0.167041), 38, 'GTI-3A-1',2));
+        mediciones.push(new Modelo.Medicion(null, 200, '2021-11-22 02:00:00', new Modelo.Posicion(80.995366,-0.167041), 38, 'GTI-3A-1',2));
+        mediciones.push(new Modelo.Medicion(null, 190, '2021-11-22 03:00:00', new Modelo.Posicion(38.995591,-0.16732),38, 'GTI-3A-1',3));
+        mediciones.push(new Modelo.Medicion(null, 0.032, '2021-11-22 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 38, 'GTI-3A-1',4));
+        mediciones.push(new Modelo.Medicion(null, 0.1, '2021-11-22 04:01:00', new Modelo.Posicion(80.995591,-0.16732), 38, 'GTI-3A-1',4));
 
         var listaJSONmediciones = Modelo.Medicion.listaMedicionesAJSON(mediciones)
         
@@ -90,7 +90,7 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
     // ....................................................
     it( "probar POST medicion usuario no existente /medicion", function( hecho ) {
         
-        var a = new Modelo.Medicion(null, 0, '2021-09-29', new Modelo.Posicion(30,30), -1, 'GTI-3A-1',1)
+        var a = new Modelo.Medicion(null, 0, '2021-11-22', new Modelo.Posicion(30,30), -1, 'GTI-3A-1',1)
         
         var mediciones = Array();
         mediciones.push(a);
@@ -118,7 +118,7 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
     // ....................................................
     it( "probar POST mediciones sensor no existente /mediciones", function( hecho ) {
         
-        var a = new Modelo.Medicion(null, 0, '2021-09-29', new Modelo.Posicion(30,30), 4, 'GTI-3A-',1)
+        var a = new Modelo.Medicion(null, 0, '2021-11-22', new Modelo.Posicion(30,30), 4, 'GTI-3A-',1)
         
         var mediciones = Array();
         mediciones.push(a);
@@ -169,7 +169,7 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
     // ....................................................
     // ....................................................
     it( "probar GET /mediciones/:fecha_inicio/:fecha_fin", function( hecho ) {
-        request.get({ url : IP_PUERTO+"/mediciones/2021-09-29 00:00:00/2021-09-29 03:00:00",
+        request.get({ url : IP_PUERTO+"/mediciones/2021-11-22 00:00:00/2021-11-22 03:00:00",
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                      },
                     function( err, respuesta, carga ) {
@@ -194,7 +194,7 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
      // ....................................................
     // ....................................................
     it( "probar GET /calidad_aire/usuario?fecha_inicio:Texto&fecha_fin:Texto&idUsuario:N", function( hecho ) {
-        request.get({ url : IP_PUERTO+"/calidad_aire/usuario?fecha_inicio=2021-09-29 00:00:00&fecha_fin=2021-09-29 23:59:00&idUsuario=29",
+        request.get({ url : IP_PUERTO+"/calidad_aire/usuario?fecha_inicio=2021-11-22 00:00:00&fecha_fin=2021-11-22 23:59:00&idUsuario=29",
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                      },
 
@@ -217,7 +217,7 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
      // ....................................................
     // ....................................................
     it( "probar GET /calidad_aire/zona?fecha_inicio:Texto&fecha_fin:Texto&latitud:R?longitud:R?radio:R", function( hecho ) {
-        request.get({ url : IP_PUERTO+"/calidad_aire/zona?fecha_inicio=2021-09-29 00:00:00&fecha_fin=2021-09-29 23:59:00&latitud=38.995591&longitud=-0.167129&radio=18",
+        request.get({ url : IP_PUERTO+"/calidad_aire/zona?fecha_inicio=2021-11-22 00:00:00&fecha_fin=2021-11-22 23:59:00&latitud=38.995591&longitud=-0.167129&radio=18",
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                      },
 

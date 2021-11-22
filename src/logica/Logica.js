@@ -145,14 +145,45 @@ module.exports = class Logica {
     // .................................................................
     // .................................................................
     /**
-     * Texto, Texto -> obtenerTodasMediciones -> Lista<Medicion>
+     * Texto, Texto, Texto -> obtenerMedicionesDeHastaPorUsuario -> Lista<Medicion>
+     * 
+     * @author Juan Ferrera Sala
+     * 22/11/2021
+     * 
+     * @returns devuelve una promesa con las mediciones o lanza un error
+     */
+     obtenerMedicionesDeHastaPorUsuario(fechaInicio,fechaFin,idUsuario) {
+        var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
+        ' where '+BDConstantes.TABLA_MEDICIONES.USUARIO+'=? and '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ?';
+        return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( 
+                textoSQL, 
+                [idUsuario,fechaInicio,fechaFin],
+                function( err,res,fields ) {
+
+                    if(!err){
+                        // return 
+                       resolver(res)
+
+                    }else{
+                        rechazar(err)
+                    }
+                    
+                })
+            })
+        } // ()
+
+         // .................................................................
+    // .................................................................
+    /**
+     * Texto, Texto -> obtenerMedicionesDeHastaPorUsuario -> Lista<Medicion>
      * 
      * @author Ruben Pardo Casanova
      * 11/11/2021
      * 
      * @returns devuelve una promesa con las mediciones o lanza un error
      */
-     obtenerMedicionesDeHasta(fechaInicio,fechaFin ) {
+     obtenerMedicionesDeHasta(fechaInicio,fechaFin) {
         var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
         ' where '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ?';
         return new Promise( (resolver, rechazar) => {
@@ -172,7 +203,6 @@ module.exports = class Logica {
                 })
             })
         } // ()
-
 
     // .................................................................
     // .................................................................
