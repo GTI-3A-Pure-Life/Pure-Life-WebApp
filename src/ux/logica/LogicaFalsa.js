@@ -22,7 +22,6 @@ LogicaFalsa = {
         let respuesta = await fetch(  IP_PUERTO+"/mediciones",{
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                      }).then(response=>{
-
                          if(response.status == 204){
                             //ok pero vacío
                             return {datos:[]};
@@ -37,7 +36,7 @@ LogicaFalsa = {
                          
                         
                      }).then(medicionesJSON=>{
-                        return medicionesJSON.datos;
+                        return medicionesJSON;
                      })
                     
         return respuesta;
