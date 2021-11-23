@@ -189,6 +189,29 @@ module.exports.cargar = function(servidorExpress, laLogica){
     }) // GET/calidad_aire/zona?fecha_inicio:Texto&fecha_fin:Texto&latitud:R?longitud:R?radio:R
 
 
+    servidorExpress.get('/registro_estado_sensor', async function( peticion, respuesta ){
+        console.log( " * GET /registro_estado_sensor" )
+        
+        try{
+            var res = await laLogica.obtenerRegistrosEstadoSensor()
+            
+            
+            // todo ok 
+            // si el array de resultados no tiene una casilla ...
+            if( res.length == 0 ) {
+                // 204: realizado ok pero sin resultados
+                respuesta.status(204).send();
+                return
+            }
+            // todo ok 
+            let a = Modelo.RegistroEstadoSensor.formatearRawData(res);
+            respuesta.send(a)
+
+        }catch(error){
+
+            respuesta.status(500).send(  {mensaje:error}  )
+        }
+    }) // get /mediciones/usuario
 
     // .......................................................
     // post /registro_estado_sensor/bateria

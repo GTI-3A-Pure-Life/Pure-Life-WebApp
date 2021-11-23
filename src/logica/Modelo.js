@@ -253,6 +253,20 @@ class Posicion{
          
     }
 
+    static RegistroFromRawData(rawData){
+        let fechaHoraV = formatearFecha(rawData.fechaHora);
+        return new RegistroEstadoSensor(
+            null,
+            rawData.descalibrado,
+            rawData.pocaBateria,
+            rawData.averiado,
+            rawData.leido,
+            rawData.uuidSensor,
+            fechaHoraV
+
+        );
+    }
+
 
      /**
      * toJSON() -> Texto
@@ -269,6 +283,25 @@ class Posicion{
            leido: this.leido
           });
    }
+
+   static formatearRawData(query) {
+    const registro = query.map(function(element){
+
+    let fechaHoraV = formatearFecha(element.fechaHora);
+    return {
+
+        uuidSensor: element.uuidSensor,
+           fechaHora: fechaHoraV,
+           pocaBateria: element.bateriaBaja,
+           averiado: element.averiado,
+           descalibrado: element.descalibrado,
+           leido: element.leido
+    }
+})
+
+return registro;
+}
+
 
 
 

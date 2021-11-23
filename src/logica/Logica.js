@@ -304,6 +304,38 @@ module.exports = class Logica {
             })
         } // ()
 
+
+
+        obtenerRegistrosEstadoSensor() {
+
+            var textoSQL ='select * from ' 
+            + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA +
+            ' order by '+ BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' desc';    
+            // primer ? = latitud del punto, segundo ? longitud del punto, tercer ? latitud del punto
+            // cuarto ? = radio del circulo
+            // los dos ultimos ? fecha inicio, fecha fin, ultimo ? radio
+    
+            return new Promise( (resolver, rechazar) => {
+                this.laConexion.query( 
+                    textoSQL, function( err,res,fields ) {
+                        if(!err){
+                            let registros = Array();
+                            for(let i =0;i<res.length;i++){
+                                registros.push(Modelo.RegistroEstadoSensor.RegistroFromRawData(res[i]))
+                            }
+                           resolver(registros)
+    
+                        }else{
+                            rechazar(err)
+                        }
+                        
+                    })
+                })
+            } // ()
+
+
+
+
     // .................................................................
     // Lista<MedicionCO2>
     // -->
