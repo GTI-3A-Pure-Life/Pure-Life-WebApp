@@ -221,7 +221,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
         console.log("POST */registro/bateria");
         // creo el registro
         let json = JSON.parse(peticion.body)["res"];
-        let registro = new Modelo.RegistroEstadoSensor(null, 0, json.tieneBateriaBaja, 0, 0, json.uuidSensor, json.fechaHora);
+        let registro = new Modelo.RegistroEstadoSensor(null, json.id, 0, json.tieneBateriaBaja, 0, 0, json.uuidSensor, json.fechaHora);
 
         try {
             await laLogica.guardarRegistroBateriaSensor(registro);
@@ -248,7 +248,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
         console.log("POST */registro/averiado");
         // creo el registro
         let json = JSON.parse(peticion.body)["res"];
-        let registro = new Modelo.RegistroEstadoSensor(null, 0, 0, json.estaAveriado, 0, json.uuidSensor, json.fechaHora);
+        let registro = new Modelo.RegistroEstadoSensor(null, json.id, 0, 0, json.estaAveriado, 0, json.uuidSensor, json.fechaHora);
 
         try {
             await laLogica.guardarRegistroAveriaSensor(registro);
@@ -268,6 +268,29 @@ module.exports.cargar = function(servidorExpress, laLogica){
         }
     })// post /registro_estado_sensor/averiado
 
+
+    // .......................................................
+    // put /registro_estado_sensor/leido
+    // @author Florescu, Lorena-Ioana
+    // @version 24/11/2021
+    // .......................................................
+    servidorExpress.put('/registro_estado_sensor/leido', async function(peticion, respuesta) {
+
+        console.log("PUT */registro/leido");
+        // creo el registro
+        let json = JSON.parse(peticion.body)["res"];
+        let id = json.id;
+
+        try {
+            await laLogica.actualizar_leido(id);
+            // todo ok
+            respuesta.status(200).send( JSON.stringify( {mensaje:"Leido se ha actualizado correctamente"} ) )
+        } catch (error) {
+            
+            respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
+            
+        }
+    })// post /registro_estado_sensor/leido
 
     // .......................................................
     // POST /usuario/iniciar_sesion

@@ -335,6 +335,30 @@ module.exports = class Logica {
 
 
 
+    /**
+     * Actualizar el campo leido del registro
+     * @author Florescu, Lorena-Ioana
+     * @version 24/11/2021
+     * @param {N} id identificador del registro
+     */
+    actualizar_leido(id){
+
+        //crear la sentencia
+        var textoSQL = 'UPDATE ' +BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA +
+        ' SET ' + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.LEIDO +"= 1 WHERE " + 
+        BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.ID + '= ?';
+
+        return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
+                textoSQL, 
+                [id],
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver() )
+                })
+            })
+
+
+    }       
 
     // .................................................................
     // Lista<MedicionCO2>
