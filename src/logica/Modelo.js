@@ -229,11 +229,12 @@ class Posicion{
      * @param {Texto} uuidSensor 
      * @param {Texto} fechaHora 
      */
-    constructor(json,descalibrado, bateriaBaja,averiado,leido,uuidSensor,fechaHora){
+    constructor(json,id,descalibrado, bateriaBaja,averiado,leido,uuidSensor,fechaHora){
         
         if(arguments.length == 1){
             // recibe solo el json
             let jsonObject = JSON.parse(json);
+            this.id = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.ID];;
             this.descalibrado = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.DESCALIBRADO];;
             this.bateriaBaja = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.POCA_BATERIA];;
             this.averiado = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.AVERIADO];;
@@ -243,6 +244,7 @@ class Posicion{
 
 
         }else{
+            this.id = id;
             this.descalibrado = descalibrado;
             this.bateriaBaja = bateriaBaja;
             this.averiado = averiado;
@@ -257,6 +259,7 @@ class Posicion{
         let fechaHoraV = formatearFecha(rawData.fechaHora);
         return new RegistroEstadoSensor(
             null,
+            rawData.id,
             rawData.descalibrado,
             rawData.pocaBateria,
             rawData.averiado,
@@ -289,13 +292,13 @@ class Posicion{
 
     let fechaHoraV = formatearFecha(element.fechaHora);
     return {
-
-        uuidSensor: element.uuidSensor,
-           fechaHora: fechaHoraV,
-           pocaBateria: element.bateriaBaja,
-           averiado: element.averiado,
-           descalibrado: element.descalibrado,
-           leido: element.leido
+            id: element.id,
+            uuidSensor: element.uuidSensor,
+            fechaHora: fechaHoraV,
+            pocaBateria: element.bateriaBaja,
+            averiado: element.averiado,
+            descalibrado: element.descalibrado,
+            leido: element.leido
     }
 })
 
