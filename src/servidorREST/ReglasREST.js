@@ -149,17 +149,21 @@ module.exports.cargar = function(servidorExpress, laLogica){
         let fechaInicio = peticion.query.fecha_inicio;
         let fechaFin = peticion.query.fecha_fin;
         let idUsuario = peticion.query.idUsuario;
-        
-        try{
-            var res = await laLogica.obtenerCalidadAirePorTiempoYUsuario(fechaInicio,fechaFin,idUsuario)
-            
-            
-            // todo ok 
-            respuesta.send(res)
 
-        }catch(error){
+        if(fechaInicio==null || fechaFin==null || idUsuario==null){
+            respuesta.status(500).send(  {mensaje:"Faltan datos o algun parametro esta mal escrito"}  )
+        }else{
+            try{
+                var res = await laLogica.obtenerCalidadAirePorTiempoYUsuario(fechaInicio,fechaFin,idUsuario)
+                
+                
+                // todo ok 
+                respuesta.send(res)
 
-            respuesta.status(500).send(  {mensaje:error}  )
+            }catch(error){
+
+                respuesta.status(500).send(  {mensaje:error}  )
+            }
         }
     }) // GET/calidad_aire/usuario?fecha_inicio:Texto&fecha_fin:Texto&idUsuario:N
 
@@ -174,18 +178,24 @@ module.exports.cargar = function(servidorExpress, laLogica){
         let latitud = peticion.query.latitud;
         let longitud = peticion.query.longitud;
         let radio = peticion.query.radio;
-        
-        try{
-            var res = await laLogica.obtenerCalidadAirePorTiempoYZona(fechaInicio,fechaFin,latitud,longitud,radio)
-            
-            
-            // todo ok 
-            respuesta.send(res)
 
-        }catch(error){
-
-            respuesta.status(500).send(  {mensaje:error}  )
+        if(fechaInicio==null || fechaFin==null || latitud==null || longitud==null || radio==null){
+            respuesta.status(500).send(  {mensaje:"Faltan datos o algun parametro esta mal escrito"}  )
+        }else{
+            try{
+                var res = await laLogica.obtenerCalidadAirePorTiempoYZona(fechaInicio,fechaFin,latitud,longitud,radio)
+                
+                
+                // todo ok 
+                respuesta.send(res)
+    
+            }catch(error){
+    
+                respuesta.status(500).send(  {mensaje:error}  )
+            }
         }
+        
+        
     }) // GET/calidad_aire/zona?fecha_inicio:Texto&fecha_fin:Texto&latitud:R?longitud:R?radio:R
 
 

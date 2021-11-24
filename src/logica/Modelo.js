@@ -1,7 +1,7 @@
 // .....................................................................
 // Medicion.js Posicion.js RegistroEstadoSensor
 // .....................................................................
-const BDConstantes = require('./Constantes/BDConstantes.js')
+const BDConstantes = require('./Constantes/BDConstantes.js');
 
 
 /**
@@ -111,9 +111,11 @@ class Medicion {
             const mediciones = query.map(function(element){
         
             let fechaHoraV = formatearFecha(element.fechaHora);
+            let indiceAQI = obtenerIndiceAQI(element.valor,element.tipoGas);
+            
             return {
 
-                valor: element.valor,
+                valor: indiceAQI,
                 fechaHora:fechaHoraV,
                 posMedicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
                 idUsuario: element.idUsuario,
@@ -437,6 +439,80 @@ return registro;
 
     return strRes;
 }
+
+    function obtenerIndiceAQI(valor,tipoMedicion){
+        let valorAQI = 0;
+        switch(tipoMedicion){
+            case 1:
+                // co
+                if(valor<=4.4){
+                    // bueno
+                valorAQI = valor*50/4.4
+                }else if(valor>4.4 && valor<=12.4){
+                    // moderado
+                    valorAQI = valor*150/12.4
+                }else if(valor>12.4 && valor<=15.4){
+                    // malo
+                    valorAQI = valor*200/15.4
+                }else{
+                    // muy malo
+                    valorAQI = valor*300/15.5
+                }
+                break;
+            case 2:
+                // NO2
+                if(valor<=53){
+                    // bueno
+                valorAQI = valor*50/53
+                }else if(valor>53 && valor<=360){
+                    // moderado
+                    valorAQI = valor*150/360
+                }else if(valor>360 && valor<=649){
+                    // malo
+                    valorAQI = valor*200/649
+                }else{
+                    // muy malo
+                    valorAQI = valor*300/1249
+                }
+                break;
+            case 3:
+                // SO2
+                if(valor<=35){
+                    // bueno
+                valorAQI = valor*50/35
+                }else if(valor>35 && valor<=185){
+                    // moderado
+                    valorAQI = valor*150/185
+                }else if(valor>185 && valor<=304){
+                    // malo
+                    valorAQI = valor*200/304
+                }else{
+                    // muy malo
+                    valorAQI = valor*300/604
+                }
+                break;
+            case 4:
+                // O3
+                if(valor<=0.054){
+                    // bueno
+                valorAQI = valor*50/0.054
+                }else if(valor>0.054 && valor<=0.164){
+                    // moderado
+                    valorAQI = valor*150/0.164
+                }else if(valor>0.164 && valor<=0.204){
+                    // malo
+                    valorAQI = valor*200/0.204
+                }else{
+                    // muy malo
+                    valorAQI = valor*300/0.404
+                }
+                break;    
+
+        }
+        valorAQI = Math.round(valorAQI*100)/100;
+        return valorAQI;
+
+    }
 
 
 module.exports = {

@@ -92,7 +92,7 @@ module.exports = class Logica {
     /**
      * 
      * @param {N} cuantas Numero de las ultimas mediciones a obtener
-     * @returns Una Lista<MedicionCO2> con las ultimas N mediciones de la BD
+     * @returns Una Lista<Medicion> con las ultimas N mediciones de la BD
      */
     obtenerUltimasMediciones( cuantas ) {
         var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA 
@@ -118,11 +118,11 @@ module.exports = class Logica {
      // .................................................................
     // 
     // -->
-    // obtenerTodasMediciones() --> Lista<MedicionCO2>
+    // obtenerTodasMediciones() --> Lista<Medicion>
     // .................................................................
     /**
      * 
-     * @returns Una Lista<MedicionCO2> con todas las mediciones de la BD
+     * @returns Una Lista<Medicion> con todas las mediciones de la BD
      */
     obtenerTodasMediciones(  ) {
         var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA;
@@ -234,9 +234,10 @@ module.exports = class Logica {
             this.laConexion.query( 
                 textoSQL, 
                 [latitud, longitud, latitud, fechaInicio,fechaFin , radio],
-                function( err,res,fields ) {
+                function( err,res ) {
                     if(!err){
-                        let mediciones = Array();
+                        
+                        let mediciones = new Array()
                         for(let i =0;i<res.length;i++){
                             mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
                         }
@@ -271,6 +272,9 @@ module.exports = class Logica {
      */
      obtenerCalidadAirePorTiempoYUsuario(fechaInicio,fechaFin, idUsuario) {
 
+        console.log(fechaInicio);
+        console.log(fechaFin);
+        console.log(idUsuario);
         var textoSQL ='select * from ' 
         + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
         ' where '+ BDConstantes.TABLA_MEDICIONES.USUARIO +' = ? and ' +BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ? ';
@@ -286,6 +290,7 @@ module.exports = class Logica {
                 function( err,res,fields ) {
                     if(!err){
                         let mediciones = Array();
+                        console.log(res);
                         for(let i =0;i<res.length;i++){
                             mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
                         }
