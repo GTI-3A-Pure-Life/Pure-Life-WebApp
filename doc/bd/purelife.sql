@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-11-2021 a las 18:57:00
+-- Tiempo de generación: 18-11-2021 a las 10:42:46
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 7.3.31
 
@@ -30,9 +30,16 @@ SET time_zone = "+00:00";
 CREATE TABLE `datos_usuario` (
   `id` int(11) NOT NULL,
   `idUsuario` int(11) NOT NULL,
-  `posCasa` point NOT NULL,
-  `posTrabajo` point NOT NULL
+  `posCasa` point DEFAULT NULL,
+  `posTrabajo` point DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `datos_usuario`
+--
+
+INSERT INTO `datos_usuario` (`id`, `idUsuario`, `posCasa`, `posTrabajo`) VALUES
+(2, 13, 0x0000000001010000000000000000003e400000000000003e40, NULL);
 
 -- --------------------------------------------------------
 
@@ -50,6 +57,14 @@ CREATE TABLE `medicion` (
   `tipoGas` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `medicion`
+--
+
+INSERT INTO `medicion` (`id`, `idUsuario`, `uuidSensor`, `posMedicion`, `fechaHora`, `valor`, `tipoGas`) VALUES
+(1, 13, 'GTI-3A-1', 0x0000000001010000000000000000003e400000000000003e40, '2021-09-29 00:00:00', 1, 1),
+(2, 13, 'GTI-3A-1', 0x0000000001010000000000000000003e400000000000003e40, '2021-09-29 00:10:00', 2, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -59,12 +74,41 @@ CREATE TABLE `medicion` (
 CREATE TABLE `registro_estado_sensor` (
   `id` int(11) NOT NULL,
   `uuidSensor` varchar(36) NOT NULL,
-  `pocaBateria` tinyint(1) NOT NULL,
-  `averiado` tinyint(1) NOT NULL,
-  `descalibrado` tinyint(1) NOT NULL,
+  `pocaBateria` tinyint(1) NOT NULL DEFAULT 0,
+  `averiado` tinyint(1) NOT NULL DEFAULT 0,
+  `descalibrado` tinyint(1) NOT NULL DEFAULT 0,
   `fechaHora` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `leido` tinyint(1) NOT NULL
+  `leido` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `registro_estado_sensor`
+--
+
+INSERT INTO `registro_estado_sensor` (`id`, `uuidSensor`, `pocaBateria`, `averiado`, `descalibrado`, `fechaHora`, `leido`) VALUES
+(1, 'GTI-3A-1', 1, 0, 0, '2021-10-29 10:39:00', 0),
+(3, 'GTI-3A-1', 1, 1, 0, '2021-10-29 13:39:00', 0),
+(5, 'GTI-3A-1', 0, 1, 0, '2021-10-29 10:39:00', 0);
+
+--
+-- Disparadores `registro_estado_sensor`
+--
+DELIMITER $$
+CREATE TRIGGER `no_guardar_registro_duplicado_before_insert` BEFORE INSERT ON `registro_estado_sensor` FOR EACH ROW BEGIN
+  	DECLARE lastAveriado, lastBateria, lastDescalibrado tinyint(1);
+	SELECT averiado INTO lastAveriado FROM registro_estado_sensor WHERE uuidSensor = NEW.uuidSensor order by fechaHora DESC LIMIT 1;
+	SELECT pocaBateria INTO lastBateria FROM registro_estado_sensor WHERE uuidSensor = NEW.uuidSensor order by fechaHora DESC LIMIT 1;
+	SELECT descalibrado INTO lastDescalibrado FROM registro_estado_sensor WHERE uuidSensor = NEW.uuidSensor order by fechaHora DESC LIMIT 1;
+    
+    IF NEW.averiado = lastAveriado
+    AND NEW.pocaBateria = lastBateria 
+    AND NEW.descalibrado = lastDescalibrado THEN
+            signal sqlstate '45000';
+    END IF;
+
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -77,6 +121,14 @@ CREATE TABLE `roles` (
   `nombre` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `roles`
+--
+
+INSERT INTO `roles` (`id`, `nombre`) VALUES
+(1, 'normal'),
+(2, 'admin');
+
 -- --------------------------------------------------------
 
 --
@@ -86,6 +138,13 @@ CREATE TABLE `roles` (
 CREATE TABLE `sensor` (
   `uuid` varchar(36) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `sensor`
+--
+
+INSERT INTO `sensor` (`uuid`) VALUES
+('GTI-3A-1');
 
 -- --------------------------------------------------------
 
@@ -99,6 +158,16 @@ CREATE TABLE `tipo_gas` (
   `descripcion` varchar(10000) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Volcado de datos para la tabla `tipo_gas`
+--
+
+INSERT INTO `tipo_gas` (`id`, `nombre`, `descripcion`) VALUES
+(1, 'CO', ''),
+(2, 'NO2', ''),
+(3, 'SO2', ''),
+(4, 'O3', '');
+
 -- --------------------------------------------------------
 
 --
@@ -110,9 +179,18 @@ CREATE TABLE `usuario` (
   `nombre` varchar(50) NOT NULL,
   `correo` varchar(320) NOT NULL,
   `contrasenya` varchar(40) NOT NULL,
-  `telefono` varchar(30) NOT NULL,
+  `telefono` varchar(30) DEFAULT NULL,
   `rol` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`id`, `nombre`, `correo`, `contrasenya`, `telefono`, `rol`) VALUES
+(13, 'prueba', 'usuario@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '632145789', 1),
+(22, 'desde rest', 'usuario3@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '1234', 1),
+(35, 'prueba desde web', 'prueba@gmail.com', '711383a59fda05336fd2ccf70c8059d1523eb41a', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -176,6 +254,7 @@ ALTER TABLE `tipo_gas`
 --
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `correo` (`correo`),
   ADD KEY `fk_rol` (`rol`);
 
 --
@@ -194,37 +273,37 @@ ALTER TABLE `usuario_sensor`
 -- AUTO_INCREMENT de la tabla `datos_usuario`
 --
 ALTER TABLE `datos_usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `medicion`
 --
 ALTER TABLE `medicion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `registro_estado_sensor`
 --
 ALTER TABLE `registro_estado_sensor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_gas`
 --
 ALTER TABLE `tipo_gas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_sensor`

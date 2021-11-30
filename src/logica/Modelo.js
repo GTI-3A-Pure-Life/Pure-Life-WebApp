@@ -1,7 +1,7 @@
 // .....................................................................
 // Medicion.js Posicion.js RegistroEstadoSensor
 // .....................................................................
-const BDConstantes = require('./Constantes/BDConstantes.js')
+const BDConstantes = require('./Constantes/BDConstantes.js');
 
 
 /**
@@ -64,6 +64,26 @@ class Medicion {
     
   
 
+     /**
+     * RawDataSQL-> contructor() -> 
+     * 
+     */
+    static MedicionFromRawData(rawData){
+        let fechaHoraV = formatearFecha(rawData.fechaHora);
+        return new Medicion(
+            null,
+            rawData.valor,
+            fechaHoraV,
+            new Posicion(rawData.posMedicion.x, rawData.posMedicion.y),
+            rawData.idUsuario,
+            rawData.uuidSensor,
+            rawData.tipoGas
+
+        );
+
+    }
+
+
     /**
      * toJSON() -> Texto
      * @returns String en formato json del objeto
@@ -91,9 +111,11 @@ class Medicion {
             const mediciones = query.map(function(element){
         
             let fechaHoraV = formatearFecha(element.fechaHora);
+            let indiceAQI = obtenerIndiceAQI(element.valor,element.tipoGas);
+            
             return {
 
-                valor: element.valor,
+                valor: indiceAQI,
                 fechaHora:fechaHoraV,
                 posMedicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
                 idUsuario: element.idUsuario,
@@ -104,6 +126,9 @@ class Medicion {
 
         return mediciones;
     }
+
+
+   
 
     /**
      * JSONObject || Texto -> jsonAListaMediciones() -> List<Medicion>
@@ -144,6 +169,19 @@ class Medicion {
         return res;
     }
 
+
+    /**
+     * Metodo que se usa para ordenar por fecha ascendente(arrayMediciones.sort(Medicion.compararPorFechaASC))
+     * @param {Medicion} medicion1 
+     * @param {Medicion} medicion2 
+     * @returns 
+     */
+    static compararPorFechaASC( medicion1, medicion2 ) {
+        let fecha1 = new Date(medicion1.fecha);
+        let fecha2 = new Date(medicion2.fecha);
+
+        return fecha1 - fecha2
+      }
     
 
 } // ()
@@ -193,11 +231,12 @@ class Posicion{
      * @param {Texto} uuidSensor 
      * @param {Texto} fechaHora 
      */
-    constructor(json,descalibrado, bateriaBaja,averiado,leido,uuidSensor,fechaHora){
+    constructor(json,id,descalibrado, bateriaBaja,averiado,leido,uuidSensor,fechaHora){
         
         if(arguments.length == 1){
             // recibe solo el json
             let jsonObject = JSON.parse(json);
+            this.id = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.ID];;
             this.descalibrado = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.DESCALIBRADO];;
             this.bateriaBaja = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.POCA_BATERIA];;
             this.averiado = jsonObject[BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.AVERIADO];;
@@ -207,6 +246,7 @@ class Posicion{
 
 
         }else{
+            this.id = id;
             this.descalibrado = descalibrado;
             this.bateriaBaja = bateriaBaja;
             this.averiado = averiado;
@@ -215,6 +255,21 @@ class Posicion{
             this.fechaHora = formatearFecha(fechaHora);
         }
          
+    }
+
+    static RegistroFromRawData(rawData){
+        let fechaHoraV = formatearFecha(rawData.fechaHora);
+        return new RegistroEstadoSensor(
+            null,
+            rawData.id,
+            rawData.descalibrado,
+            rawData.pocaBateria,
+            rawData.averiado,
+            rawData.leido,
+            rawData.uuidSensor,
+            fechaHoraV
+
+        );
     }
 
 
@@ -234,10 +289,137 @@ class Posicion{
           });
    }
 
+   static formatearRawData(query) {
+    const registro = query.map(function(element){
+
+    let fechaHoraV = formatearFecha(element.fechaHora);
+    return {
+            id: element.id,
+            uuidSensor: element.uuidSensor,
+            fechaHora: fechaHoraV,
+            pocaBateria: element.bateriaBaja,
+            averiado: element.averiado,
+            descalibrado: element.descalibrado,
+            leido: element.leido
+    }
+})
+
+return registro;
+}
+
+
 
 
 }// ()
 
+
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+
+/**
+ * Clase que representa un usuario
+ * 09/11/21
+ * @author Rubén Pardo Casanova
+ */
+ class Usuario{
+
+    /**
+     * posCasa:Posicion,posTrabajo:Posicion, correo:Texto, nombre:Texto contrasenya:Texto, id:N -> 
+     * constructor()->
+     * 
+     * 
+     * @param {Posicion} posCasa 
+     * @param {Posicion} posTrabajo 
+     * @param {String} correo 
+     * @param {String} contrasenya 
+     * @param {String} nombre 
+     * @param {int} id 
+     * @param {int} rol
+     */
+    constructor(posCasa, posTrabajo, correo, contrasenya, nombre, id,telefono,rol){
+        
+        this.posCasa = posCasa;
+        this.posTrabajo = posTrabajo;
+        this.correo = correo;
+        this.contrasenya = contrasenya;
+        this.nombre = nombre;
+        this.id = id;
+        this.telefono = telefono;
+        this.rol = rol;
+         
+    }
+
+    /**
+     * Texto-> constructor()
+     * @param {QueryRawData} query 
+     * @returns Usuario
+     */
+     static UsuarioFromQueryData(query) {
+       
+        const usuario = new Usuario(
+            query.posCasa == null ? null : new Posicion ( query.posCasa.x, query.posCasa.y ), // comprobar si tiene asignada la posiciones
+            query.posTrabajo == null ? null :new Posicion (query.posTrabajo.x, query.posTrabajo.y ),
+            query.correo,
+            query.contrasenya,
+            query.nombre,
+            query.id,
+            query.telefono,
+            query.rol 
+        );
+        return usuario;
+    }
+
+     /**
+     * toJSON() -> Texto
+     * @returns String en formato json del objeto
+     */
+    toJSON() {
+        
+        // pueden ser nulls, inicializarlos antes con un if
+        let posCasaV = this.posCasa==null ? null :  { latitud: this.posCasa.latitud, longitud: this.posCasa.longitud };
+        let posTrabajoV = this.posTrabajo==null ? null :  { latitud: this.posTrabajo.latitud, longitud: this.posTrabajo.longitud };
+
+        return JSON.stringify({ 
+            id: this.id,
+            rol: this.rol,
+            correo:this.correo,
+            nombre:this.nombre,
+            posCasa: posCasaV,
+            posTrabajo: posTrabajoV,
+            contrasenya: this.contrasenya,
+            telefono: this.telefono
+          });
+    }
+
+    
+
+
+
+}// ()
+
+
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+
+/**
+ * Clase que representa un InformeCalidadAire
+ * 19/11/21
+ * @author Rubén Pardo Casanova
+ */
+ class InformeCalidadAire{
+
+   
+    /**
+     * 
+     * @param {double} valor el valor AQI del gas
+     * @param {int} tipoGas 1 co, 2 no2, 3 so2, 4 o3
+     */
+    constructor(valor,tipoGas){
+        this.valor= valor;
+        this.tipoGas = tipoGas;
+    }
+
+}// ()
 
 
     /**
@@ -249,18 +431,94 @@ class Posicion{
     let date = new Date(fechaAFormatear);
     let strRes = 
     (date.getFullYear()+
-    "/"+(date.getMonth()+1)+
-    "/"+date.getDate()+
-    " "+date.getHours()+
-    ":"+date.getMinutes()+
-    ":"+date.getSeconds());
+    "-"+(date.getMonth()+1)+
+    "-"+date.getDate()+
+    " "+((date.getHours() < 10 ? "0" : "") + date.getHours())+
+    ":"+((date.getMinutes() < 10 ? "0" : "") + date.getMinutes())+
+    ":"+((date.getSeconds() < 10 ? "0" : "") + date.getSeconds()));
 
     return strRes;
 }
+
+    function obtenerIndiceAQI(valor,tipoMedicion){
+        let valorAQI = 0;
+        switch(tipoMedicion){
+            case 1:
+                // co
+                if(valor<=4.4){
+                    // bueno
+                valorAQI = valor*50/4.4
+                }else if(valor>4.4 && valor<=12.4){
+                    // moderado
+                    valorAQI = valor*150/12.4
+                }else if(valor>12.4 && valor<=15.4){
+                    // malo
+                    valorAQI = valor*200/15.4
+                }else{
+                    // muy malo
+                    valorAQI = valor*300/15.5
+                }
+                break;
+            case 2:
+                // NO2
+                if(valor<=53){
+                    // bueno
+                valorAQI = valor*50/53
+                }else if(valor>53 && valor<=360){
+                    // moderado
+                    valorAQI = valor*150/360
+                }else if(valor>360 && valor<=649){
+                    // malo
+                    valorAQI = valor*200/649
+                }else{
+                    // muy malo
+                    valorAQI = valor*300/1249
+                }
+                break;
+            case 3:
+                // SO2
+                if(valor<=35){
+                    // bueno
+                valorAQI = valor*50/35
+                }else if(valor>35 && valor<=185){
+                    // moderado
+                    valorAQI = valor*150/185
+                }else if(valor>185 && valor<=304){
+                    // malo
+                    valorAQI = valor*200/304
+                }else{
+                    // muy malo
+                    valorAQI = valor*300/604
+                }
+                break;
+            case 4:
+                // O3
+                if(valor<=0.054){
+                    // bueno
+                valorAQI = valor*50/0.054
+                }else if(valor>0.054 && valor<=0.164){
+                    // moderado
+                    valorAQI = valor*150/0.164
+                }else if(valor>0.164 && valor<=0.204){
+                    // malo
+                    valorAQI = valor*200/0.204
+                }else{
+                    // muy malo
+                    valorAQI = valor*300/0.404
+                }
+                break;    
+
+        }
+        valorAQI = Math.round(valorAQI*100)/100;
+        return valorAQI;
+
+    }
 
 
 module.exports = {
     Medicion : Medicion,
     Posicion : Posicion,
-    RegistroEstadoSensor: RegistroEstadoSensor
+    RegistroEstadoSensor: RegistroEstadoSensor,
+    Usuario:Usuario,
+    InformeCalidadAire,InformeCalidadAire
 }

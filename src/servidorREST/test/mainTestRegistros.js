@@ -16,6 +16,21 @@ const IP_PUERTO="http://localhost:8080"
 // ........................................................
 describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servidor y que la bd esté vacía\n(primero arrancar el test de logica y luego este para que la bd esté limpia)", function() {
 
+
+    // ....................................................
+    // ....................................................
+    it( "probar que GET /prueba responde ¡Funciona!", function( hecho ) {
+        request.get(
+            { url : IP_PUERTO+"/prueba", headers : { 'User-Agent' : 'Ruben' }},          
+            function( err, respuesta, carga ) {
+                assert.equal( err, null, "¿ha habido un error?" )
+                assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (OK)" )
+                assert.equal( carga, "¡Funciona!", "¿La carga no es ¡Funciona!?" )
+                hecho()
+            } // callback()
+        ) // .get
+    }) // it
+
     // ....................................................
     // ....................................................
     it("Probar que post registro bateria funciona correctamente", function(hecho) {

@@ -14,3 +14,5 @@ insert into sensores values ("GTI-3A-PARDO-RUBEN-1");
 
 insert into mediciones (medicion_fecha, medicion_latitud, medicion_longitud, medicion_valor, usuario_id, sensor_id ) 
 values( "27/09/2021", 31,21,50, 1, "GTI-3A-PARDO-RUBEN-1" );
+
+INSERT INTO `datos_usuario`( `idUsuario`, `posCasa`, `posTrabajo`) VALUES (29,POINT(38.995591, -0.167129),null)
