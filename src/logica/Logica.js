@@ -272,9 +272,7 @@ module.exports = class Logica {
      */
      obtenerCalidadAirePorTiempoYUsuario(fechaInicio,fechaFin, idUsuario) {
 
-        console.log(fechaInicio);
-        console.log(fechaFin);
-        console.log(idUsuario);
+        
         var textoSQL ='select * from ' 
         + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
         ' where '+ BDConstantes.TABLA_MEDICIONES.USUARIO +' = ? and ' +BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ? ';
@@ -290,7 +288,6 @@ module.exports = class Logica {
                 function( err,res,fields ) {
                     if(!err){
                         let mediciones = Array();
-                        console.log(res);
                         for(let i =0;i<res.length;i++){
                             mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
                         }
