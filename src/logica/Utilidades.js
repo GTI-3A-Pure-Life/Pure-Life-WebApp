@@ -40,7 +40,7 @@ class Utilidades {
                     valorAQI = valor*200/15.4
                 }else{
                     // muy malo
-                    valorAQI = valor*300/15.5
+                    valorAQI = valor*300/20
                 }
                 break;
             case 2:
