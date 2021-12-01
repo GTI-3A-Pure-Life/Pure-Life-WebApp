@@ -110,18 +110,17 @@ class Medicion {
     static formatearRAWBDData(query) {
             const mediciones = query.map(function(element){
         
-            let fechaHoraV = formatearFecha(element.fechaHora);
-            let indiceAQI = obtenerIndiceAQI(element.valor,element.tipoGas);
-            
-            return {
+                let fechaHoraV = formatearFecha(element.fechaHora);
+                var indiceAQI = obtenerIndiceAQI(element.valor,element.tipoGas);
+                return {
 
-                valor: indiceAQI,
-                fechaHora:fechaHoraV,
-                posMedicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
-                idUsuario: element.idUsuario,
-                idSensor: element.uuidSensor,
-                tipoGas: element.tipoGas
-            }
+                    valor: indiceAQI,
+                    fechaHora:fechaHoraV,
+                    posMedicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
+                    idUsuario: element.idUsuario,
+                    idSensor: element.uuidSensor,
+                    tipoGas: element.tipoGas
+                }
         })
 
         return mediciones;
@@ -440,7 +439,7 @@ return registro;
     return strRes;
 }
 
-    function obtenerIndiceAQI(valor,tipoMedicion){
+    function  obtenerIndiceAQI(valor,tipoMedicion){
         let valorAQI = 0;
         switch(tipoMedicion){
             case 1:
@@ -456,7 +455,7 @@ return registro;
                     valorAQI = valor*200/15.4
                 }else{
                     // muy malo
-                    valorAQI = valor*300/15.5
+                    valorAQI = valor*300/20
                 }
                 break;
             case 2:

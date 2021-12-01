@@ -26,6 +26,7 @@ class Utilidades {
      */
     static obtenerIndiceAQI(valor,tipoMedicion){
         let valorAQI = 0;
+        
         switch(tipoMedicion){
             case 1:
                 // co
