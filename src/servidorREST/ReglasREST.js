@@ -55,20 +55,19 @@ module.exports.cargar = function(servidorExpress, laLogica){
         
         
         try{
-            var res = await laLogica.obtenerTodasMediciones()
+            // Lista<Medicion>
+            var mediciones = await laLogica.obtenerTodasMediciones()
             
             
             // todo ok 
             // si el array de resultados no tiene una casilla ...
-            if( res.length == 0 ) {
+            if( mediciones.length == 0 ) {
                 // 204: realizado ok pero sin resultados
                 respuesta.status(204).send();
                 return
             }
             // todo ok 
-            
-            let a = Modelo.Medicion.formatearRAWBDData(res);
-            respuesta.send(a)
+            respuesta.send(Modelo.Medicion.listaMedicionesAJSON(mediciones))
 
         }catch(error){
 

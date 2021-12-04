@@ -5,7 +5,6 @@
 // Clase que controla la logica de negocio
 // .....................................................................
 //const sqlite3 = require( "sqlite3" )
-const mysql = require( "mysql" );
 const Modelo = require("./Modelo.js");
 const {Utilidades} = require("./Utilidades.js");
 const BDConstantes = require("./Constantes/BDConstantes");
@@ -16,35 +15,18 @@ const BDCredenciales = require('./Constantes/BDCredenciales.js');
 
 module.exports = class Logica {
     
-    
 
     // .................................................................
-    // nombreBD: Texto
+    // conexionBD: Conexion
     // -->
     // constructor () -->
     // .................................................................
-    constructor( nombreBD, cb ) {
+    constructor( conexionBD ) {
 
-        this.laConexion = null;
-        this.laConexion = mysql.createConnection({
-            host     : BDCredenciales.MYSQL.BD_HOST,
-            user     : BDCredenciales.MYSQL.BD_USUARIO,
-            password : BDCredenciales.MYSQL.BD_CONTRASENYA,
-            database : nombreBD
-          });
-
-         this.laConexion.connect(function(err) {
-            if (err) {
-              console.error('error connecting: ' + err.stack);
-              
-              return;
-            }
-            cb( err)
-          
-
-          });
-
-       
+        this.laConexion = conexionBD;
+        
+        
+    
            
           // conexion con sqlite
         /*this.laConexion = new sqlite3.Database(nombreBD,( err ) => {
@@ -56,6 +38,28 @@ module.exports = class Logica {
     
 
     } // ()
+
+    // .................................................................
+    // -->
+    // conectarBD() --> 
+    // .................................................................
+    conectarBD(cb){
+        if(this.laConexion!=null){
+            this.laConexion.connect(function(err) {
+                if (err) {
+                  console.error('error connecting: ' + err.stack);
+                  
+                  return;
+                }
+                cb( err)
+              
+    
+              });
+        }else{
+            cb("No esta inicializado la conexion")
+        }
+        
+    }
 
     // .................................................................
     // nombreTabla:Texto
@@ -131,7 +135,7 @@ module.exports = class Logica {
 
                     if(!err){
                         // return 
-                       resolver(res)
+                       resolver(Modelo.Medicion.formatearRAWBDData(res))
 
                     }else{
                         rechazar(err)

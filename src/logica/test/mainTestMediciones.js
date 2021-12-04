@@ -9,6 +9,10 @@ const BDConstantes = require( "../Constantes/BDConstantes.js" )
 const Modelo = require( "../Modelo.js" )
 var assert = require ('assert')
 
+const sinon = require('sinon');
+const mockMysql = sinon.mock(require('mysql'));
+
+
 // ........................................................
 // main ()
 // ........................................................
@@ -16,11 +20,12 @@ describe( "Test RECURSO MEDICION", function() {
 
     // ....................................................
     // ....................................................
-    var laLogica = null
+    
+
 
     // ....................................................
     // ....................................................
-    it( "conectar a la base de datos", function( hecho ) {
+    /*it( "conectar a la base de datos", function( hecho ) {
         laLogica = new Logica(BDCredenciales.MYSQL.BD_NOMBRE,
         function( err ) {
             if ( err ) {
@@ -79,21 +84,68 @@ describe( "Test RECURSO MEDICION", function() {
         }
         assert( error, "¿Has insertado los parametros correctos?, ¿El usuario y el sensor existen?" )
 
-    })// it
+    })// it*/
 
     // ....................................................
     // ....................................................
     it("Obtener todas las mediciones",async function(){
+      
+    
+        // creamos el mock de la conexion
+        const conexion = {
+            query: async function(textoSQL,funcion){}
+        }; // objeto mock, cuando llame a objetos que usan la conexion no pasara nada
         
-        // Lista<MedicionCO2>
+
+        // para falsear una respuesta de un metodo en concreto, en este caso a query
+        
+        // creamos el objeto fake que devuelve la BD
+        // resultado que devuelve la BD
+        let resultadoMock = [{
+            "fechaHora": "2021-11-26 00:00:00",
+            "posMedicion": {
+              "x": 38.1,
+              "y": -0.167
+            },
+            "valor": 0,
+            "idUsuario": 13,
+            "uuidSensor": "GTI-3A-1",
+            "tipoGas": 1
+        },{
+            "fechaHora": "2021-11-26 01:00:00",
+            "posMedicion": {
+              "x": 38.99,
+              "y": -0.167
+            },
+            "valor": 0,
+            "idUsuario": 13,
+            "uuidSensor": "GTI-3A-1",
+            "tipoGas": 1
+        }]
+
+        
+        //si solo  hago el stub al metodo query no se llama al metodo done de la promesa y da un timout
+        // callsArgsWith es por si el metodo se esta llamando desde una promesa
+        const obtenerTodasMedicionesStub = sinon.stub(conexion,"query").callsArgWith(1,null,resultadoMock) // index, error, resultado
+        
+
+        // creamos la logica con el metodo conexion moqueado
+        let laLogica = new Logica(conexion);
+
+        // devuelve objetos Medicion
         var res = await laLogica.obtenerTodasMediciones();
-        assert.equal(res.length,4,"¿No hay 4 tuplas en la tabla mediciones?")
+
+        assert.equal(res.length,2,"¿No hay 2 tuplas en la tabla mediciones?")
+        assert.equal(res[1].posicion.latitud,38.99,"¿No ha transformado bien el punto a posicion (la x debe ser latitud)")
+        assert.equal(obtenerTodasMedicionesStub.calledOnce,true,"No se llamo al metodo query?")
+        // el texto sql se monto correctamente?
+        assert.equal(obtenerTodasMedicionesStub.calledWith('select * from medicion'),true,"La query no es 'select * from medicion'?")
 
     })// it
 
      // ....................................................
     // ....................................................
-    it("Obtener ultima medicion",async function(){
+   /* it("Obtener ultima medicion",async function(){
         
         // Lista<MedicionCO2>
         var res = await laLogica.obtenerUltimasMediciones(1);
@@ -196,7 +248,7 @@ describe( "Test RECURSO MEDICION", function() {
     // ....................................................
     it( "borrar todas las filas de mediciones", async function() {
         await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
-    }) // it
+    }) // it*/
 
     
 

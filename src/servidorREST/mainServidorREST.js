@@ -4,6 +4,7 @@
 // Rubén Pardo Casanova 29/09/2021
 // .....................................................................
 const express = require('express')
+const mysql = require( "mysql" );
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const Logica = require('../logica/Logica.js')
@@ -11,9 +12,20 @@ const BDCredenciales = require('../logica/Constantes/BDCredenciales.js')
 
 //......................................................................
 //......................................................................
-function cargarLogica(fichero){
+function cargarLogica(){
+
+    var laLogica = new Logica(  
+        mysql.createConnection({
+            host     : BDCredenciales.MYSQL.BD_HOST,
+            user     : BDCredenciales.MYSQL.BD_USUARIO,
+            password : BDCredenciales.MYSQL.BD_CONTRASENYA,
+            database :  BDCredenciales.MYSQL.BD_NOMBRE
+      })
+    );
+
+
     return new Promise((resolver,rechazar)=>{
-        var laLogica =  new Logica(fichero,function(err){
+        laLogica.conectarBD(function(err){
             if(err){
                 rechazar(err)
             }else{
@@ -30,7 +42,7 @@ function cargarLogica(fichero){
 async function main() {
     // importamos la logica
     //var laLogica = await cargarLogica( "../bd/datos.bd" ) // base de datos sqlite
-    var laLogica = await cargarLogica( BDCredenciales.MYSQL.BD_NOMBRE ) // base de datos mysql
+    var laLogica = await cargarLogica() // base de datos mysql
     
     // creo el servidor
     var servidorExpress = express()

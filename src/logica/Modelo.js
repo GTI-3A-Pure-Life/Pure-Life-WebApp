@@ -70,9 +70,10 @@ class Medicion {
      */
     static MedicionFromRawData(rawData){
         let fechaHoraV = formatearFecha(rawData.fechaHora);
+        let indiceAQI = obtenerIndiceAQI(rawData.valor,rawData.tipoGas);
         return new Medicion(
             null,
-            rawData.valor,
+            indiceAQI,
             fechaHoraV,
             new Posicion(rawData.posMedicion.x, rawData.posMedicion.y),
             rawData.idUsuario,
@@ -84,13 +85,36 @@ class Medicion {
     }
 
 
+      
+    /**
+     * RawQueryData-> formatearRAWBDData() -> List<Medicion>
+     * @param {RawQueryData} query 
+     * @returns lista de mediciones formateadas
+     */
+     static formatearRAWBDData(query) {
+        const mediciones = query.map(function(element){
+            return Medicion.MedicionFromRawData(element)
+            /*return {
+
+                valor: indiceAQI,
+                fechaHora:fechaHoraV,
+                posMedicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
+                idUsuario: element.idUsuario,
+                idSensor: element.uuidSensor,
+                tipoGas: element.tipoGas
+                }*/
+            })
+
+        return mediciones;
+    }
+
     /**
      * toJSON() -> Texto
      * @returns String en formato json del objeto
      */
     toJSON() {
         
-         return JSON.stringify({ 
+         return { 
             id: this.medicion_id,
             fechaHora: this.fecha,
             posMedicion: this.posicion,
@@ -98,36 +122,9 @@ class Medicion {
             idUsuario: this.idUsuario,
             uuidSensor: this.idSensor,
             tipoGas:this.tipoGas
-           });
+           };
     }
-
-     
-    /**
-     * RawQueryData-> formatearRAWBDData() -> List<Medicion>
-     * @param {RawQueryData} query 
-     * @returns lista de mediciones formateadas
-     */
-    static formatearRAWBDData(query) {
-            const mediciones = query.map(function(element){
-        
-                let fechaHoraV = formatearFecha(element.fechaHora);
-                var indiceAQI = obtenerIndiceAQI(element.valor,element.tipoGas);
-                return {
-
-                    valor: indiceAQI,
-                    fechaHora:fechaHoraV,
-                    posMedicion: { latitud: element.posMedicion.x, longitud: element.posMedicion.y },
-                    idUsuario: element.idUsuario,
-                    idSensor: element.uuidSensor,
-                    tipoGas: element.tipoGas
-                }
-        })
-
-        return mediciones;
-    }
-
-
-   
+ 
 
     /**
      * JSONObject || Texto -> jsonAListaMediciones() -> List<Medicion>
