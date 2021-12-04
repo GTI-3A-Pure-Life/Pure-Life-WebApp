@@ -75,7 +75,7 @@ class Medicion {
             null,
             indiceAQI,
             fechaHoraV,
-            new Posicion(rawData.posMedicion.x, rawData.posMedicion.y),
+            //new Posicion(rawData.posMedicion.x, rawData.posMedicion.y),
             rawData.idUsuario,
             rawData.uuidSensor,
             rawData.tipoGas
