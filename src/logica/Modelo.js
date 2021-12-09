@@ -71,11 +71,12 @@ class Medicion {
     static MedicionFromRawData(rawData){
         let fechaHoraV = formatearFecha(rawData.fechaHora);
         let indiceAQI = obtenerIndiceAQI(rawData.valor,rawData.tipoGas);
+        console.log("a")
         return new Medicion(
             null,
             indiceAQI,
             fechaHoraV,
-            new Posicion(rawData.posMedicion.x, rawData.posMedicion.y),
+            new Posicion(rawData.posMedicion.x, rawData.posMedicion.y), 
             rawData.idUsuario,
             rawData.uuidSensor,
             rawData.tipoGas
