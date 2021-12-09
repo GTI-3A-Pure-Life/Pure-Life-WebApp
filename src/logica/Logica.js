@@ -88,38 +88,8 @@ module.exports = class Logica {
     } // ()
 
 
-    // .................................................................
-    // 
-    // N -->
-    // obtenerTodasMediciones() --> Lista<MedicionCO2>
-    // .................................................................
-    /**
-     * 
-     * @param {N} cuantas Numero de las ultimas mediciones a obtener
-     * @returns Una Lista<Medicion> con las ultimas N mediciones de la BD
-     */
-    obtenerUltimasMediciones( cuantas ) {
-        var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA 
-        + " order by " +BDConstantes.TABLA_MEDICIONES.FECHA+ " DESC LIMIT " + cuantas;
-
-        return new Promise( (resolver, rechazar) => {
-            this.laConexion.query( textoSQL, function( err,res,fields ) {
-
-                    if(!err){
-
-                        // return 
-                       resolver(res)
-
-                    }else{
-                        rechazar(err)
-                    }
-                    
-                })
-            })
-        } // ()
-
     
-     // .................................................................
+    // .................................................................
     // 
     // -->
     // obtenerTodasMediciones() --> Lista<Medicion>
@@ -135,7 +105,7 @@ module.exports = class Logica {
 
                     if(!err){
                         // return 
-                       resolver(Modelo.Medicion.formatearRAWBDData(res))
+                        resolver(Modelo.Medicion.formatearRAWBDData(res))
 
                     }else{
                         rechazar(err)
@@ -143,7 +113,7 @@ module.exports = class Logica {
                     
                 })
             })
-        } // ()
+    } // ()
 
     
     // .................................................................
@@ -156,26 +126,26 @@ module.exports = class Logica {
      * 
      * @returns devuelve una promesa con las mediciones o lanza un error
      */
-     obtenerMedicionesDeHastaPorUsuario(fechaInicio,fechaFin,idUsuario) {
-        var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
-        ' where '+BDConstantes.TABLA_MEDICIONES.USUARIO+'=? and '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ?';
-        return new Promise( (resolver, rechazar) => {
-            this.laConexion.query( 
-                textoSQL, 
-                [idUsuario,fechaInicio,fechaFin],
-                function( err,res,fields ) {
+    obtenerMedicionesDeHastaPorUsuario(fechaInicio,fechaFin,idUsuario) {
+    var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
+    ' where '+BDConstantes.TABLA_MEDICIONES.USUARIO+'=? and '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ?';
+    return new Promise( (resolver, rechazar) => {
+        this.laConexion.query( 
+            textoSQL, 
+            [idUsuario,fechaInicio,fechaFin],
+            function( err,res,fields ) {
 
-                    if(!err){
-                        // return 
-                       resolver(res)
+                if(!err){
+                    // return 
+                    resolver(Modelo.Medicion.formatearRAWBDData(res))
 
-                    }else{
-                        rechazar(err)
-                    }
-                    
-                })
+                }else{
+                    rechazar(err)
+                }
+                
             })
-        } // ()
+        })
+    } // ()
 
          // .................................................................
     // .................................................................
@@ -187,26 +157,26 @@ module.exports = class Logica {
      * 
      * @returns devuelve una promesa con las mediciones o lanza un error
      */
-     obtenerMedicionesDeHasta(fechaInicio,fechaFin) {
-        var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
-        ' where '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ?';
-        return new Promise( (resolver, rechazar) => {
-            this.laConexion.query( 
-                textoSQL, 
-                [fechaInicio,fechaFin],
-                function( err,res,fields ) {
+    obtenerMedicionesDeHasta(fechaInicio,fechaFin) {
+    var textoSQL ='select * from ' + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
+    ' where '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ?';
+    return new Promise( (resolver, rechazar) => {
+        this.laConexion.query( 
+            textoSQL, 
+            [fechaInicio,fechaFin],
+            function( err,res,fields ) {
 
-                    if(!err){
-                        // return 
-                       resolver(res)
+                if(!err){
+                    // return 
+                    resolver(Modelo.Medicion.formatearRAWBDData(res))
 
-                    }else{
-                        rechazar(err)
-                    }
-                    
-                })
+                }else{
+                    rechazar(err)
+                }
+                
             })
-        } // ()
+        })
+    } // ()
 
     // .................................................................
     // .................................................................
@@ -224,83 +194,112 @@ module.exports = class Logica {
      * 
      * @returns devuelve una promesa con el informe de la calidad de aire de esa zona
      */
-     obtenerCalidadAirePorTiempoYZona(fechaInicio,fechaFin, latitud,longitud, radio) {
+    obtenerCalidadAirePorTiempoYZona(fechaInicio,fechaFin, latitud,longitud, radio) {
 
-        var textoSQL ='select *, ( 6371392.896 * acos ( cos ( radians(?) ) * cos( radians( ST_X(posMedicion) ) ) * cos( radians( ST_Y(posMedicion) ) - radians(?) ) + sin ( radians(?) ) * sin( radians( ST_X(posMedicion) ) ) )) as distancia from ' 
-        + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
-        ' where '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ? having distancia <= ?';
+    var textoSQL ='select *, ( 6371392.896 * acos ( cos ( radians(?) ) * cos( radians( ST_X(posMedicion) ) ) * cos( radians( ST_Y(posMedicion) ) - radians(?) ) + sin ( radians(?) ) * sin( radians( ST_X(posMedicion) ) ) )) as distancia from ' 
+    + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
+    ' where '+BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ? having distancia <= ?';
 
-        // primer ? = latitud del punto, segundo ? longitud del punto, tercer ? latitud del punto
-        // cuarto ? = radio del circulo
-        // los dos ultimos ? fecha inicio, fecha fin, ultimo ? radio
-
-        return new Promise( (resolver, rechazar) => {
-            this.laConexion.query( 
-                textoSQL, 
-                [latitud, longitud, latitud, fechaInicio,fechaFin , radio],
-                function( err,res ) {
-                    if(!err){
-                        
-                        let mediciones = new Array()
-                        for(let i =0;i<res.length;i++){
-                            mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
-                        }
-                        
-                       let informeCalidadAire = Utilidades.calcularCalidadAire(mediciones);
-                        
-
-
-                       resolver(informeCalidadAire)
-
-                    }else{
-                        rechazar(err)
+    // primer ? = latitud del punto, segundo ? longitud del punto, tercer ? latitud del punto
+    // cuarto ? = radio del circulo
+    // los dos ultimos ? fecha inicio, fecha fin, ultimo ? radio
+    return new Promise( (resolver, rechazar) => {
+       let query = this.laConexion.query( 
+            textoSQL, 
+            [latitud, longitud, latitud, fechaInicio,fechaFin , radio],
+            function( err,res ) {
+                if(!err){
+                    let mediciones = new Array()
+                    for(let i =0;i<res.length;i++){
+                        mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
                     }
                     
-                })
+                    let informeCalidadAire = Utilidades.calcularCalidadAire(mediciones);
+                    
+
+
+                    resolver(informeCalidadAire)
+
+                }else{
+                    rechazar(err)
+                }
+                
             })
-        } // ()
-
-    /**
-     * Texto, Texto, R, R, R -> obtenerTodasMediciones -> Lista<informeCalidadAire>
-     * 
-     * @author Ruben Pardo Casanova
-     * 11/11/2021
-     * 
-     * @param fechaInicio 'yyyy-MM-dd hh:mm:ss'
-     * @param fechaFin 'yyyy-MM-dd hh:mm:ss'
-     * @param latitud
-     * @param longitud
-     * @param radio
-     * 
-     * @returns devuelve una promesa con el informe de la calidad de aire de esa zona
-     */
-     obtenerCalidadAirePorTiempoYUsuario(fechaInicio,fechaFin, idUsuario) {
-
+           
+        })
         
-        var textoSQL ='select * from ' 
-        + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
-        ' where '+ BDConstantes.TABLA_MEDICIONES.USUARIO +' = ? and ' +BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ? ';
+    } // ()
 
+    /**
+     * Texto, Texto, R, R, R -> obtenerTodasMediciones -> Lista<informeCalidadAire>
+     * 
+     * @author Ruben Pardo Casanova
+     * 11/11/2021
+     * 
+     * @param fechaInicio 'yyyy-MM-dd hh:mm:ss'
+     * @param fechaFin 'yyyy-MM-dd hh:mm:ss'
+     * @param latitud
+     * @param longitud
+     * @param radio
+     * 
+     * @returns devuelve una promesa con el informe de la calidad de aire de esa zona
+     */
+    obtenerCalidadAirePorTiempoYUsuario(fechaInicio,fechaFin, idUsuario) {
+
+    
+    var textoSQL ='select * from ' 
+    + BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA +
+    ' where '+ BDConstantes.TABLA_MEDICIONES.USUARIO +' = ? and ' +BDConstantes.TABLA_MEDICIONES.FECHA+' between ? and ?';
+
+    // primer ? = latitud del punto, segundo ? longitud del punto, tercer ? latitud del punto
+    // cuarto ? = radio del circulo
+    // los dos ultimos ? fecha inicio, fecha fin, ultimo ? radio
+
+    return new Promise( (resolver, rechazar) => {
+        this.laConexion.query( 
+            textoSQL, 
+            [ idUsuario, fechaInicio,fechaFin ],
+            function( err,res,fields ) {
+                if(!err){
+                    let mediciones = Array();
+                    for(let i =0;i<res.length;i++){
+                        mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
+                    }
+                    
+                    let informeCalidadAire = Utilidades.calcularCalidadAire(mediciones);
+                    
+
+
+                    resolver(informeCalidadAire)
+
+                }else{
+                    rechazar(err)
+                }
+                
+            })
+        })
+    } // ()
+
+
+
+    obtenerRegistrosEstadoSensor() {
+
+        var textoSQL ='select * from ' 
+        + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA +
+        ' order by '+ BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' desc';    
         // primer ? = latitud del punto, segundo ? longitud del punto, tercer ? latitud del punto
         // cuarto ? = radio del circulo
         // los dos ultimos ? fecha inicio, fecha fin, ultimo ? radio
 
         return new Promise( (resolver, rechazar) => {
             this.laConexion.query( 
-                textoSQL, 
-                [ idUsuario, fechaInicio,fechaFin ],
-                function( err,res,fields ) {
+                textoSQL, function( err,res,fields ) {
                     if(!err){
-                        let mediciones = Array();
+                        let registros = Array();
                         for(let i =0;i<res.length;i++){
-                            mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
+                            registros.push(Modelo.RegistroEstadoSensor.RegistroFromRawData(res[i]))
                         }
-                        
-                       let informeCalidadAire = Utilidades.calcularCalidadAire(mediciones);
-                        
-
-
-                       resolver(informeCalidadAire)
+                        resolver(registros)
 
                     }else{
                         rechazar(err)
@@ -309,35 +308,6 @@ module.exports = class Logica {
                 })
             })
         } // ()
-
-
-
-        obtenerRegistrosEstadoSensor() {
-
-            var textoSQL ='select * from ' 
-            + BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.NOMBRE_TABLA +
-            ' order by '+ BDConstantes.TABLA_REGISTRO_ESTADO_SENSOR.FECHA_HORA +' desc';    
-            // primer ? = latitud del punto, segundo ? longitud del punto, tercer ? latitud del punto
-            // cuarto ? = radio del circulo
-            // los dos ultimos ? fecha inicio, fecha fin, ultimo ? radio
-    
-            return new Promise( (resolver, rechazar) => {
-                this.laConexion.query( 
-                    textoSQL, function( err,res,fields ) {
-                        if(!err){
-                            let registros = Array();
-                            for(let i =0;i<res.length;i++){
-                                registros.push(Modelo.RegistroEstadoSensor.RegistroFromRawData(res[i]))
-                            }
-                           resolver(registros)
-    
-                        }else{
-                            rechazar(err)
-                        }
-                        
-                    })
-                })
-            } // ()
 
 
 

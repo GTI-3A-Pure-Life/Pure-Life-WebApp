@@ -151,23 +151,15 @@ class Utilidades {
 
         let listaInformeCalidadAire = new Array();
         listaInformeCalidadAire.push(new InformeCalidadAire(
-            this.obtenerIndiceAQI(
-                this.calcularMediaPPMHoraMediciones(medicionesCO),1)
-            ,1))
+                this.calcularMediaAQI(medicionesCO),1))
             
         listaInformeCalidadAire.push(new InformeCalidadAire(
-            this.obtenerIndiceAQI(
-                this.calcularMediaPPMHoraMediciones(medicionesNO2),2)
-                ,2))
+                this.calcularMediaAQI(medicionesNO2),2))
         listaInformeCalidadAire.push(new InformeCalidadAire(
-            this.obtenerIndiceAQI(
-                this.calcularMediaPPMHoraMediciones(medicionesSO2),3)
-                ,3))
+                this.calcularMediaAQI(medicionesSO2),3))
 
         listaInformeCalidadAire.push(new InformeCalidadAire(
-            this.obtenerIndiceAQI(
-                this.calcularMediaPPMHoraMediciones(medicionesO3),4)
-                ,4))
+                this.calcularMediaAQI(medicionesO3),4))
 
         return listaInformeCalidadAire;
    
@@ -182,9 +174,9 @@ class Utilidades {
      * @returns {Double} media ppm en 24 horas
      * 
      */
-    static calcularMediaPPMHoraMediciones(mediciones){
-        let ppmSuma = 0;
-        let mediaPPMUnaHora = 0;
+    static calcularMediaAQI(mediciones){
+        let aqiSuma = 0;
+        let aqiMEDIA = 0;
         if(mediciones.length>0){
             //  Calcular tiempo desde la primera fecha y la ultima
             let tiempoHoras = mediciones.length>1
@@ -198,12 +190,12 @@ class Utilidades {
 
 
             for(let i=0;i<mediciones.length;i++){
-                ppmSuma += mediciones[i].valor;     
+                aqiSuma += mediciones[i].valor;     
             }
 
             //if(tiempoHoras<1){
                 // si es menor que uno hacer media aritmetica no del tiempo
-                mediaPPMUnaHora = ppmSuma/mediciones.length;
+                aqiMEDIA = aqiSuma/mediciones.length;
             //}else{
                 // Calcular media de los valores por el total del tiempo
                 ///mediaPPMUnaHora = ppmSuma/tiempoHoras;
@@ -211,7 +203,7 @@ class Utilidades {
 
         }
         
-        return mediaPPMUnaHora;
+        return Math.round(aqiMEDIA*100)/100;
 
     }
 

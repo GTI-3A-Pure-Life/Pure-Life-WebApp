@@ -23,68 +23,35 @@ describe( "Test RECURSO MEDICION", function() {
     
 
 
-    // ....................................................
-    // ....................................................
-    /*it( "conectar a la base de datos", function( hecho ) {
-        laLogica = new Logica(BDCredenciales.MYSQL.BD_NOMBRE,
-        function( err ) {
-            if ( err ) {
-                throw new Error ("No he podido conectar con datos.db")
-            }
-            hecho()
-        })
-    }) // it
-
-
-    // ....................................................
-    // ....................................................
-    it( "borrar todas las filas de mediciones", async function() {
-        await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
-    }) // it
-
-    // ....................................................
-    // ....................................................
-    it("Obtener todas las mediciones sin ninguna en la bd",async function(){
-        
-        // Lista<MedicionCO2>
-        var res = await laLogica.obtenerTodasMediciones();
-        assert.equal(res.length, 0, "¿Hay alguna medicion guardada?")
-
-    })// it
 
     // ....................................................
     // ....................................................
     it("Insertar mediciones correctas",async function(){
         
         var error = null
-        try {
-            var mediciones = new Array();
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 01:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 02:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',2));
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 03:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',3));
-            mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 04:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',4));
 
-            await laLogica.publicarMediciones(mediciones)
-        } catch( err ) {
-            error = err
-        }
-        assert( !error, "¿Has insertado los parametros correctos?, ¿El usuario y el sensor existen?" )
+        // creamos el mock de la conexion
+        const conexion = {
+            query: async function(textoSQL,funcion){}
+        }; // objeto mock, cuando llame a objetos que usan la conexion no pasara nada
+
+        const publicarMedicionesStub = sinon.stub(conexion,"query").callsArgWith(1,null,[]) // index, error, resultado
+        // creamos la logica con el metodo conexion moqueado
+        let laLogica = new Logica(conexion);
+
+        
+        var mediciones = new Array();
+        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 01:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',1));
+        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 02:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',2));
+        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 03:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',3));
+        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 04:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',4));
+
+        await laLogica.publicarMediciones(mediciones)
+        // comprobamos que se crea bien la sentencia sql
+        assert.equal(publicarMedicionesStub.calledWith("insert into medicion(fechaHora,posMedicion,valor,idUsuario,uuidSensor,tipoGas)  values ('2021-09-29 01:00:00',POINT(30,30),50,29,'GTI-3A-1',1),('2021-09-29 02:00:00',POINT(30,30),50,29,'GTI-3A-1',2),('2021-09-29 03:00:00',POINT(30,30),50,29,'GTI-3A-1',3),('2021-09-29 04:00:00',POINT(30,30),50,29,'GTI-3A-1',4)"),
+        true,"La query no es 'insert into medicion(fechaHora,posMedicion,valor,idUsuario,uuidSensor,tipoGas)  values ('2021-09-29 01:00:00',POINT(30,30),50,29,'GTI-3A-1',1),('2021-09-29 02:00:00',POINT(30,30),50,29,'GTI-3A-1',2),('2021-09-29 03:00:00',POINT(30,30),50,29,'GTI-3A-1',3),('2021-09-29 04:00:00',POINT(30,30),50,29,'GTI-3A-1',4)'?")
 
     })// it
-
-    // ....................................................
-    // ....................................................
-    it("Insertar una medición incorrecta",async function(){
-        
-        var error = null
-        try {
-            await laLogica.publicarMedicionCO2(new Modelo.MedicionCO2(null, 50, '2021-09-29', new Modelo.Posicion(30,30), -1, 'GTI-3A-1'))
-        } catch( err ) {
-            error = err
-        }
-        assert( error, "¿Has insertado los parametros correctos?, ¿El usuario y el sensor existen?" )
-
-    })// it*/
 
     // ....................................................
     // ....................................................
@@ -143,112 +110,327 @@ describe( "Test RECURSO MEDICION", function() {
 
     })// it
 
-     // ....................................................
     // ....................................................
-   /* it("Obtener ultima medicion",async function(){
-        
-        // Lista<MedicionCO2>
-        var res = await laLogica.obtenerUltimasMediciones(1);
-        assert.equal(res.length,1,"¿Devolvió mas de un registro de mediciones?")
-
-    })// it
-
-
-      // ....................................................
     // ....................................................
     it("Obtener mediciones entre un rango de tiempo",async function(){
         
-        // Lista<MedicionCO2>
-        var res = await laLogica.obtenerMedicionesDeHasta('2021-09-29 02:00:00','2021-09-29 03:00:00');
+        
+        const conexion = {
+            query: async function(textoSQL,funcion){}
+        }; // objeto mock, cuando llame a objetos que usan la conexion no pasara nada
+
+        let resultadoMock = [
+            {
+                "fechaHora": "2021-11-26 00:00:00",
+                "posMedicion": {
+                    "x": 1,
+                    "y": 2
+                },
+                "valor": 3,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 1
+            },
+            {
+                "fechaHora": "2021-11-26 03:00:00",
+                "posMedicion": {
+                    "x": 0.00015,
+                    "y": 0.00015
+                },
+                "valor": 20,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 1
+            }
+        ]   
+
+        // yields = mockear el callback que se pasa por parametro a query
+        const medicionesPorTiempo = sinon.stub(conexion,"query").yields(null,resultadoMock) 
+        // creamos la logica con el metodo conexion moqueado
+        let laLogica = new Logica(conexion);
+
+        var res = await laLogica.obtenerMedicionesDeHasta('2021-11-26 02:00:00','2021-11-26 03:00:00');
+
+        assert.equal(medicionesPorTiempo.calledOnce,true,"No se llamo al metodo query?")
+        assert.equal(medicionesPorTiempo.calledWith('select * from medicion where fechaHora between ? and ?'),
+        true,"La query no es 'select * from medicion where fechaHora between ? and ?'?")
+
+        let valoresPreparedStatement = medicionesPorTiempo.args[0][1];
+        assert.equal(valoresPreparedStatement[0],'2021-11-26 02:00:00',"¿La fecha inicio no es '2021-11-26 02:00:00'?")
+        assert.equal(valoresPreparedStatement[1],'2021-11-26 03:00:00',"¿La fecha fin no es '2021-11-26 03:00:00'?")
+
+       
         assert.equal(res.length,2,"¿No devolvio dos registros?")
+        assert.equal(res[0].posicion.latitud,1,"¿No se convirtio los resultados de la query en Objetos Medicion?")
+
+    })// it
+
+    // ....................................................
+    // ....................................................
+    it("Obtener mediciones entre un rango de tiempo de un usuario",async function(){
+        
+        
+        const conexion = {
+            query: async function(textoSQL,funcion){}
+        }; // objeto mock, cuando llame a objetos que usan la conexion no pasara nada
+
+        let resultadoMock = [
+            {
+                "fechaHora": "2021-11-26 00:00:00",
+                "posMedicion": {
+                    "x": 1,
+                    "y": 2
+                },
+                "valor": 3,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 1
+            },
+            {
+                "fechaHora": "2021-11-26 03:00:00",
+                "posMedicion": {
+                    "x": 0.00015,
+                    "y": 0.00015
+                },
+                "valor": 20,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 1
+            }
+        ]   
+
+        // yields = mockear el callback que se pasa por parametro a query
+        const medicionesPorTiempoYUsuario = sinon.stub(conexion,"query").yields(null,resultadoMock) 
+        // creamos la logica con el metodo conexion moqueado
+        let laLogica = new Logica(conexion);
+
+        var res = await laLogica.obtenerMedicionesDeHastaPorUsuario('2021-11-26 02:00:00','2021-11-26 03:00:00',13);
+        assert.equal(medicionesPorTiempoYUsuario.calledOnce,true,"No se llamo al metodo query?")
+        assert.equal(medicionesPorTiempoYUsuario.calledWith('select * from medicion where idUsuario=? and fechaHora between ? and ?'),
+        true,"La query no es 'select * from medicion where idUsuario=? and fechaHora between ? and ?'?")
+
+        let valoresPreparedStatement = medicionesPorTiempoYUsuario.args[0][1];
+       
+        assert.equal(valoresPreparedStatement[0],13,"¿El idUsuario no es 13?")
+        assert.equal(valoresPreparedStatement[1],'2021-11-26 02:00:00',"¿La fecha inicio no es '2021-11-26 02:00:00'?")
+        assert.equal(valoresPreparedStatement[2],'2021-11-26 03:00:00',"¿La fecha fin no es '2021-11-26 03:00:00'?")
+
+       
+        assert.equal(res.length,2,"¿No devolvio dos registros?")
+        assert.equal(res[0].posicion.latitud,1,"¿No se convirtio los resultados de la query en Objetos Medicion?")
 
     })// it
 
 
     it("Obtener calidad de aire rango de tiempo y zona",async function(){
+
+        // creamos el mock de la conexion
+        const conexion = {
+            query: async function(textoSQL,funcion){}
+        }; // objeto mock, cuando llame a objetos que usan la conexion no pasara nada
+
+        let resultadoMock = [
+            {
+                "fechaHora": "2021-11-26 00:00:00",
+                "posMedicion": {
+                    "x": 0.00009,
+                    "y": 0.00009
+                },
+                "valor": 3,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 1
+            },
+            {
+                "fechaHora": "2021-11-26 03:00:00",
+                "posMedicion": {
+                    "x": 0.00015,
+                    "y": 0.00015
+                },
+                "valor": 20,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 1
+            },
+            {
+                "fechaHora": "2021-11-26 02:00:00",
+                "posMedicion": {
+                    "x": 0.0001,
+                    "y": 0.0001
+                },
+                "valor": 0,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 2
+            },
+            {
+                "fechaHora": "2021-11-26 03:00:00",
+                "posMedicion": {
+                    "x": 0,
+                    "y": 0
+                },
+                "valor": 190,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 3
+            },
+            {
+                "fechaHora": "2021-11-26 04:00:00",
+                "posMedicion": {
+                    "x": 0,
+                    "y": 0
+                },
+                "valor": 0.032,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 4
+            },
+            {
+                "fechaHora": "2021-11-26 04:01:00",
+                "posMedicion": {
+                    "x": 0,
+                    "y": 0
+                },
+                "valor": 0,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 0.1
+            }
+        ]   
+
+        // yields = mockear el callback que se pasa por parametro a query
+        const calidadAireTiempoZonaStub = sinon.stub(conexion,"query").yields(null,resultadoMock) 
+        // creamos la logica con el metodo conexion moqueado
+        let laLogica = new Logica(conexion);
+
         
-        var error = null
-        try {
-            var mediciones = new Array();
-            mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 00:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 4, '2021-09-29 01:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 02:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 20, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 22, '2021-09-29 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 05:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 4, '2021-09-29 06:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 1, '2021-09-29 07:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 28, '2021-09-29 16:00:00', new Modelo.Posicion(50.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 0, '2021-09-29 02:00:00', new Modelo.Posicion(38.995366,-0.167041), 29, 'GTI-3A-1',2));
-            mediciones.push(new Modelo.Medicion(null, 200, '2021-09-29 02:00:00', new Modelo.Posicion(80.995366,-0.167041), 29, 'GTI-3A-1',2));
-            mediciones.push(new Modelo.Medicion(null, 190, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',3));
-            mediciones.push(new Modelo.Medicion(null, 0.032, '2021-09-29 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',4));
-            mediciones.push(new Modelo.Medicion(null, 0.1, '2021-09-29 04:01:00', new Modelo.Posicion(80.995591,-0.16732), 29, 'GTI-3A-1',4));
 
-            await laLogica.publicarMediciones(mediciones)
+        var res = await laLogica.obtenerCalidadAirePorTiempoYZona('2021-11-26 00:00:00','2021-11-26 20:00:00',0,1,2);
 
-            var res = await laLogica.obtenerCalidadAirePorTiempoYZona('2021-09-29 00:00:00','2021-09-29 20:00:00',38.995591,-0.167129,18);
-           
-            await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
+        assert.equal(calidadAireTiempoZonaStub.calledOnce,true,"No se llamo al metodo query?")
+        //console.log(calidadAireTiempoZonaStub.args);
+        assert.equal(calidadAireTiempoZonaStub.calledWith('select *, ( 6371392.896 * acos ( cos ( radians(?) ) * cos( radians( ST_X(posMedicion) ) ) * cos( radians( ST_Y(posMedicion) ) - radians(?) ) + sin ( radians(?) ) * sin( radians( ST_X(posMedicion) ) ) )) as distancia from medicion where fechaHora between ? and ? having distancia <= ?'),
+        true,"La query no es 'select *, ( 6371392.896 * acos ( cos ( radians(?) ) * cos( radians( ST_X(posMedicion) ) ) * cos( radians( ST_Y(posMedicion) ) - radians(?) ) + sin ( radians(?) ) * sin( radians( ST_X(posMedicion) ) ) )) as distancia from medicion where fechaHora between ? and ? having distancia <= ?'?")
+        
+        let valoresPreparedStatement = calidadAireTiempoZonaStub.args[0][1];
+        assert.equal(valoresPreparedStatement[0],0, "El primer parametro no es la latitud (0)?")//latitud
+        assert.equal(valoresPreparedStatement[1],1,"El segundo parametro no es la longitud (1)?")//longitud
+        assert.equal(valoresPreparedStatement[2],0,"El tercer parametro no es la latitud (0)?")//latitud
+        assert.equal(valoresPreparedStatement[3],'2021-11-26 00:00:00',"El cuarto parametro no es la fecha inicial (2021-11-26 00:00:00)?")//fecha ini
+        assert.equal(valoresPreparedStatement[4],'2021-11-26 20:00:00',"El quinto parametro no es la fecha final (2021-11-26 20:00:00)?")//fecha fin
+        assert.equal(valoresPreparedStatement[5],2,"El sexto parametro no es el radio (2)?")//radio
 
-        } catch( err ) {
-            error = err
-            console.log(error);
-        }
+        assert.equal(res.length,4,"Debe volver 4 informes de calidad de aire")
+        assert.equal(res[0].valor,167.05,"¿El AQI del co no es 103.69?")
+        assert.equal(res[1].valor,0,"¿El AQI del no2 es 0?")
+        assert.equal(res[2].valor,125,"¿El AQI del so2 no es 125?")
+        assert.equal(res[3].valor,29.63,"¿El AQI del o3 no es 60.37?")
+        
 
-        assert.equal(res[0].valor,90.73,"¿El AQI del co no es 103.69?")
+    })// it
+
+    it("Obtener calidad de aire rango de tiempo y usuario",async function(){
+        
+
+        const conexion = {
+            query: async function(textoSQL,funcion){}
+        }; // objeto mock, cuando llame a objetos que usan la conexion no pasara nada
+
+        let resultadoMock = [
+            {
+                "fechaHora": "2021-11-26 00:00:00",
+                "posMedicion": {
+                    "x": 0.00009,
+                    "y": 0.00009
+                },
+                "valor": 3,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 1
+            },
+            {
+                "fechaHora": "2021-11-26 03:00:00",
+                "posMedicion": {
+                    "x": 0.00015,
+                    "y": 0.00015
+                },
+                "valor": 20,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 1
+            },
+            {
+                "fechaHora": "2021-11-26 02:00:00",
+                "posMedicion": {
+                    "x": 0.0001,
+                    "y": 0.0001
+                },
+                "valor": 0,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 2
+            },
+            {
+                "fechaHora": "2021-11-26 03:00:00",
+                "posMedicion": {
+                    "x": 0,
+                    "y": 0
+                },
+                "valor": 190,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 3
+            },
+            {
+                "fechaHora": "2021-11-26 04:00:00",
+                "posMedicion": {
+                    "x": 0,
+                    "y": 0
+                },
+                "valor": 0.032,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 4
+            },
+            {
+                "fechaHora": "2021-11-26 04:01:00",
+                "posMedicion": {
+                    "x": 0,
+                    "y": 0
+                },
+                "valor": 0,
+                "idUsuario": 13,
+                "uuidSensor": "GTI-3A-1",
+                "tipoGas": 0.1
+            }
+        ]   
+
+        // yields = mockear el callback que se pasa por parametro a query
+        const calidadAireTiempoUsuarioStub = sinon.stub(conexion,"query").yields(null,resultadoMock) 
+        // creamos la logica con el metodo conexion moqueado
+        let laLogica = new Logica(conexion);
+
+        
+
+        var res = await laLogica.obtenerCalidadAirePorTiempoYUsuario('2021-11-26 00:00:00','2021-11-26 20:00:00',13);
+
+        assert.equal(calidadAireTiempoUsuarioStub.calledOnce,true,"No se llamo al metodo query?")
+        assert.equal(calidadAireTiempoUsuarioStub.calledWith('select * from medicion where idUsuario = ? and fechaHora between ? and ?'),
+        true,"La query no es 'select * from medicion where idUsuario = ? and fechaHora between ? and ?'?")
+        
+        let valoresPreparedStatement = calidadAireTiempoUsuarioStub.args[0][1];
+        assert.equal(valoresPreparedStatement[0],13,"¿El idUsuario no es 13?")
+        assert.equal(valoresPreparedStatement[1],'2021-11-26 00:00:00',"¿La fecha inicio no es '2021-11-26 00:00:00'?")
+        assert.equal(valoresPreparedStatement[2],'2021-11-26 20:00:00',"¿La fecha fin no es '2021-11-26 20:00:00'?")
+
+        assert.equal(res.length,4,"Debe volver 4 informes de calidad de aire")
+        assert.equal(res[0].valor,167.05,"¿El AQI del co no es 103.69?")
         assert.equal(res[1].valor,0,"¿El AQI del no2 es 0?")
         assert.equal(res[2].valor,125,"¿El AQI del so2 no es 125?")
         assert.equal(res[3].valor,29.63,"¿El AQI del o3 no es 60.37?")
 
     })// it
 
-    it("Obtener calidad de aire rango de tiempo y usuario",async function(){
-        
-        var error = null
-        try {
-            var mediciones = new Array();
-            mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 00:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 4, '2021-09-29 01:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 02:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 20, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 22, '2021-09-29 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 3, '2021-09-29 05:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 4, '2021-09-29 06:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            mediciones.push(new Modelo.Medicion(null, 1, '2021-09-29 07:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',1));
-            // esta medicion no sale por fuera de rango
-            mediciones.push(new Modelo.Medicion(null, 28, '2021-09-29 16:00:00', new Modelo.Posicion(50.995591,-0.16732), 29, 'GTI-3A-1',1));
-
-            mediciones.push(new Modelo.Medicion(null, 0, '2021-09-29 02:00:00', new Modelo.Posicion(38.995366,-0.167041), 29, 'GTI-3A-1',2));
-            // fuera de rango
-            mediciones.push(new Modelo.Medicion(null, 200, '2021-09-29 02:00:00', new Modelo.Posicion(80.995366,-0.167041), 29, 'GTI-3A-1',2));
-            mediciones.push(new Modelo.Medicion(null, 190, '2021-09-29 03:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',3));
-            mediciones.push(new Modelo.Medicion(null, 0.032, '2021-09-29 04:00:00', new Modelo.Posicion(38.995591,-0.16732), 29, 'GTI-3A-1',4));
-            mediciones.push(new Modelo.Medicion(null, 0.1, '2021-09-29 04:01:00', new Modelo.Posicion(80.995591,-0.16732), 29, 'GTI-3A-1',4));
-
-            await laLogica.publicarMediciones(mediciones)
-
-            var res = await laLogica.obtenerCalidadAirePorTiempoYUsuario('2021-09-29 00:00:00','2021-09-29 20:00:00',29);
-           
-            await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
-
-        } catch( err ) {
-            error = err
-            console.log(error);
-        }
-
-        assert.equal(res[0].valor,118.28,"¿El AQI del co no es 92.74?")
-        assert.equal(res[1].valor,41.67,"¿El AQI del no2 es 0?")
-        assert.equal(res[2].valor,125,"¿El AQI del so2 no es 125?")
-        assert.equal(res[3].valor,60.37,"¿El AQI del o3 no es 60.37?")
-
-    })// it
-
-    // ....................................................
-    // ....................................................
-    it( "borrar todas las filas de mediciones", async function() {
-        await laLogica.borrarFilasDe(BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA)
-    }) // it*/
 
     
 
