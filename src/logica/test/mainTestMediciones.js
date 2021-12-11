@@ -10,7 +10,6 @@ const Modelo = require( "../Modelo.js" )
 var assert = require ('assert')
 
 const sinon = require('sinon');
-const mockMysql = sinon.mock(require('mysql'));
 
 
 // ........................................................
@@ -27,8 +26,7 @@ describe( "Test RECURSO MEDICION", function() {
     // ....................................................
     // ....................................................
     it("Insertar mediciones correctas",async function(){
-        
-        var error = null
+    
 
         // creamos el mock de la conexion
         const conexion = {
