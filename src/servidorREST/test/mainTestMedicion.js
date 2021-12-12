@@ -3,9 +3,22 @@
 // Clase de tests para probar los endpoints
 // Rubén Pardo Casanova 29/09/2021
 // ........................................................
-var request = require ('request')
-var assert = require ('assert')
-const Modelo = require( "../../Logica/Modelo.js" )
+const chai = require('chai');
+const expect = chai.expect;
+const chaiAsPromised = require('chai-as-promised')
+chai.use(chaiAsPromised);
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+chai.use(sinonChai);
+const rewire = require('rewire');
+
+const request = require('supertest');
+//const sandbox = sinon.sandbox.create();
+
+
+var app = rewire('../mainServidorREST').servidorExpress;
+var Logica = require('../../logica/Logica.js');
+const Modelo = require('../../logica/Modelo.js')
 // ........................................................
 // ........................................................
 const IP_PUERTO="http://localhost:8080"
@@ -13,28 +26,75 @@ const IP_PUERTO="http://localhost:8080"
 // ........................................................
 // main ()
 // ........................................................
-describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd esté vacía\n(primero arrancar el test de logica y luego este para que la bd esté limpia)", function() {
+describe( "Test 1 RECURSO MEDICION", function() {
     
   
-    // ....................................................
-    // ....................................................
-    it( "probar que GET /prueba responde ¡Funciona!", function( hecho ) {
-        request.get(
-            { url : IP_PUERTO+"/prueba", headers : { 'User-Agent' : 'Ruben' }},          
-            function( err, respuesta, carga ) {
-                assert.equal( err, null, "¿ha habido un error?" )
-                assert.equal( respuesta.statusCode, 200, "¿El código no es 200 (OK)" )
-                assert.equal( carga, "¡Funciona!", "¿La carga no es ¡Funciona!?" )
-                hecho()
-            } // callback()
-        ) // .get
-    }) // it
+    var laLogica;
+    this.beforeAll(()=>{
+        laLogica = new Logica(null);
+        app = rewire('../mainServidorREST').servidorExpress;
+        var reglas = rewire("../ReglasREST.js")
+   
+        reglas.cargar(app,laLogica)
+    })
+
+      afterEach(()=>{
+        sinon.restore();
+    })
+    
+
+    context('GET /mediciones', ()=>{
+        let obtenerStub, errorStub;
+
+        it('Obtener mediciones devuelve un array', (done)=>{
+        
+            // si obtener mediciones devuelve un array de mediciones esperamos un 200 y un formato json en el body
+            let resultadoMediciones = new Array();
+            resultadoMediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 01:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',1));
+            resultadoMediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 02:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',2));
+           
+            let jsonEsperado =  [{
+                fechaHora: '2021-09-29 01:00:00',
+                posMedicion: { latitud: 30, longitud: 30 },
+                valor: 50,
+                idUsuario: 29,
+                uuidSensor: 'GTI-3A-1',
+                tipoGas: 1
+              },
+              {
+                fechaHora: '2021-09-29 02:00:00',
+                posMedicion: { latitud: 30, longitud: 30 },
+                valor: 50,
+                idUsuario: 29,
+                uuidSensor: 'GTI-3A-1',
+                tipoGas: 2
+              }]
+
+            obtenerStub = sinon.stub(laLogica, 'obtenerTodasMediciones').resolves(resultadoMediciones);
+            request(app).get('/mediciones')
+                .expect(200) // esperamos un 200
+                .end((err, response)=>{
+
+
+                    expect(obtenerStub).to.have.been.calledOnce; // se llamo a obtenerTodasMediciones
+                    expect(response.body.length).equal(2); // json de 2 elementos
+                    expect(response.body).to.eql(jsonEsperado); // json bien montado
+                    done();
+                })
+        })
+    })
 
 
      // ....................................................
     // ....................................................
-    it( "probar vacío GET /mediciones", function( hecho ) {
-        request.get({ url : IP_PUERTO+"/mediciones",
+   /* it( "probar vacío GET /mediciones", function( hecho ) {
+
+    
+
+       request(app)
+
+        respuesta.done()
+       /* request.get({ url : IP_PUERTO+"/mediciones",
                       headers : { 'User-Agent' : 'Ruben', 'Content-Type' : 'application/json' },
                      },
         function( err, respuesta, carga ) {
@@ -46,11 +106,10 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
         } // callback
         ) // .get
     }) // it
-
-
+    */
     // ....................................................
     // ....................................................
-    it( "probar POST mediciones nueva /mediciones", function( hecho ) {
+   /* it( "probar POST mediciones nueva /mediciones", function( hecho ) {
         
        
         var mediciones = Array();
@@ -236,6 +295,8 @@ describe( "Test 1 RECURSO MEDICION : Recuerda arrancar el servidor y que la bd e
                     } // callback// callback
         ) // .get
     }) // it
+
+    */
 
 
 

@@ -19,7 +19,7 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
 
     // ....................................................
     // ....................................................
-    it( "probar que GET /prueba responde ¡Funciona!", function( hecho ) {
+   /* it( "probar que GET /prueba responde ¡Funciona!", function( hecho ) {
         request.get(
             { url : IP_PUERTO+"/prueba", headers : { 'User-Agent' : 'Ruben' }},          
             function( err, respuesta, carga ) {
@@ -161,8 +161,6 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
       }) // post
     }) // it
 
-
-
     // ....................................................
     // ....................................................
     it("Probar que post registro bateria actualiza correctamente", function(hecho) {
@@ -184,5 +182,5 @@ describe( "Test 2 RECURSO REGISTROS ESTADOS SENSOR : Recuerda arrancar el servid
           // callback
       }) // post
     }) // it
-
+*/
 }) // describe

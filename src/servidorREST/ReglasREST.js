@@ -58,7 +58,6 @@ module.exports.cargar = function(servidorExpress, laLogica){
             // Lista<Medicion>
             var mediciones = await laLogica.obtenerTodasMediciones()
             
-            
             // todo ok 
             // si el array de resultados no tiene una casilla ...
             if( mediciones.length == 0 ) {
@@ -70,7 +69,6 @@ module.exports.cargar = function(servidorExpress, laLogica){
             respuesta.send(Modelo.Medicion.listaMedicionesAJSON(mediciones))
 
         }catch(error){
-
             respuesta.status(500).send(  {mensaje:error}  )
         }
     }) // get /mediciones
