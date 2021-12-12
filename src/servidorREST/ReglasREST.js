@@ -198,7 +198,6 @@ module.exports.cargar = function(servidorExpress, laLogica){
         try{
             var res = await laLogica.obtenerRegistrosEstadoSensor()
             
-            
             // todo ok 
             // si el array de resultados no tiene una casilla ...
             if( res.length == 0 ) {
@@ -223,10 +222,12 @@ module.exports.cargar = function(servidorExpress, laLogica){
 
         console.log("POST */registro/bateria");
         // creo el registro
-        let json = JSON.parse(peticion.body)["res"];
-        let registro = new Modelo.RegistroEstadoSensor(null, json.id, 0, json.tieneBateriaBaja, 0, 0, json.uuidSensor, json.fechaHora);
+        
 
         try {
+            let json = JSON.parse(peticion.body)["res"];
+            let registro = new Modelo.RegistroEstadoSensor(null, json.id, 0, json.tieneBateriaBaja, 0, 0, json.uuidSensor, json.fechaHora);
+            
             await laLogica.guardarRegistroBateriaSensor(registro);
             // todo ok
             respuesta.status(201).send( JSON.stringify( {mensaje:"Registro creado correctamente"} ) )
@@ -249,12 +250,42 @@ module.exports.cargar = function(servidorExpress, laLogica){
     servidorExpress.post('/registro_estado_sensor/averiado', async function(peticion, respuesta) {
 
         console.log("POST */registro/averiado");
-        // creo el registro
-        let json = JSON.parse(peticion.body)["res"];
-        let registro = new Modelo.RegistroEstadoSensor(null, json.id, 0, 0, json.estaAveriado, 0, json.uuidSensor, json.fechaHora);
+        
 
         try {
+            // creo el registro
+            let json = JSON.parse(peticion.body)["res"];
+            let registro = new Modelo.RegistroEstadoSensor(null, json.id, 0, 0, json.estaAveriado, 0, json.uuidSensor, json.fechaHora);
             await laLogica.guardarRegistroAveriaSensor(registro);
+            // todo ok
+            respuesta.status(201).send( JSON.stringify( {mensaje:"Registro creado correctamente"} ) )
+        } catch (error) {
+            if(error.sqlState == 45000) { // El trigger paró el insert porque el anterior es igual
+                respuesta.status(200).send();
+            } 
+
+            else if(error.errno == 1452){ // 1452 es el codigo de error en una clave ajena
+                respuesta.status(500).send( JSON.stringify( {mensaje:"No existe este sensor"} ) )
+            }
+            else{
+                respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
+            }
+        }
+    })// post /registro_estado_sensor/averiado
+
+    // .......................................................
+    // post /registro_estado_sensor/averiado
+    // .......................................................
+    servidorExpress.post('/registro_estado_sensor/descalibrado', async function(peticion, respuesta) {
+
+        console.log("POST */registro/descalibrado");
+        
+
+        try {
+            // creo el registro
+            let json = JSON.parse(peticion.body)["res"];
+            let registro = new Modelo.RegistroEstadoSensor(null, json.id, json.descalibrado, 0, 0, 0, json.uuidSensor, json.fechaHora);
+            await laLogica.guardarRegistroCalibracionSensor(registro);
             // todo ok
             respuesta.status(201).send( JSON.stringify( {mensaje:"Registro creado correctamente"} ) )
         } catch (error) {
