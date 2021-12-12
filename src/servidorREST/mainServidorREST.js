@@ -10,7 +10,7 @@ const cors = require('cors')
 const Logica = require('../logica/Logica.js')
 const BDCredenciales = require('../logica/Constantes/BDCredenciales.js')
 
-const servidorExpress = express();
+var servidorExpress = express();
 // exportarlo para que la logica pueda referenciarlos
 module.exports = {servidorExpress};
 //......................................................................

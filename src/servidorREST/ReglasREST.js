@@ -27,18 +27,18 @@ module.exports.cargar = function(servidorExpress, laLogica){
     // .......................................................
     servidorExpress.post('/mediciones', async function( peticion, respuesta ){
         console.log( " * POST /mediciones " )
-        // construyo el array de mediciones
-        var mediciones = new Array();
-        var listaMedicionesJSON = JSON.parse(peticion.body)["res"];
-        var mediciones = Modelo.Medicion.jsonAListaMediciones(listaMedicionesJSON);
-
-           
+        
         try{
+            // construyo el array de mediciones
+            var mediciones = new Array();
+            var listaMedicionesJSON = JSON.parse(peticion.body)["res"];
+            var mediciones = Modelo.Medicion.jsonAListaMediciones(listaMedicionesJSON);
+
+
             var res = await laLogica.publicarMediciones(mediciones)
             // todo ok 
             respuesta.status(201).send( JSON.stringify( {mensaje:"Mediciones creadas correctamente"} ) )
         }catch(error){
-            
             if(error.errno == 1452){ // 1452 es el codigo de error en una clave ajena
                 respuesta.status(500).send( JSON.stringify( {mensaje:"El usuario o sensor no existe"} ) )
             }else{
@@ -84,20 +84,17 @@ module.exports.cargar = function(servidorExpress, laLogica){
         let idUsuario = peticion.query.idUsuario;
         
         try{
-            var res = await laLogica.obtenerMedicionesDeHastaPorUsuario(fechaInicio,fechaFin,idUsuario)
-            
+            var mediciones = await laLogica.obtenerMedicionesDeHastaPorUsuario(fechaInicio,fechaFin,idUsuario)
             
             // todo ok 
             // si el array de resultados no tiene una casilla ...
-            if( res.length == 0 ) {
+            if( mediciones.length == 0 ) {
                 // 204: realizado ok pero sin resultados
                 respuesta.status(204).send();
                 return
             }
             // todo ok 
-            
-            let a = Modelo.Medicion.formatearRAWBDData(res);
-            respuesta.send(a)
+            respuesta.send(Modelo.Medicion.listaMedicionesAJSON(mediciones))
 
         }catch(error){
 
@@ -127,8 +124,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
             }
             // todo ok 
             
-            let a = Modelo.Medicion.formatearRAWBDData(res);
-            respuesta.send(a)
+            respuesta.send(Modelo.Medicion.listaMedicionesAJSON(res))
 
         }catch(error){
 
