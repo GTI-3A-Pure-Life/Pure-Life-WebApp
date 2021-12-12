@@ -21,17 +21,16 @@ var app = rewire('../mainServidorREST').servidorExpress;
 var Logica = require('../../logica/Logica.js');
 const Modelo = require('../../logica/Modelo.js');
 const { Posicion } = require('../../logica/Modelo.js');
-// ........................................................
-// ........................................................
-const IP_PUERTO="http://localhost:8080"
+
 
 // ........................................................
 // main ()
 // ........................................................
-describe( "Test 1 RECURSO MEDICION", function() {
+describe( "==================================================\nTest 1 RECURSO MEDICION\n==================================================", function() {
     
   
     var laLogica;
+     // preparamos el servidor falso para las pruebas
     this.beforeAll(()=>{
         laLogica = new Logica(null);
         app = rewire('../mainServidorREST').servidorExpress;
@@ -40,7 +39,7 @@ describe( "Test 1 RECURSO MEDICION", function() {
    
         reglas.cargar(app,laLogica)
     })
-
+// despues de cada test limpiamos el sinon
       afterEach(()=>{
         sinon.restore();
     })

@@ -307,11 +307,12 @@ module.exports.cargar = function(servidorExpress, laLogica){
 
         try {
             let usuario = await laLogica.iniciar_sesion(correo,contrasenya);
+        
             // todo ok
             respuesta.status(200).send( usuario.toJSON() )
         } catch (error) {
-            if(error == "No existe el usuario") { // El trigger paró el insert porque el anterior es igual
-                respuesta.status(401).send({mensaje:error});
+            if(error == "No existe el usuario") { 
+                respuesta.status(401).send({mensaje:error.name});
             }else{
                 respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
             }
@@ -338,8 +339,8 @@ module.exports.cargar = function(servidorExpress, laLogica){
             // todo ok
             respuesta.status(200).send({usuario: usuarioRes} )
         } catch (error) {
-            if(error == "Este correo ya esta en uso") { // El trigger paró el insert porque el anterior es igual
-                respuesta.status(400).send({mensaje:error});
+            if(error == "Este correo ya esta en uso") { 
+                respuesta.status(400).send({mensaje:error.name});
             }else{
                 respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
             }
