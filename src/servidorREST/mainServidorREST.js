@@ -10,6 +10,9 @@ const cors = require('cors')
 const Logica = require('../logica/Logica.js')
 const BDCredenciales = require('../logica/Constantes/BDCredenciales.js')
 
+var servidorExpress = express();
+// exportarlo para que la logica pueda referenciarlos
+module.exports = {servidorExpress};
 //......................................................................
 //......................................................................
 function cargarLogica(){
@@ -42,10 +45,10 @@ function cargarLogica(){
 async function main() {
     // importamos la logica
     //var laLogica = await cargarLogica( "../bd/datos.bd" ) // base de datos sqlite
-    var laLogica = await cargarLogica() // base de datos mysql
+    let laLogica = await cargarLogica() // base de datos mysql
     
     // creo el servidor
-    var servidorExpress = express()
+    servidorExpress = express()
     
     // para poder acceder a la carga de la petición http, asumiendo que es JSON
     servidorExpress.use(bodyParser.text({type :'application/json'}) )
