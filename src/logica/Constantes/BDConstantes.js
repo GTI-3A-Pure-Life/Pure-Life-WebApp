@@ -42,6 +42,7 @@ class TABLA_SENSORES{
    
     static NOMBRE_TABLA = "sensor";
     static ID = "uuid";
+    static FACTOR_DESCALIBRACION = "factorDescalibracion";
 
 }
 

@@ -367,8 +367,8 @@ module.exports = class Logica {
         for(let i = 0; i<mediciones.length;i++){
             values +=  "("+
                 "'"+mediciones[i].fecha+ "'," +  
-                "POINT("+mediciones[i].posicion.latitud+","+ mediciones[i].posicion.longitud+")," + 
-                mediciones[i].valor+ "," + 
+                "POINT("+mediciones[i].posicion.latitud+","+ mediciones[i].posicion.longitud+"),(" + 
+                mediciones[i].valor+ "/(SELECT factorDescalibracion FROM sensor WHERE uuid = "+ "'"+mediciones[i].idSensor+ "'" + "))," + 
                 mediciones[i].idUsuario+ "," + 
                 "'"+mediciones[i].idSensor+ "'," + 
                 mediciones[i].tipoGas+ ')' 
@@ -493,6 +493,32 @@ module.exports = class Logica {
             var query = this.laConexion.query( 
                 textoSQL, 
                 [registroEstadoSensor.uuidSensor,registroEstadoSensor.fechaHora,registroEstadoSensor.descalibrado,0],
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver() )
+                })
+            })
+    }//()
+
+    // .................................................................
+    // factorDescalibracion:R
+    // -->
+    // guardarFactorCalibracionSensor() -->
+    // Guarda el factor de calibracion de un sensor en concreto
+    // .................................................................
+    /**
+     * 
+     * @param {double} factorDescalibracion factor del sensor
+     * 
+     */
+     guardarFactorCalibracionSensor(factorDescalibracion,uuidSensor){
+        // creo la sentencia
+        var textoSQL ='update ' +BDConstantes.TABLA_SENSORES.NOMBRE_TABLA + ' set ' +
+        BDConstantes.TABLA_SENSORES.FACTOR_DESCALIBRACION + '= ? where '+BDConstantes.TABLA_SENSORES.ID + ' = ?';
+
+        return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
+                textoSQL, 
+                [factorDescalibracion,uuidSensor],
                 function( err,res,fields ) {
                     ( err ? rechazar(err) : resolver() )
                 })

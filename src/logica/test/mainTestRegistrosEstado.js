@@ -49,6 +49,28 @@ describe( "Test RECURSO REGISTROS ESTADO SENSOR", function() {
 
     })// it
 
+    it("Guardar factor descalibracion sensor",async function(){
+        
+        const conexion = {
+            query: async function(textoSQL,funcion){}
+        }; // objeto mock, cuando llame a objetos que usan la conexion no pasara nada
+        // yields = mockear el callback que se pasa por parametro a query
+        const guardarFactorDescalibradoSensorStub = sinon.stub(conexion,"query").yields(null,[]) 
+        // creamos la logica con el metodo conexion moqueado
+        let laLogica = new Logica(conexion);
+        await laLogica.guardarFactorCalibracionSensor(0.9,"GTI-3A-1")
+
+        assert.equal(guardarFactorDescalibradoSensorStub.calledOnce,true,"No se llamo al metodo query?")
+        
+        assert.equal(guardarFactorDescalibradoSensorStub.calledWith('update sensor set factorDescalibracion= ? where uuid = ?'),
+        true,"La query no es se monto correctamente?")
+        
+        let valoresPreparedStatement = guardarFactorDescalibradoSensorStub.args[0][1];
+        assert.equal(valoresPreparedStatement[1],"GTI-3A-1","¿El sensor no es GTI-3A-1?")
+        assert.equal(valoresPreparedStatement[0],0.9,"¿El factor no es '0.9'?")
+
+
+    })// it
 
      // ....................................................
     // ....................................................
