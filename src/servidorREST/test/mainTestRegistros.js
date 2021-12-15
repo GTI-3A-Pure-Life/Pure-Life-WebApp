@@ -139,8 +139,6 @@ describe("==================================================\nTest 2 RECURSO REG
             let sensorId = "GTI-3A-1"
             let registroEsperableQueLlameGuardarRegistro = new Modelo.RegistroEstadoSensor(null, undefined, 0, 0, 1, 0, sensorId, "2021-12-12 14:34:47");
 
-         
-
             // lo que le paso a la peticion
             let bodyPost = {"res": {"uuidSensor":sensorId, "estaAveriado":1, "fechaHora": "2021-12-12 14:34:47"}}
 
@@ -151,7 +149,6 @@ describe("==================================================\nTest 2 RECURSO REG
                 .end((err, response)=>{
 
                     let parametrosFuncion = registrarStub.args[0] // se llama a la funcion con objeto registro
-
                     expect(parametrosFuncion[0]).to.eql(registroEsperableQueLlameGuardarRegistro)
                     expect(response.statusCode).equal(201)
                     expect(registrarStub).to.have.been.calledOnce; // se llamo a registrar_usuario
@@ -221,29 +218,35 @@ describe("==================================================\nTest 2 RECURSO REG
             // lo que espero con que se llame al metodo 
             let sensorId = "GTI-3A-1"
             let registroEsperableQueLlameGuardarRegistro = new Modelo.RegistroEstadoSensor(null, undefined, 1, 0, 0, 0, sensorId, "2021-12-12 14:34:47");
-
+            let factorDescalibracion = 0.9;
          
 
             // lo que le paso a la peticion
-            let bodyPost = {"res": {"uuidSensor":sensorId, "descalibrado":1, "fechaHora": "2021-12-12 14:34:47"}}
+            let bodyPost = {"res": {"uuidSensor":sensorId, "descalibrado":1, "fechaHora": "2021-12-12 14:34:47","factorDescalibracion":0.9}}
 
-            let registrarStub = sinon.stub(laLogica, 'guardarRegistroCalibracionSensor').resolves({});// devuelve el id
+            let registrarStub = sinon.stub(laLogica, 'guardarRegistroCalibracionSensor').resolves({});
+            let guardarFactorCalibracionStub = sinon.stub(laLogica, 'guardarFactorCalibracionSensor').resolves({});
             request(app).post('/registro_estado_sensor/descalibrado')
                 .send(bodyPost)
                 .expect(200) // esperamos un 200
                 .end((err, response)=>{
 
-                    let parametrosFuncion = registrarStub.args[0] // se llama a la funcion con objeto registro
-
-                    expect(parametrosFuncion[0]).to.eql(registroEsperableQueLlameGuardarRegistro)
+                    let parametrosFuncionRegistro = registrarStub.args[0] // se llama a la funcion guardar registro con objeto registro
+                    let parametrosFuncionFactor = guardarFactorCalibracionStub.args[0] // se llama a la funcion guardar factor con un numero
+         
+                    expect(parametrosFuncionRegistro[0]).to.eql(registroEsperableQueLlameGuardarRegistro)
+                    expect(parametrosFuncionFactor[0]).to.eql(factorDescalibracion)
                     expect(response.statusCode).equal(201)
-                    expect(registrarStub).to.have.been.calledOnce; // se llamo a registrar_usuario
-                    expect(response.text).to.equal('{"mensaje":"Registro creado correctamente"}'); // se llamo a registrar_usuario
+                    expect(registrarStub).to.have.been.calledOnce; // se llamo al metodo
+
+                    expect(guardarFactorCalibracionStub).to.have.been.calledOnce; // se llamo al metodo
+
+                    expect(response.text).to.equal('{"mensaje":"Registro creado correctamente"}'); 
                     done();
                 })
         })
 
-        it('Registro estado averia igual al anterior', (done)=>{
+        it('Registro estado descalibrado igual al anterior', (done)=>{
         
            
 
@@ -255,6 +258,7 @@ describe("==================================================\nTest 2 RECURSO REG
              let bodyPost = {"res": {"uuidSensor":sensorId, "descalibrado":1, "fechaHora": "2021-12-12 14:34:47"}}
  
              let registrarStub = sinon.stub(laLogica, 'guardarRegistroCalibracionSensor').rejects({"sqlState":45000});// devuelve error del trigger
+             let guardarFactorCalibracionStub = sinon.stub(laLogica, 'guardarFactorCalibracionSensor').resolves({});
              request(app).post('/registro_estado_sensor/descalibrado')
                  .send(bodyPost)
                  .expect(200) 
@@ -269,7 +273,7 @@ describe("==================================================\nTest 2 RECURSO REG
                  })
         })
 
-        it('Registro estado averia incorrecto', (done)=>{
+        it('Registro estado descalibrado incorrecto', (done)=>{
         
            // lo que espero con que se llame al metodo 
            let sensorId = "GTI-3A-1"
@@ -280,6 +284,8 @@ describe("==================================================\nTest 2 RECURSO REG
            let bodyPost = {"res": {"uuidSensor":sensorId, "descalibrado":1, "fechaHora": "2021-12-12 14:34:47"}}
 
            let registrarStub = sinon.stub(laLogica, 'guardarRegistroCalibracionSensor').rejects({errno:1452});// error de clave foranea no existe el id del sensor
+           let guardarFactorCalibracionStub = sinon.stub(laLogica, 'guardarFactorCalibracionSensor').resolves({});
+           
            request(app).post('/registro_estado_sensor/descalibrado')
                .send(bodyPost)
                .expect(500) // esperamos un 200
@@ -333,49 +339,25 @@ describe("==================================================\nTest 2 RECURSO REG
 
              // lo que espero con que se llame al metodo 
              let sensorId = "GTI-3A-1"
-             let registroEsperableQueLlameGuardarRegistro = new Modelo.RegistroEstadoSensor(null, undefined, 1, 0, 0, 0, sensorId, "2021-12-12 14:34:47");
  
              // lo que le paso a la peticion
-             let bodyPost = {"res": {"uuidSensor":sensorId, "descalibrado":1, "fechaHora": "2021-12-12 14:34:47"}}
+             let bodyPost = {"res": {"id":sensorId}}
  
-             let registrarStub = sinon.stub(laLogica, 'guardarRegistroCalibracionSensor').rejects({"sqlState":45000});// devuelve error del trigger
-             request(app).post('/registro_estado_sensor/descalibrado')
+             let registrarStub = sinon.stub(laLogica, 'actualizar_leido').rejects({"sqlState":1452});// devuelve error del trigger
+             request(app).put('/registro_estado_sensor/leido')
                  .send(bodyPost)
-                 .expect(200) 
+                 .expect(500) 
                  .end((err, response)=>{
+                    let parametrosFuncion = registrarStub.args[0] // se llama a la funcion con objeto registro
  
-                     let parametrosFuncion = registrarStub.args[0] // se llama a la funcion con objeto registro
- 
-                     expect(parametrosFuncion[0]).to.eql(registroEsperableQueLlameGuardarRegistro)
-                     expect(response.statusCode).equal(200)
-                     expect(registrarStub).to.have.been.calledOnce; // se llamo a registrar_usuario
-                     done();
+                    expect(parametrosFuncion[0]).to.eql(sensorId)
+                    expect(response.statusCode).equal(500)
+                    expect(registrarStub).to.have.been.calledOnce; // se llamo a marcar_leido
+                    expect(response.text).to.equal('{"mensaje":"Error desconocido"}'); 
+                    done();
                  })
         })
 
-        it('Registro estado averia incorrecto', (done)=>{
-        
-           // lo que espero con que se llame al metodo 
-           let sensorId = "GTI-3A-1"
-          
-           // lo que le paso a la peticion
-           let bodyPost = {"res": {"id":sensorId}}
-
-           let marcarLeidoStub = sinon.stub(laLogica, 'actualizar_leido').rejects({errno:1452});// error de clave foranea no existe el id del sensor
-           request(app).put('/registro_estado_sensor/leido')
-               .send(bodyPost)
-               .expect(500) // esperamos un 200
-               .end((err, response)=>{
-
-                   let parametrosFuncion = marcarLeidoStub.args[0] // se llama a la funcion con objeto registro
-
-                   expect(parametrosFuncion[0]).to.eql(sensorId)
-                   expect(response.statusCode).equal(500)
-                   expect(marcarLeidoStub).to.have.been.calledOnce; // se llamo a registrar_usuario
-                   expect(response.text).to.equal('{"mensaje":"Error desconocido"}'); // se llamo a registrar_usuario
-                   done();
-               })
-        })
     })
 
     context('GET /registro_estado_sensor--------------------------------------------------', ()=>{

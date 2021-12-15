@@ -285,6 +285,9 @@ module.exports.cargar = function(servidorExpress, laLogica){
             // creo el registro
             let json = JSON.parse(peticion.body)["res"];
             let registro = new Modelo.RegistroEstadoSensor(null, json.id, json.descalibrado, 0, 0, 0, json.uuidSensor, json.fechaHora);
+            let factorDescalibracion = json["factorDescalibracion"]
+        
+            await laLogica.guardarFactorCalibracionSensor(factorDescalibracion,json.uuidSensor);
             await laLogica.guardarRegistroCalibracionSensor(registro);
             // todo ok
             respuesta.status(201).send( JSON.stringify( {mensaje:"Registro creado correctamente"} ) )

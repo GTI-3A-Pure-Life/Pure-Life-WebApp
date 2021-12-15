@@ -72,6 +72,7 @@ describe( "==================================================\nTest 1 RECURSO ME
               }]
 
             obtenerStub = sinon.stub(laLogica, 'obtenerTodasMediciones').resolves(resultadoMediciones);
+            
             request(app).get('/mediciones')
                 .expect(200) // esperamos un 200
                 .end((err, response)=>{

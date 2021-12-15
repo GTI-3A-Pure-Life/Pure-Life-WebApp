@@ -41,13 +41,11 @@ describe( "Test RECURSO MEDICION", function() {
         var mediciones = new Array();
         mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 01:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',1));
         mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 02:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',2));
-        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 03:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',3));
-        mediciones.push(new Modelo.Medicion(null, 50, '2021-09-29 04:00:00', new Modelo.Posicion(30,30), 29, 'GTI-3A-1',4));
 
         await laLogica.publicarMediciones(mediciones)
         // comprobamos que se crea bien la sentencia sql
-        assert.equal(publicarMedicionesStub.calledWith("insert into medicion(fechaHora,posMedicion,valor,idUsuario,uuidSensor,tipoGas)  values ('2021-09-29 01:00:00',POINT(30,30),50,29,'GTI-3A-1',1),('2021-09-29 02:00:00',POINT(30,30),50,29,'GTI-3A-1',2),('2021-09-29 03:00:00',POINT(30,30),50,29,'GTI-3A-1',3),('2021-09-29 04:00:00',POINT(30,30),50,29,'GTI-3A-1',4)"),
-        true,"La query no es 'insert into medicion(fechaHora,posMedicion,valor,idUsuario,uuidSensor,tipoGas)  values ('2021-09-29 01:00:00',POINT(30,30),50,29,'GTI-3A-1',1),('2021-09-29 02:00:00',POINT(30,30),50,29,'GTI-3A-1',2),('2021-09-29 03:00:00',POINT(30,30),50,29,'GTI-3A-1',3),('2021-09-29 04:00:00',POINT(30,30),50,29,'GTI-3A-1',4)'?")
+        assert.equal(publicarMedicionesStub.calledWith("insert into medicion(fechaHora,posMedicion,valor,idUsuario,uuidSensor,tipoGas)  values ('2021-09-29 01:00:00',POINT(30,30),(50/(SELECT factorDescalibracion FROM sensor WHERE uuid = 'GTI-3A-1')),29,'GTI-3A-1',1),('2021-09-29 02:00:00',POINT(30,30),(50/(SELECT factorDescalibracion FROM sensor WHERE uuid = 'GTI-3A-1')),29,'GTI-3A-1',2)"),
+        true,"No se monto bien la query?")
 
     })// it
 
