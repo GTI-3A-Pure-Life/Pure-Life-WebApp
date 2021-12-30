@@ -320,7 +320,7 @@ return registro;
  class Usuario{
 
     /**
-     * posCasa:Posicion,posTrabajo:Posicion, correo:Texto, nombre:Texto contrasenya:Texto, id:N -> 
+     * posCasa:Posicion,posTrabajo:Posicion, correo:Texto, nombre:Texto contrasenya:Texto, id:N ,verificado -> 
      * constructor()->
      * 
      * 
@@ -331,8 +331,10 @@ return registro;
      * @param {String} nombre 
      * @param {int} id 
      * @param {int} rol
+     * @param {boolean} verificado
+     * @param {string} token
      */
-    constructor(posCasa, posTrabajo, correo, contrasenya, nombre, id,telefono,rol){
+    constructor(posCasa, posTrabajo, correo, contrasenya, nombre, id,telefono,rol, verificado, token){
         
         this.posCasa = posCasa;
         this.posTrabajo = posTrabajo;
@@ -342,6 +344,8 @@ return registro;
         this.id = id;
         this.telefono = telefono;
         this.rol = rol;
+        this.verificado = verificado;
+        this.token = token
          
     }
 
@@ -360,7 +364,9 @@ return registro;
             query.nombre,
             query.id,
             query.telefono,
-            query.rol 
+            query.rol,
+            query.verificado,
+            query.token
         );
         return usuario;
     }
@@ -383,14 +389,11 @@ return registro;
             posCasa: posCasaV,
             posTrabajo: posTrabajoV,
             contrasenya: this.contrasenya,
-            telefono: this.telefono
+            telefono: this.telefono,
+            verificado: this.verificado,
+            token: this.token
           });
     }
-
-    
-
-
-
 }// ()
 
 

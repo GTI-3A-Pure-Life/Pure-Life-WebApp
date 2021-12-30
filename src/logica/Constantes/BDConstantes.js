@@ -29,10 +29,12 @@ class TABLA_USUARIOS{
     static NOMBRE_TABLA = "usuario";
     static ID = "id";
     static NOMBRE = "nombre";
-    static  CORREO = "correo";
+    static CORREO = "correo";
     static CONTRASENYA = "contrasenya";
     static TELEFONO = "telefono";
     static ROL = "rol";
+    static VERIFICADO = "verificado";
+    static TOKEN = "token";
 
 }
 

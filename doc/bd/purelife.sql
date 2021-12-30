@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-11-2021 a las 10:42:46
+-- Tiempo de generación: 30-12-2021 a las 23:32:43
 -- Versión del servidor: 10.4.21-MariaDB
 -- Versión de PHP: 7.3.31
 
@@ -180,17 +180,19 @@ CREATE TABLE `usuario` (
   `correo` varchar(320) NOT NULL,
   `contrasenya` varchar(40) NOT NULL,
   `telefono` varchar(30) DEFAULT NULL,
-  `rol` int(11) NOT NULL
+  `rol` int(11) NOT NULL,
+  `verificado` tinyint(1) NOT NULL,
+  `token` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`id`, `nombre`, `correo`, `contrasenya`, `telefono`, `rol`) VALUES
-(13, 'prueba', 'usuario@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '632145789', 1),
-(22, 'desde rest', 'usuario3@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '1234', 1),
-(35, 'prueba desde web', 'prueba@gmail.com', '711383a59fda05336fd2ccf70c8059d1523eb41a', NULL, 1);
+INSERT INTO `usuario` (`id`, `nombre`, `correo`, `contrasenya`, `telefono`, `rol`, `verificado`, `token`) VALUES
+(13, 'prueba', 'usuario@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '632145789', 1, 1, ''),
+(22, 'desde rest', 'usuario3@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '1234', 1, 1, ''),
+(35, 'prueba desde web', 'prueba@gmail.com', '711383a59fda05336fd2ccf70c8059d1523eb41a', NULL, 1, 1, '');
 
 -- --------------------------------------------------------
 
@@ -303,7 +305,7 @@ ALTER TABLE `tipo_gas`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario_sensor`
