@@ -30,13 +30,13 @@ describe( "Test RECURSO USUARIO", function() {
         // creamos la logica con el metodo conexion moqueado
         let laLogica = new Logica(conexion);
 
-        let usuario = new Modelo.Usuario(null,null,"usuario@gmail.com","7110eda4d09e062aa5e4a390b0a572ac0d2c0220","prueba",null,"632145789",1)
+        let usuario = new Modelo.Usuario(null,null,"usuario@gmail.com","7110eda4d09e062aa5e4a390b0a572ac0d2c0220","prueba",null,"632145789",1, false, null)
         let res = await laLogica.registrar_usuario(usuario)
 
         assert.equal(registrarUsuarioStub.calledOnce,true,"No se llamo al metodo query?")
         assert.equal(registrarUsuarioStub.calledWith('INSERT INTO usuario ' +
-        '(nombre,correo,contrasenya,telefono, rol) ' +
-        'VALUES (?, ?, ?, ?, ?)'),
+        '(nombre,correo,contrasenya,telefono, rol,verificado,token) ' +
+        'VALUES (?, ?, ?, ?, ?, ?, ?)'),
         true,"La query no es se monto correctamente?")
         
         let valoresPreparedStatement = registrarUsuarioStub.args[0][1];

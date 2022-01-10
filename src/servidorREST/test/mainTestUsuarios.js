@@ -51,7 +51,7 @@ describe("==================================================\nTest 3 RECURSO USU
         it('Credenciales correctos', (done)=>{
         
             // lo que espero con que se llame al metodo registrar 
-            let usuarioEsperableQueLlameARegistrar = new Modelo.Usuario(null,null,"correo","1234","nombre",null,"4321",1)
+            let usuarioEsperableQueLlameARegistrar = new Modelo.Usuario(null,null,"correo","1234","nombre",null,"4321",1, false)
 
             // lo que espero que devuelva la peticion
             let jsonEsperado =  {"usuario":1}
