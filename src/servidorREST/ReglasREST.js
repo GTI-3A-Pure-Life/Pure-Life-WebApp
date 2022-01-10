@@ -9,6 +9,17 @@
 
 const {json} = require('express')
 const Modelo = require('../logica/Modelo.js')
+const nodemailer = require('nodemailer');
+const { request } = require('chai');
+
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: "purelife.rparcas@gmail.com",
+      pass: "PureLife1234!",
+    },
+  });
+const path = require("path")
 
 module.exports.cargar = function(servidorExpress, laLogica){
     
@@ -366,8 +377,9 @@ module.exports.cargar = function(servidorExpress, laLogica){
         let contrasenya = body["res"]["contrasenya"];
         let nombre = body["res"]["nombre"];
         let telefono = body["res"]["telefono"];
+        let token = body["res"]["token"];
         // creamos el usuarios
-        let usuario = new Modelo.Usuario(null,null,correo,contrasenya,nombre,null,telefono,1)
+        let usuario = new Modelo.Usuario(null,null,correo,contrasenya,nombre,null,telefono,1, false, token)
         try {
             let usuarioRes = await laLogica.registrar_usuario(usuario);
             // todo ok
@@ -382,4 +394,42 @@ module.exports.cargar = function(servidorExpress, laLogica){
         }
     })// post /usuario/registrarse
 
+
+    servidorExpress.get('/usuario/verificar/:token', async function(peticion, respuesta) {
+        console.log("GET */usuario/verificar/:token");
+        // obtenemos los datos de la peticion
+        let token = peticion.params.token;
+
+        try {
+            let verificadoRes = await laLogica.obtenerUsuarioPorToken(token)
+            verificadoRes.verificado = 1;
+            await laLogica.verificar_usuario(verificadoRes.id, verificadoRes.verificado)
+            //respuesta.status(200).sendFile(path.resolve(__dirname, "verificado.html"))
+            respuesta.status(200).sendFile(path.resolve("C:/Users/Pablo/Desktop/Pure-Life-UX/src", "verificado.html"))
+
+        } catch (error) {
+            respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
+        }
+    })
+
+    servidorExpress.post('/usuario/mandar_correo', async function(peticion, respuesta) {
+        console.log("POST */usuario/mandar_correo");
+        // obtenemos los datos de la peticion
+        let body = JSON.parse(peticion.body);
+        let nombre = body["res"]["nombre"];
+        let correo = body["res"]["correo"];
+        let token = body["res"]["token"];
+
+        transporter.sendMail({
+            from: "no-reply@purelife.com",
+            to: correo,
+            subject: "Por favor, verifique su cuenta PureLife",
+            html: `<h1>Estás a un paso de formar parte de PureLife</h1>
+            <h2>Hola ${nombre}</h2>
+            <p>Gracias por registrarte en PureLife. Por favor confirma tu dirección de email clicando en el siguiente enlace</p>
+            <a href=http://localhost:8080/usuario/verificar/${token}> Clica aquí para verificar tu cuenta</a>
+            </div>`
+        }).catch(err => console.log(err));
+        respuesta.status(201).send();
+    })
 }

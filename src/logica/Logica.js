@@ -585,22 +585,24 @@ module.exports = class Logica {
      registrar_usuario(usuario){
         var textoSQL = 'INSERT INTO '+ BDConstantes.TABLA_USUARIOS.NOMBRE_TABLA 
          +' ('+ BDConstantes.TABLA_USUARIOS.NOMBRE +','+ BDConstantes.TABLA_USUARIOS.CORREO +','+ BDConstantes.TABLA_USUARIOS.CONTRASENYA +','
-         + BDConstantes.TABLA_USUARIOS.TELEFONO +', '+ BDConstantes.TABLA_USUARIOS.ROL
-         +') VALUES (?, ?, ?, ?, ?)'
+         + BDConstantes.TABLA_USUARIOS.TELEFONO +', '+ BDConstantes.TABLA_USUARIOS.ROL +"," + BDConstantes.TABLA_USUARIOS.VERIFICADO +','
+         + BDConstantes.TABLA_USUARIOS.TOKEN
+         +') VALUES (?, ?, ?, ?, ?, ?, ?)'
  
          /**
           * INSERT INTO `usuario` ( `nombre`, `correo`, `contrasenya`, `telefono`, `rol`) 
-          * VALUES ( 'normal 2', 'correo@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '631254879', '1');
+          * VALUES ( 'normal 2', 'correo@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '631254879', '1', 'false', 'RwLy64iO4TQvyMUv5yLXZHWa8');
           */
          return new Promise( (resolver, rechazar) => {
              this.laConexion.query( 
                  textoSQL, 
-                 [usuario.nombre,usuario.correo,usuario.contrasenya,usuario.telefono,usuario.rol],
+                 [usuario.nombre,usuario.correo,usuario.contrasenya,usuario.telefono,usuario.rol, usuario.verificado, usuario.token],
                  function( err,res,fields ) {
                      if(!err){ 
                         // return usuario
                         resolver(res)
                      }else{
+                         console.log(err);
                          if(err.errno == 1062){// clave unica duplicada, en este caso seria el correo
                             rechazar("Este correo ya esta en uso")
                          }
@@ -611,6 +613,44 @@ module.exports = class Logica {
  
      }// ()
 
+     obtenerUsuarioPorToken(token) {
+         var textoSQL = "SELECT * FROM " + BDConstantes.TABLA_USUARIOS.NOMBRE_TABLA + " WHERE token = ?" ;
+
+         return new Promise( (resolver, rechazar) => {
+            this.laConexion.query( 
+                textoSQL, 
+                [token],
+                function( err,res,fields ) {
+
+                    if(!err){ // si no hay datos los credenciales no son correctos
+                        if(res.length != 0){
+                            // return usuario
+                            resolver(Modelo.Usuario.UsuarioFromQueryData(res[0]))
+                        }else{
+                            rechazar("No existe el usuario")
+                        }
+                    }else{
+                        rechazar(err)
+                    }
+                    
+                })
+            })
+     }
+
+     verificar_usuario(usuarioId, verificado) {
+        var textoSQL ='update ' +BDConstantes.TABLA_USUARIOS.NOMBRE_TABLA + ' set ' +
+        BDConstantes.TABLA_USUARIOS.VERIFICADO + '= ? where '+BDConstantes.TABLA_USUARIOS.ID + ' = ?';
+
+        return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
+                textoSQL, 
+                [verificado,usuarioId],
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver() )
+                })
+            })
+     }
+     
     // .................................................................
     // cerrar() -->
     // .................................................................
