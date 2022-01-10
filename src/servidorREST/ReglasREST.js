@@ -10,13 +10,14 @@
 const {json} = require('express')
 const Modelo = require('../logica/Modelo.js')
 const nodemailer = require('nodemailer');
+require("dotenv").config();
 const { request } = require('chai');
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-      user: "purelife.rparcas@gmail.com",
-      pass: "PureLife1234!",
+      user: process.env.USER,
+      pass: process.env.PASS,
     },
   });
 const path = require("path")
