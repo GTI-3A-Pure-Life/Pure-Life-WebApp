@@ -384,6 +384,24 @@ module.exports.cargar = function(servidorExpress, laLogica){
         try {
             let usuarioRes = await laLogica.registrar_usuario(usuario);
             // todo ok
+            console.log("POST */usuario/mandar_correo");
+        // obtenemos los datos de la peticion
+        let body = JSON.parse(peticion.body);
+        let nombre = body["res"]["nombre"];
+        let correo = body["res"]["correo"];
+        let token = body["res"]["token"];
+
+        transporter.sendMail({
+            from: "no-reply@purelife.com",
+            to: correo,
+            subject: "Por favor, verifique su cuenta PureLife",
+            html: `<h1>Estás a un paso de formar parte de PureLife</h1>
+            <h2>Hola ${nombre}</h2>
+            <p>Gracias por registrarte en PureLife. Por favor confirma tu dirección de email clicando en el siguiente enlace</p>
+            <a href=http://rparcas.upv.edu.es:80/usuario/verificar/${token}> Clica aquí para verificar tu cuenta</a>
+            </div>`
+        }).catch(err => console.log(err));
+        //respuesta.status(201).send();
             respuesta.status(200).send({usuario: usuarioRes} )
         } catch (error) {
             if(error == "Este correo ya esta en uso") { 
@@ -406,7 +424,7 @@ module.exports.cargar = function(servidorExpress, laLogica){
             verificadoRes.verificado = 1;
             await laLogica.verificar_usuario(verificadoRes.id, verificadoRes.verificado)
             //respuesta.status(200).sendFile(path.resolve(__dirname, "verificado.html"))
-            respuesta.status(200).sendFile(path.resolve("C:/Users/Pablo/Desktop/Pure-Life-UX/src", "verificado.html"))
+            respuesta.status(200).sendFile(path.resolve("C:/Users/pablo/Desktop/Proyecto/repos/purelife/Pure-Life-UX/src", "verificado.html"))
 
         } catch (error) {
             respuesta.status(500).send( JSON.stringify( {mensaje:"Error desconocido"} ) )
@@ -414,23 +432,6 @@ module.exports.cargar = function(servidorExpress, laLogica){
     })
 
     servidorExpress.post('/usuario/mandar_correo', async function(peticion, respuesta) {
-        console.log("POST */usuario/mandar_correo");
-        // obtenemos los datos de la peticion
-        let body = JSON.parse(peticion.body);
-        let nombre = body["res"]["nombre"];
-        let correo = body["res"]["correo"];
-        let token = body["res"]["token"];
-
-        transporter.sendMail({
-            from: "no-reply@purelife.com",
-            to: correo,
-            subject: "Por favor, verifique su cuenta PureLife",
-            html: `<h1>Estás a un paso de formar parte de PureLife</h1>
-            <h2>Hola ${nombre}</h2>
-            <p>Gracias por registrarte en PureLife. Por favor confirma tu dirección de email clicando en el siguiente enlace</p>
-            <a href=http://localhost:8080/usuario/verificar/${token}> Clica aquí para verificar tu cuenta</a>
-            </div>`
-        }).catch(err => console.log(err));
-        respuesta.status(201).send();
+        
     })
 }
