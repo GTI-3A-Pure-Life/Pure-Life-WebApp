@@ -433,4 +433,43 @@ module.exports.cargar = function(servidorExpress, laLogica){
         }).catch(err => console.log(err));
         respuesta.status(201).send();
     })
+
+    servidorExpress.get('/ciudad/usuario', async function(peticion, respuesta) {
+        console.log("GET */ciudad/usuario?idUsuario=");
+        let usuarioId = peticion.query.idUsuario;
+
+        if(usuarioId==null){
+            respuesta.status(500).send({mensaje:"Faltan datos o algun parametro esta mal escrito"})
+        }else{
+            try{
+                var res = await laLogica.obtener_ciudad(usuarioId)
+                // todo ok 
+                respuesta.send(res)
+    
+            }catch(error){
+    
+                respuesta.status(500).send(  {mensaje:error}  )
+            }
+        }
+    })
+
+    servidorExpress.get('/mediciones/zona', async function(peticion, respuesta) {
+        let lat = peticion.query.latitud;
+        let lng = peticion.query.longitud;
+        let radio = peticion.query.radio;
+
+        if(lat==null || lng==null || radio==null){
+            respuesta.status(500).send(  {mensaje:"Faltan datos o algun parametro esta mal escrito"}  )
+        }else{
+            try{
+                var res = await laLogica.obtenerMedicionesPorZona(lat,lng,radio)
+                // todo ok 
+                respuesta.send(res)
+    
+            }catch(error){
+    
+                respuesta.status(500).send(  {mensaje:error}  )
+            }
+        }
+    })
 }

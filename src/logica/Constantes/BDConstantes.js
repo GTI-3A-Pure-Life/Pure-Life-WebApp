@@ -74,11 +74,28 @@ class TABLA_REGISTRO_ESTADO_SENSOR{
 
 }
 
+class TABLA_CIUDADES {
+    static NOMBRE_TABLA = "radios_ciudades";
+    static ID = "id";
+    static CIUDAD = "posCiudad";
+    static POSICION_CIUDAD = "posCiudad";
+    static RADIO = "radio";
+}
+
+class TABLA_DATOS_ADMIN {
+    static NOMBRE_TABLA = "datos_admin";
+    static ID = "id";
+    static ID_USUARIO = "idUsuario";
+    static ID_CIUDAD = "idCiudad";
+    
+}
 
 module.exports = {
     TABLA_MEDICIONES : TABLA_MEDICIONES,
     TABLA_USUARIOS : TABLA_USUARIOS,
     TABLA_SENSORES : TABLA_SENSORES,
     TABLA_REGISTRO_ESTADO_SENSOR : TABLA_REGISTRO_ESTADO_SENSOR,
-    TABLA_DATOS_USUARIO:TABLA_DATOS_USUARIO
+    TABLA_DATOS_USUARIO:TABLA_DATOS_USUARIO,
+    TABLA_CIUDADES: TABLA_CIUDADES,
+    TABLA_DATOS_ADMIN: TABLA_DATOS_ADMIN
 }

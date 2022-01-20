@@ -421,6 +421,40 @@ return registro;
 
 }// ()
 
+class Ciudad {
+    constructor(ciudad, posicion, radio) {
+        this.ciudad = ciudad;
+        this.posicion = posicion;
+        this.radio = radio;
+    }
+
+    static CiudadFromQueryData(query) {
+       
+        const ciudad = new Ciudad(
+            query.ciudad,
+            query.posCiudad == null ? null :new Posicion (query.posCiudad.x, query.posCiudad.y ),
+            query.radio,
+        );
+        return ciudad;
+    }
+
+     /**
+     * toJSON() -> Texto
+     * @returns String en formato json del objeto
+     */
+    toJSON() {
+        
+        // pueden ser nulls, inicializarlos antes con un if
+        let posCiudadV = this.posCiudad==null ? null :  { latitud: this.posCiudad.latitud, longitud: this.posCiudad.longitud };
+
+        return JSON.stringify({ 
+            ciudad:this.ciudad,
+            posCiudad: posCiudadV,
+            radio: this.radio
+          });
+    }
+}
+
 
     /**
      * Texto -> formatearFecha() -> Texto
@@ -520,5 +554,6 @@ module.exports = {
     Posicion : Posicion,
     RegistroEstadoSensor: RegistroEstadoSensor,
     Usuario:Usuario,
-    InformeCalidadAire,InformeCalidadAire
+    InformeCalidadAire: InformeCalidadAire,
+    Ciudad: Ciudad,
 }

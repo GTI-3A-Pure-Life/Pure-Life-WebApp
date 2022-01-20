@@ -650,6 +650,47 @@ module.exports = class Logica {
                 })
             })
      }
+
+     obtener_ciudad(usuarioId) {
+         var textoSQL = "SELECT * FROM " + BDConstantes.TABLA_CIUDADES.NOMBRE_TABLA + " WHERE "+ BDConstantes.TABLA_CIUDADES.ID +" = (SELECT "
+         + BDConstantes.TABLA_DATOS_ADMIN.ID_CIUDAD + " FROM " + BDConstantes.TABLA_DATOS_ADMIN.NOMBRE_TABLA + " WHERE " +
+         BDConstantes.TABLA_DATOS_ADMIN.ID_USUARIO +" = ?)"
+
+         return new Promise( (resolver, rechazar) => {
+            var query = this.laConexion.query( 
+                textoSQL, 
+                [usuarioId],
+                function( err,res,fields ) {
+                    ( err ? rechazar(err) : resolver(res) )
+                })
+            })
+     }
+
+     obtenerMedicionesPorZona(lat, lng, radio) {
+         var textoSQL = "SELECT *, ( 6371392.896 * acos ( cos ( radians(?) ) * cos( radians( ST_X(posMedicion) ) ) * cos( radians( ST_Y(posMedicion) ) - radians(?) ) + sin ( radians(?) ) * sin( radians( ST_X(posMedicion) ) ) )) as distancia FROM " +
+         BDConstantes.TABLA_MEDICIONES.NOMBRE_TABLA + " HAVING distancia <= ?";
+
+         return new Promise( (resolver, rechazar) => {
+            let query = this.laConexion.query( 
+                 textoSQL, 
+                 [lat, lng, lat, radio],
+                 function( err,res ) {
+                     if(!err){
+                         let mediciones = new Array()
+                         for(let i =0;i<res.length;i++){
+                             mediciones.push(Modelo.Medicion.MedicionFromRawData(res[i]))
+                         }
+     
+                         resolver(mediciones)
+     
+                     }else{
+                         rechazar(err)
+                     }
+                     
+                 })
+                
+             })
+     }
      
     // .................................................................
     // cerrar() -->
